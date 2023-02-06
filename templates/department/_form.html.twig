@@ -1,0 +1,10 @@
+
+{% block message %}
+	{{ include('common/_messages.html.twig') }}
+{% endblock %}
+
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
+    <a id="modal-cancel-button" href="{{ path('department_index') }}" class="btn btn-secondary">{{ 'btn.cancel' | trans }}</a>
+{{ form_end(form) }}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.title.application.edit' | trans }}{% endblock %}
+
+{% block body %}
+    <main class="container-fluid">
+        <div class="mt-2">
+            {{ include('application/_form.html.twig',{
+                'readonly': readonly,
+                'new': new,
+            }) }}
+        </div>
+    </main>
+{% endblock body %}

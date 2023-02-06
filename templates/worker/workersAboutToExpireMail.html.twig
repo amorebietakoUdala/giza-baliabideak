@@ -1,0 +1,31 @@
+{% apply inline_css(source('@styles/email.css')) %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+         <meta charset="utf-8">
+         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+         <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+      <table>
+         <tr>
+            <th>{{ 'worker.dni' | trans }}</th>
+            <th>{{ 'worker.name' | trans }}</th>
+            <th>{{ 'worker.surname1' | trans }}</th>
+            <th>{{ 'worker.endDate' | trans }}</th>
+            <th>{{ 'worker.job' | trans }}</th>
+         </tr>
+         {% for worker in workers %}
+            <tr>
+               <td>{{ worker.dni }}</td>
+               <td>{{ worker.name }}</td>
+               <td>{{ worker.surname1 }}</td>
+               <td>{{ worker.endDate | date('Y-m-d')}}</td>
+               <td>{{ worker.job }}</td>
+            </tr>
+         {% endfor %}
+      </table>
+    </body>
+</html> 
+{% endapply %}
+

@@ -1,0 +1,52 @@
+{% if jobs is defined and jobs|length > 0 %}
+
+<table class="table" {{ stimulus_controller('table', {
+   'exportName': 'jobs',
+   }) }}
+   data-page-number="{{ page }}" 
+   data-page-size="{{ pageSize }}"
+   data-page-sortName="{{ sortName }}"
+   data-page-sortOrder="{{ sortOrder }}">
+   <thead>
+      <tr>
+            <th data-sortable="true">{{ 'job.code' | trans }}</th>
+            {% if app.request.locale == 'es' %}
+               <th data-sortable="true">{{ 'job.titleEs' | trans }}</th>
+            {% else %}
+               <th data-sortable="true">{{ 'job.titleEu' | trans }}</th>
+            {% endif %}
+            <th data-sortable="true" data-field="options">{{"table.options" | trans }}</th>
+      </tr>
+   </thead>
+   <tbody>
+   {% for job in jobs %}
+      <tr>
+            <td>{{ job.code }}</td>
+            {% if app.request.locale == 'es' %}
+               <td>{{ job.titleEs }}</td>
+            {% else %}
+               <td>{{ job.titleEu }}</td>
+            {% endif %}
+            <td>
+               <a href="{{ path('job_show', { job: job.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
+               <a href="{{ path('job_edit', { job: job.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
+               <a href="{{ path('job_delete', { job: job.id }) }}" 
+                  data-action="click->table#onClick" 
+                  data-confirm="true" 
+                  data-return="false">
+                  <i class="fa fa-trash" title='{{ "btn.delete" | trans | capitalize }}'></i>
+               </a>&nbsp;
+            </td>
+      </tr>
+   {% endfor %}
+   </tbody>
+</table>
+{% else %}
+   <div class="alert alert-secondary mt-3" role="alert">{{"messages.results0" | trans }}</div>
+{% endif %}
+<span class="pull-right">
+   <a href="{{ path('job_new')}}" 
+      class="btn btn-primary rounded-circle fixed-bottom-right">
+      <i class="fa fa-plus" title='{{ "btn.new" | trans | capitalize }}'></i>
+   </a>
+</span>

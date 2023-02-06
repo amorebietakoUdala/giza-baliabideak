@@ -1,0 +1,6 @@
+message.confirmationTitle: "Confirme, por favor"
+message.deletionConfirmationText: "¿Está seguro de que desea eliminar el registro?"
+message.error: "Error"
+btn.accept: "Aceptar"
+btn.ok: "Aceptar"
+btn.cancel: "Cancelar"

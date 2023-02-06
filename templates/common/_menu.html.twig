@@ -1,0 +1,73 @@
+
+
+<nav class="navbar navbar-expand navbar-dark bg-dark mb-1">
+  <a class="navbar-brand" href="#">&nbsp;</a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+			<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarWorkers" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						{{ 'navitem.workers' | trans | capitalize }}
+					</a>
+					<div class="dropdown-menu" aria-labelledby="navbarWorkers">
+						<a class="dropdown-item" href="{{ path('worker_index') }}">{{"navitem.worker_index" | trans | capitalize}}</a>
+						{% if is_granted('ROLE_RRHH') %}
+							<a class="dropdown-item" href="{{ path('worker_new') }}">{{"navitem.worker_new" | trans | capitalize}}</a>
+						{% endif %}
+					</div>
+			</li>
+			{% if is_granted('ROLE_RRHH') %}		  
+				<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarJobs" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{{ 'navitem.jobs' | trans | capitalize }}
+						</a>
+						<div class="dropdown-menu" aria-labelledby="navbarJobs">
+							<a class="dropdown-item" href="{{ path('job_index') }}">{{"navitem.job_index" | trans | capitalize}}</a>
+							<a class="dropdown-item" href="{{ path('job_new') }}">{{"navitem.job_new" | trans | capitalize}}</a>
+						</div>
+				</li>
+			{% endif %}
+			{% if app.user %}
+				{% if is_granted('ROLE_ADMIN') %}
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarAdmin" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						{{ 'navitem.administration' | trans | capitalize }}
+					</a>
+					<div id="js-menu-administration" class="dropdown-menu" aria-labelledby="navbarAdmin">
+						<a class="dropdown-item" href="{{ path('admin_user_index') }}">{{"navitem.users" | trans | capitalize}}</a>
+						<a class="dropdown-item" href="{{ path('application_index') }}">{{"navitem.applications" | trans | capitalize}}</a>
+						<a class="dropdown-item" href="{{ path('department_index') }}">{{"navitem.departments" | trans | capitalize}}</a>
+						{# <a class="dropdown-item" href="{{ path('job_index') }}">{{"navitem.jobs" | trans | capitalize}}</a> #}
+					</div>
+				</li>
+				{% endif %}
+
+{#		<li class='nav-item'>
+		  <a class='nav-link' href="{{ path ('label_list') }}">{{ 'navitem.labels' | trans | capitalize }}</a>
+		</li>
+		<li class="nav-item dropdown">
+		  <a class="nav-link dropdown-toggle" href="#" id="navbarContacts" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			{{ 'navitem.contacts' | trans | capitalize }}
+		  </a>
+		  <div id="js-menu-contacts" class="dropdown-menu" aria-labelledby="navbarContacts">
+			  <a class="dropdown-item" href="{{ path('contact_list') }}">{{"navitem.contact_list" | trans | capitalize}}</a>
+			  <a class="dropdown-item" href="{{ path('contact_import') }}">{{"navitem.contact_import" | trans | capitalize}}</a>
+		  </div>
+		</li>
+		<li class='nav-item'>
+		  <a class='nav-link' href="{{ path ('audit_list') }}">{{ 'navitem.audit' | trans | capitalize }}</a>
+		</li>
+		<li class='nav-item'>
+		  <a class='nav-link' href="{{ path ('history_list') }}">{{ 'navitem.history' | trans | capitalize }}</a>
+		</li>
+#}    
+      {% endif %}
+    </ul>
+  </div>
+
+</nav>
+		
+

@@ -1,0 +1,3 @@
+"The password fields must match.": "Las contraseñas deben coincidir."
+validation.invalidDNI-NIE-NIF: "El DNI,NIE o NIF no es correcto"
+validation.invalidExpedientNumber: "El número de expediente {{ value }} no es válido"

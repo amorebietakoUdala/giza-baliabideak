@@ -1,0 +1,77 @@
+@import '~bootstrap';
+@import "~@fortawesome/fontawesome-free/css/all.css";
+
+header {
+    display: grid;
+    grid-template-columns: 150px auto 200px 100px;
+    grid-template-areas: "logo titulo erabiltzailea idioma";
+    justify-content: space-beetween;
+    text-align: center;
+    align-items: center;
+}
+
+main {
+	font-size: 0.9rem;
+    width: 100vw;
+}
+
+.logo {
+    height: 100px;
+    width: auto;
+}
+
+.titulua {
+    display: flex;
+    text-align: center;
+}
+
+.avatar {
+    float: right;
+    height: 3rem;
+    border-radius: 3rem;
+}
+
+body {
+    background-color: white;
+}
+
+.fixed-bottom-right {
+    position: fixed;
+    right: 20px;
+    bottom: 50px;
+}
+
+span.text-danger ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+span.text-danger ul li {
+	font-size: 0.8rem;
+}
+
+a {
+    text-decoration: none !important;
+}
+
+.modal-body button {
+    display: none;
+}
+
+.modal-body #modal-cancel-button {
+    display: none;
+}
+
+
+@media (max-width: 767px) {
+	.logo {
+		height: 50px;
+		width: auto;
+	}
+	
+	h1 {
+		font-size: 1.5rem;
+	}
+  
+}

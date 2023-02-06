@@ -1,0 +1,75 @@
+{% if workers is defined and workers|length > 0 %}
+
+<table class="table" {{ stimulus_controller('table', {
+      'exportName': 'workers',
+      'filters': filters is defined and filters | length > 0 ? filters : null,
+   }) }}
+   data-page-number="{{ page }}" 
+   data-page-size="{{ pageSize }}"
+   data-page-sortName="{{ sortName }}"
+   data-page-sortOrder="{{ sortOrder }}">
+   <thead>
+      <tr>
+            <th data-sortable="true">{{ 'worker.dni' | trans }}</th>
+            <th data-sortable="true">{{ 'worker.name' | trans }}</th>
+            <th data-sortable="true">{{ 'worker.surname1' | trans }}</th>
+            <th data-sortable="true">{{ 'worker.surname2' | trans }}</th>
+            <th data-sortable="true">{{ 'worker.job' | trans }}</th>
+            <th data-sortable="true">{{ 'worker.department' | trans }}</th>
+            {# <th data-sortable="true">{{ 'worker.startDate' | trans }}</th>
+            <th data-sortable="true">{{ 'worker.endDate' | trans }}</th> #}
+            <th data-sortable="true">{{ 'worker.expedientNumber' | trans }}</th>
+            {# <th data-sortable="true">{{ 'worker.applications' | trans }}</th> #}
+            <th data-sortable="true" data-field="options">{{"table.options" | trans }}</th>
+      </tr>
+   </thead>
+   <tbody>
+   {% for worker in workers %}
+      <tr>
+            <td>{{ worker.dni }}</td>
+            <td>{{ worker.name }}</td>
+            <td>{{ worker.surname1 }}</td>
+            <td>{{ worker.surname2 }}</td>
+            {% if worker.job != null %}
+               {% if app.request.locale == 'es' %}
+                  <td>{{ worker.job.titleEs }}</td>
+               {% else %}
+                  <td>{{ worker.job.titleEu }}</td>
+               {% endif %}
+            {% else %}
+               <td></td>
+            {% endif %}
+            <td>{{ worker.department }}</td>
+            {# <td>{{ worker.startDate | date('Y-m-d') }}</td>
+            <td>{{ worker.endDate | date('Y-m-d') }}</td> #}
+            <td>{{ worker.expedientNumber }}</td>
+            {# <td>{{ worker.applications }}</td> #}
+            <td>
+               <a href="{{ path('worker_show', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
+               {% if is_granted('ROLE_RRHH') or is_granted('ROLE_ADMIN') %}
+                  <a href="{{ path('worker_edit', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
+                  <a href="{{ path('worker_delete', { worker: worker.id }) }}" 
+                     data-action="click->table#onClick" 
+                     data-confirm="true" 
+                     data-return="false">
+                     <i class="fa fa-trash" title='{{ "btn.delete" | trans | capitalize }}'></i>
+                  </a>&nbsp;
+               {% elseif is_granted('ROLE_BOSS') and worker.status == constant('App\\Entity\\Worker::STATUS_REVISION_PENDING') %}
+                  <a href="{{ path('worker_edit', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
+               {% endif %}
+            </td>
+      </tr>
+   {% endfor %}
+   </tbody>
+</table>
+{% else %}
+   <div class="alert alert-secondary mt-3" role="alert">{{"messages.results0" | trans }}</div>
+{% endif %}
+{% if is_granted('ROLE_RRHH') %}
+   <span class="pull-right">
+         <a href="{{ path('worker_new')}}" 
+            class="btn btn-primary rounded-circle fixed-bottom-right">
+            <i class="fa fa-plus" title='{{ "btn.new" | trans | capitalize }}'></i>
+         </a>
+   </span>
+{% endif %}

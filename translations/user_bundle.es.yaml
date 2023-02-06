@@ -1,0 +1,4 @@
+security.login.remember_me: "Recordarme"
+
+ROLE_BOSS: "Responsable"
+ROLE_RRHH: "Recursos Humanos"

@@ -1,0 +1,36 @@
+{{ form_start(form, {'attr': {'class': 'container-fluid',
+						 'novalidate': 'novalidate',
+                   'data-controller': 'form-reset',
+						} 
+}) }}
+{{ form_errors(form) }}
+    <div class="row align-items-center mb-1">
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.dni, { 'attr': { 'class' : 'form-control form-control-sm' } }) }}
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.name, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.surname1, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.expedientNumber, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.status, { 'attr': 
+                { 'class' : 'form-select form-select-sm' }
+            }) }}
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary" type="submit">{{ 'btn.search' | trans }}</button>&nbsp;
+            <button class="btn btn-secondary" type="button" data-action="form-reset#reset">{{ 'btn.clean' | trans }}</button>
+        </div>
+    </div>
+{{ form_end(form) }}

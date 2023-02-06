@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'app.title.worker.index' | trans }}{% endblock %}
+
+{% block body %}
+	<main class="container-fluid">
+		<div class="container-fluid">
+			{{ include('worker/_searchForm.html.twig') }}
+			{{ include('worker/_list.html.twig',{
+				'workers': workers,
+				'filters': filters,
+			})}}
+			{{ include('common/_alert.html.twig') }}
+		</div>
+	</main>
+{% endblock %}

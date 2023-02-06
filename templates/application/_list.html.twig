@@ -1,0 +1,51 @@
+{% if applications is defined and applications|length > 0 %}
+<div  {{ stimulus_controller('entity', {
+         'entitySaveUrl': path('application_save'),
+		})}}>
+   <table class="table"
+      data-toggle="table"
+      data-table-target="table"
+      data-page-number="{{ page }}" 
+      data-page-size="{{ pageSize }}"
+      data-page-sortName="{{ sortName }}"
+      data-page-sortOrder="{{ sortOrder }}">
+      <thead>
+         <tr>
+               <th data-sortable="true">{{ 'application.id' | trans }}</th>
+               <th data-sortable="true">{{ 'application.name' | trans }}</th>
+               <th data-sortable="true" data-field="options">{{"table.options" | trans }}</th>
+         </tr>
+      </thead>
+      <tbody>
+      {% for application in applications %}
+         <tr>
+               <td>{{ application.id }}</td>
+               <td>{{ application.name }}</td>
+               <td>
+                  <a href="{{ path('application_show', {'application': application.id}) }}" data-action="entity#edit"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
+                  <a href="{{ path('application_edit', {'application': application.id}) }}" data-action="entity#edit" data-allowEdit="true"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
+                  <a href="{{ path('application_delete', {'application': application.id}) }}" 
+                     data-action="click->entity#delete" 
+                     data-token="{{ csrf_token('delete' ~ application.id) }}">
+                     <i class="fa fa-trash" title='{{ "btn.delete" | trans | capitalize }}'></i>
+                  </a>&nbsp;
+               </td>
+         </tr>
+      {% endfor %}
+      </tbody>
+   </table>
+   {% else %}
+      <div class="alert alert-secondary mt-3" role="alert">{{"messages.results0" | trans }}</div>
+   {% endif %}
+   <span class="pull-right">
+      <a class="btn btn-primary rounded-circle fixed-bottom-right z-index-100" data-action="click->entity#new">
+         <i class="fa fa-plus" title='{{ "btn.new" | trans | capitalize }}'></i>
+      </a>
+   </span>
+   {{ include('common/_modal.html.twig', {
+      'modalTitle': 'modal.title.application' | trans,
+      'formTemplate': 'application/_form.html.twig'
+      }) 
+   }}
+   {{ include('common/_alert.html.twig') }}
+</div>

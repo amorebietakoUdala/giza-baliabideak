@@ -1,0 +1,3 @@
+"The password fields must match.": "Pasahitza ezberdina da eremu bietan dira."
+validation.invalidDNI-NIE-NIF: "NAN, ANA edo IFZ ez da zuzena"
+validation.invalidExpedientNumber: "{{ value }} espediente zenbakia ez da zuzena"

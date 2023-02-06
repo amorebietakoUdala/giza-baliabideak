@@ -1,0 +1,5 @@
+{
+   "yaml.schemas": {
+      "https://raw.githubusercontent.com/fujaba/fulibWorkflows/main/schemas/fulibWorkflows.schema.json": "file://garapenak2/symfony_projects/SF5/giza-baliabideak/translations/messages%2Bintl-icu.es.yaml"
+   }
+}
