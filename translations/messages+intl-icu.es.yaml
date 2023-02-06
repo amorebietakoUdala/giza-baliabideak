@@ -1,10 +1,10 @@
-messages.appTitle: "Giza baliabideak"
+messages.appTitle: "Gestión de usuarios"
 
 app.title.worker.index: "Listado de trabajadores"
 app.title.worker.edit: "Edición de trabajadores"
 app.title.job.index: "Listado de puestos"
 app.title.job.edit: "Editar puesto"
-app.title.application.index: "Listado de puestos"
+app.title.application.index: "Listado de aplicaciones"
 app.title.department.index: "Listado de departamentos"
 
 
@@ -33,7 +33,7 @@ worker.department.placeholder: "Elija un departamento"
 worker.startDate: "Fecha de inicio de contrato"
 worker.endDate: "Fecha de fin de contrato"
 worker.noEndDate: "Sin fecha de fin"
-worker.expedientNumber: "Nº de espediente"
+worker.expedientNumber: "Nº de expediente"
 worker.needsEmail: "Necesita Email"
 worker.applications: "Aplicaciones"
 worker.saved: "El trabajador se ha guardado correctamente."
