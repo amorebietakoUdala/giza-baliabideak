@@ -66,9 +66,15 @@ class User extends BaseUser implements AMREUserInterface, PasswordAuthenticatedU
      */
     private $historics;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Worker::class, mappedBy="validatedBy")
+     */
+    private $workers;
+
     public function __construct()
     {
         $this->historics = new ArrayCollection();
+        $this->workers = new ArrayCollection();
     }
 
     /**
@@ -95,6 +101,36 @@ class User extends BaseUser implements AMREUserInterface, PasswordAuthenticatedU
             // set the owning side to null (unless already changed)
             if ($historic->getUser() === $this) {
                 $historic->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Worker>
+     */
+    public function getWorkers(): Collection
+    {
+        return $this->workers;
+    }
+
+    public function addWorker(Worker $worker): self
+    {
+        if (!$this->workers->contains($worker)) {
+            $this->workers[] = $worker;
+            $worker->setValidatedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorker(Worker $worker): self
+    {
+        if ($this->workers->removeElement($worker)) {
+            // set the owning side to null (unless already changed)
+            if ($worker->getValidatedBy() === $this) {
+                $worker->setValidatedBy(null);
             }
         }
 

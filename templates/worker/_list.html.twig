@@ -19,6 +19,7 @@
             {# <th data-sortable="true">{{ 'worker.startDate' | trans }}</th>
             <th data-sortable="true">{{ 'worker.endDate' | trans }}</th> #}
             <th data-sortable="true">{{ 'worker.expedientNumber' | trans }}</th>
+            <th data-sortable="true">{{ 'worker.status' | trans }}</th>
             {# <th data-sortable="true">{{ 'worker.applications' | trans }}</th> #}
             <th data-sortable="true" data-field="options">{{"table.options" | trans }}</th>
       </tr>
@@ -43,6 +44,8 @@
             {# <td>{{ worker.startDate | date('Y-m-d') }}</td>
             <td>{{ worker.endDate | date('Y-m-d') }}</td> #}
             <td>{{ worker.expedientNumber }}</td>
+            {% set status = 'status.'~ worker.status %}
+            <td>{{ status | trans }} </td>
             {# <td>{{ worker.applications }}</td> #}
             <td>
                <a href="{{ path('worker_show', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;

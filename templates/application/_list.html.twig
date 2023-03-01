@@ -13,6 +13,7 @@
          <tr>
                <th data-sortable="true">{{ 'application.id' | trans }}</th>
                <th data-sortable="true">{{ 'application.name' | trans }}</th>
+               <th data-sortable="true">{{ 'application.appOwnersEmails' | trans }}</th>
                <th data-sortable="true" data-field="options">{{"table.options" | trans }}</th>
          </tr>
       </thead>
@@ -21,6 +22,7 @@
          <tr>
                <td>{{ application.id }}</td>
                <td>{{ application.name }}</td>
+               <td>{{ application.appOwnersEmails }}</td>
                <td>
                   <a href="{{ path('application_show', {'application': application.id}) }}" data-action="entity#edit"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
                   <a href="{{ path('application_edit', {'application': application.id}) }}" data-action="entity#edit" data-allowEdit="true"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;

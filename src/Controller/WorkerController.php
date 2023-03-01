@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Controller\BaseController;
+use App\Entity\Application;
 use App\Entity\Historic;
 use App\Entity\Worker;
 use App\Form\WorkerType;
@@ -103,16 +104,23 @@ class WorkerController extends BaseController
         if ( $form->isSubmitted() && $form->isValid() ) {
             /** @var Worker $data */
             $data = $form->getData();
+            if ( $data->getStatus() === Worker::STATUS_IN_PROGRESS ) {
+                $this->addFlash('error','error.alreadyValidated');
+                return $this->renderEdit($form, false, false);
+            }
             $data->setStatus(Worker::STATUS_IN_PROGRESS);
+            $data->setValidatedBy($this->getUser());
             $this->em->persist($data);
             $this->updateJobApplications($data);
             $this->createHistoric($data);
+            $applications = $data->getApplications();
+            foreach ($applications as $application) {
+                $this->sendMessageToAppOwners('Langile berriari honako baimenak emango zaizkio / Se le van a dar los siguientes permisos al nuevo empleado ', $worker, $application);
+            }
             $this->sendMessage('Langile berriari informatikak baimenak eman behar zaizkio / Informática tiene que dar los permisos al nuevo empleado', [$this->getParameter('mailerBCC')], $data);
             $this->em->flush();
             $this->addFlash('success', 'worker.saved');
-            $form = $this->createForm(WorkerType::class, $data,[
-                'locale' => $request->getLocale(),
-            ]);
+            return $this->redirectToRoute('worker_index');
         }
 
         return $this->renderEdit($form, false, false);
@@ -298,6 +306,26 @@ class WorkerController extends BaseController
                 }
             }
             $this->sendMessage($subject, $emails, $worker, true);
+        }
+    }
+
+    private function sendMessageToAppOwners($subject, Worker $worker, Application $application) {
+        if ($application !== null && $application->getAppOwnersEmails() !== null) {
+            $owners = explode(',', $application->getAppOwnersEmails());
+            $emails = [];
+            foreach ($owners as $owner) {
+                $emails[] = $owner;
+            }
+            $email = (new Email())
+                ->from($this->getParameter('mailer_from'))
+                ->to(...$emails)
+                ->subject($subject)
+                ->html($this->renderView('worker/appOwnersMail.html.twig', [
+                    'worker' => $worker,
+                    'application' => $application,
+                ])
+            );
+            $this->mailer->send($email);
         }
     }
 

@@ -51,6 +51,7 @@ worker.cannotsetEndDateAndNoEndDate: "No puede seleccionar una fecha de fin de c
 
 application.id: "Id"
 application.name: "Nombre"
+application.appOwnersEmails: "Emails de los responsables separados por comas"
 
 department.id: "Id"
 department.nameEs: "Nombre"
@@ -95,6 +96,10 @@ message.selectApplications: "Seleccionar aplicaciones"
 error.departmentHasWorkers: "El departamento tiene trabajadores. No se puede borrar."
 error.applicationHasWorkers: "La aplicación no se puede borrar porque está asignada a algunos trabajadores ({workers})."
 error.jobHasWorkers: "El puesto no se puede borrar porque está asignada a algunos trabajadores ({workers})."
+error.alreadyValidated: "El trabajador ya está validado."
 
 modal.title.application: "Nueva applicación"
 modal.title.department: "Nuevo departamento"
+
+mail.messageToAppOwners: '{boss} ha solicitado acceso a la aplicación {application} para {worker} en el puesto {job}.'
+mail.disclaimer: "Si existe algún problema para la concesión de este acceso, pongáse en contacto con la persona responsable {boss}."

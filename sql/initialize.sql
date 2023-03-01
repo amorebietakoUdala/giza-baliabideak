@@ -142,3 +142,23 @@ INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Cultura y deportes','Kul
 INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Promoción Ecónomica','Lan sustapena');
 INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Liburutegia','Liburutegia');
 INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Policía Municipal','Udaltzaingoa');
+
+/*
+-- Query: SELECT * FROM `giza-baliabideak`.application
+LIMIT 0, 1000
+
+-- Date: 2023-02-28 10:43
+*/
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (1,'Aupac','aatela@amorebieta.eus,idazkaritza@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (2,'Sicalwin','amatias@amorebieta.eus,kontuhartzailetza@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (3,'GTWin','llatxiondo@amorebieta.eus,diruzaintza@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (4,'Gespol','ealberdi@amorebieta.eus,udaltzaingoa@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (5,'Cita previa','aurrutia@amorebieta.eus,haz@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (6,'Biztanleen errolda','aatela@amorebieta.eus,idazkaritza@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (7,'Kulturnet','igandarias@amorebieta.eus,kultura@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (8,'GesportNet','aalberdi@amorebieta.eus,kirolak@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (9,'Katastro','llatxiondo@amorebieta.eus,diruzaintza@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (10,'Fitxatzeko Evalos','bgarate@amorebieta.eus,gizabaliabideak@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (11,'Eraikinetan sartzeko txartela','ealberdi@amorebieta.eus,udaltzaingoa@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (12,'Erantzun','agaray@amorebieta.eus,bulegoteknikoa@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (13,'Errolda','aatela@amorebieta.eus,idazkaritza@amorebieta.eus');

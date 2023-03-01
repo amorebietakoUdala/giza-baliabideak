@@ -1,0 +1,24 @@
+{% apply inline_css(source('@styles/email.css')) %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|split('_')[0] }}">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+      {{ 'mail.messageToAppOwners' | trans({
+         '{boss}': worker.validatedBy.username,
+         '{application}': application,
+         '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
+         '{job}': app.request.locale|split('_')[0] == 'es' ? worker.job.titleEs : worker.job.titleEu,
+         }) 
+      }}
+      <br><br>
+      {{ 'mail.disclaimer' | trans({
+         '{boss}': worker.validatedBy.username,
+      }) }}
+   </body>
+</html> 
+{% endapply %}
+

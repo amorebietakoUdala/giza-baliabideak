@@ -90,6 +90,11 @@ class Worker
      */
     private $noEndDate;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="workers")
+     */
+    private $validatedBy;
+
     public function __construct()
     {
         $this->applications = new ArrayCollection();
@@ -277,6 +282,18 @@ class Worker
         foreach ($worker->getApplications() as $app) {
             $this->addApplication($app);
         }
+    }
+
+    public function getValidatedBy(): ?User
+    {
+        return $this->validatedBy;
+    }
+
+    public function setValidatedBy(?User $validatedBy): self
+    {
+        $this->validatedBy = $validatedBy;
+
+        return $this;
     }
 }
 

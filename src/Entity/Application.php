@@ -43,6 +43,11 @@ class Application
      */
     private $historics;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $appOwnersEmails;
+
     public function __construct()
     {
         $this->workers = new ArrayCollection();
@@ -136,6 +141,7 @@ class Application
     public function fill(Application $data): self {
         $this->id= $data->getId();
         $this->name= $data->getName();
+        $this->appOwnersEmails = $data->getAppOwnersEmails();
         return $this;
     }
 
@@ -159,6 +165,18 @@ class Application
         if ($this->historics->removeElement($historic)) {
             $historic->removeApplication($this);
         }
+
+        return $this;
+    }
+
+    public function getAppOwnersEmails(): ?string
+    {
+        return $this->appOwnersEmails;
+    }
+
+    public function setAppOwnersEmails(?string $appOwnersEmails): self
+    {
+        $this->appOwnersEmails = $appOwnersEmails;
 
         return $this;
     }

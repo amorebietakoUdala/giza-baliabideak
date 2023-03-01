@@ -51,6 +51,7 @@ worker.cannotsetEndDateAndNoEndDate: "Ezin amaiera data zehaztu eta amaiera data
 
 application.id: "Id"
 application.name: "Izena"
+application.appOwnersEmails: "Komen bitartez banaturiko arduradunen emailak"
 
 department.id: "Id"
 department.nameEs: "Izena"
@@ -95,6 +96,10 @@ message.selectApplications: "Aplikazioak hautatu"
 error.departmentHasWorkers: "Sailak langileak ditu. Ezin da ezabatu."
 error.applicationHasWorkers: "Aplikazioa ezin da ezabatu langileak dituelako: ({workers})."
 error.jobHasWorkers: "Lanpostua ezin da borratu langile batzuek ezarrita daukatelako: ({workers})."
+error.alreadyValidated: "Dagoeneko langileari oneritzia eman zaio."
 
 modal.title.application: "Aplikazio berria"
 modal.title.department: "Sail berria"
+
+mail.messageToAppOwners: '{boss} arduradunak {worker}-entzako {application}-era sartzeko baimena eskatu du {job} lanpostua betetzeko.'
+mail.disclaimer: "Baimen hau emateko arazoren bat egotekotan, {boss} arduranarekin harremanetan jar zaitez."
