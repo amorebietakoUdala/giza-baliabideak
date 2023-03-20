@@ -3,6 +3,10 @@
 namespace App\Form;
 
 use App\Entity\Application;
+use App\Entity\Role;
+use App\Entity\SubApplication;
+use App\Repository\SubApplicationRepository;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,6 +18,7 @@ class ApplicationType extends AbstractType
     {
         $readonly = $options['readonly'];
         $locale = $options['locale'];
+        $application = $options['data'];
         $builder
             ->add('id', HiddenType::class)
             ->add('name', null, [
@@ -24,6 +29,30 @@ class ApplicationType extends AbstractType
                 'label' => 'application.appOwnersEmails',
                 'disabled' => $readonly,
             ])
+            ->add('subApplications', EntityType::class, [
+                'query_builder' => function (SubApplicationRepository $er) use ($application) {
+                    if ($application->getId() !== null) {
+                        return $er->findByApplicationQB($application->getId());
+                    }
+                    return $er->findAllQB();
+                },
+                'label' => 'application.subApplications',
+                'disabled' => $readonly,
+                'class' => SubApplication::class,
+                'disabled' => $readonly,
+                'multiple' => true,
+                'required' => false,
+                'expanded' => true,
+
+            ])
+            ->add('roles', EntityType::class, [
+                'class' => Role::class,
+                'label' => 'application.roles',
+                'disabled' => $readonly,
+                'multiple' => true,
+                'required' => false,
+                'expanded' => true,
+            ])
         ;
     }
 
@@ -32,6 +61,7 @@ class ApplicationType extends AbstractType
         $resolver->setDefaults([
             'data_class' => Application::class,
             'readonly' => false,
+            'new' => true,
             'locale' => 'es',
         ]);
     }

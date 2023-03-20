@@ -1,0 +1,63 @@
+<div  {{ stimulus_controller('entity', {
+         'entitySaveUrl': path('subApplication_new'),
+		})}}>
+{% if subApplications is defined and subApplications|length > 0 %}
+<table class="table"
+   data-toggle="table"
+   data-table-target="table"
+   data-page-number="{{ page }}" 
+   data-page-size="{{ pageSize }}"
+   data-page-sortName="{{ sortName }}"
+   data-page-sortOrder="{{ sortOrder }}">
+   <thead>
+      <tr>
+            <th data-sortable="true">{{ 'subApplication.id' | trans }}</th>
+            {%  if app.request.locale == 'es' %}
+               <th data-sortable="true">{{ 'subApplication.nameEs' | trans }}</th>
+            {% else %}
+               <th data-sortable="true">{{ 'subApplication.nameEu' | trans }}</th>
+            {% endif %}
+            <th data-sortable="true">{{ 'subApplication.application' | trans }}</th>
+            <th data-sortable="true" data-field="options">{{"table.options" | trans }}</th>
+      </tr>
+   </thead>
+   <tbody>
+       {% for subApplication in subApplications %}
+         <tr>
+               <td>{{ subApplication.id }}</td>
+               {%  if app.request.locale == 'es' %}
+                  <td>{{ subApplication.nameEs }}</td>
+               {% else %}
+                  <td>{{ subApplication.nameEu }}</td>
+               {% endif %}
+               <td>{{ subApplication.application }}</td>
+               <td>
+                  <a href="{{ path('subApplication_show', {'subApplication': subApplication.id}) }}" data-action="entity#edit"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
+                  <a href="{{ path('subApplication_edit', {'subApplication': subApplication.id}) }}" data-action="entity#edit" data-allowEdit="true"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
+                  <a href="{{ path('subApplication_delete', {'subApplication': subApplication.id}) }}" 
+                     data-action="click->entity#delete" 
+                     data-token="{{ csrf_token('delete' ~ subApplication.id) }}">
+                     <i class="fa fa-trash" title='{{ "btn.delete" | trans | capitalize }}'></i>
+                  </a>&nbsp;
+               </td>
+         </tr>
+      {% endfor %}
+   </tbody>
+</table>
+{% else %}
+   <div class="alert alert-secondary mt-3" role="alert">{{"messages.results0" | trans }}</div>
+{% endif %}
+<span class="pull-right">
+   <a class="btn btn-primary rounded-circle fixed-bottom-right z-index-100" data-action="click->entity#new">
+      <i class="fa fa-plus" title='{{ "btn.new" | trans | capitalize }}'></i>
+   </a>
+</span>
+{{ include('common/_modal.html.twig', {
+   'modalTitle': 'modal.title.role' | trans,
+   'formTemplate': 'sub-application/_form.html.twig',
+   'scrollable': true,
+   'size': 'large',
+   }) 
+}}
+{{ include('common/_alert.html.twig') }}
+</div>

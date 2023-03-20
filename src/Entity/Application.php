@@ -2,18 +2,21 @@
 
 namespace App\Entity;
 
+use App\Entity\SubApplication;
 use App\Repository\ApplicationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\BrowserKit\History;
 
 /**
  * @ORM\Entity(repositoryClass=ApplicationRepository::class)
  */
 class Application
 {
+
+    const Application_AUPAC=1;
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -24,35 +27,37 @@ class Application
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"show"})
+     * @Groups({"show", "historic"})
      */
     private $name;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Worker::class, mappedBy="applications")
-     */
-    private $workers;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Job::class, mappedBy="applications")
-     */
-    private $jobs;
-
-    /**
-     * @ORM\ManyToMany(targetEntity=Historic::class, inversedBy="applications")
-     */
-    private $historics;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $appOwnersEmails;
 
+    /**
+     * @ORM\OneToMany(targetEntity=SubApplication::class, cascade={"persist", "remove"}, mappedBy="application")
+     * @Groups({"show"}) 
+     */
+    private $subApplications;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="applications")
+     * @Groups({"show"})
+     */
+    private $roles;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Permission::class, mappedBy="application")
+     */
+    private $permissions;
+
     public function __construct()
     {
-        $this->workers = new ArrayCollection();
-        $this->jobs = new ArrayCollection();
-        $this->historics = new ArrayCollection();
+        $this->subApplications = new ArrayCollection();
+        $this->roles = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -79,93 +84,17 @@ class Application
         return $this;
     }
 
-    /**
-     * @return Collection<int, Worker>
-     */
-    public function getWorkers(): Collection
-    {
-        return $this->workers;
-    }
-
-    public function addWorker(Worker $worker): self
-    {
-        if (!$this->workers->contains($worker)) {
-            $this->workers[] = $worker;
-            $worker->addApplication($this);
-        }
-
-        return $this;
-    }
-
-    public function removeWorker(Worker $worker): self
-    {
-        if ($this->workers->removeElement($worker)) {
-            $worker->removeApplication($this);
-        }
-
-        return $this;
-    }
-
     public function __toString()
     {
         return $this->name;
-    }
-
-    /**
-     * @return Collection<int, Job>
-     */
-    public function getJobs(): Collection
-    {
-        return $this->jobs;
-    }
-
-    public function addJob(Job $job): self
-    {
-        if (!$this->jobs->contains($job)) {
-            $this->jobs[] = $job;
-            $job->addApplication($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJob(Job $job): self
-    {
-        if ($this->jobs->removeElement($job)) {
-            $job->removeApplication($this);
-        }
-
-        return $this;
     }
 
     public function fill(Application $data): self {
         $this->id= $data->getId();
         $this->name= $data->getName();
         $this->appOwnersEmails = $data->getAppOwnersEmails();
-        return $this;
-    }
-
-    public function getHistorics(): Collection
-    {
-        return $this->historics;
-    }
-
-    public function addHistoric(Historic $historic): self
-    {
-        if (!$this->historics->contains($historic)) {
-            $this->historics[] = $historic;
-            $historic->addApplication($this);
-        }
-
-        return $this;
-    }
-
-    public function removeHistoric(Historic $historic): self
-    {
-        if ($this->historics->removeElement($historic)) {
-            $historic->removeApplication($this);
-        }
-
+        $this->subApplications = $data->getSubApplications();
+        $this->roles = $data->getRoles();
         return $this;
     }
 
@@ -177,6 +106,81 @@ class Application
     public function setAppOwnersEmails(?string $appOwnersEmails): self
     {
         $this->appOwnersEmails = $appOwnersEmails;
+
+        return $this;
+    }
+
+    public function getSubApplications(): Collection
+    {
+        return $this->subApplications;
+    }
+
+    public function addSubApplication(SubApplication $subApplication): self
+    {
+        if (!$this->subApplications->contains($subApplication)) {
+            $this->subApplications[] = $subApplication;
+        }
+
+        return $this;
+    }
+
+    public function removeSubApplication(SubApplication $subApplication): self
+    {
+        $this->subApplications->removeElement($subApplication);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Role>
+     */
+    public function getRoles(): Collection
+    {
+        return $this->roles;
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->roles->contains($role)) {
+            $this->roles[] = $role;
+        }
+
+        return $this;
+    }
+
+    public function removeRole(Role $role): self
+    {
+        $this->roles->removeElement($role);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Permission>
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(Permission $permission): self
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions[] = $permission;
+            $permission->setApplication($this);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(Permission $permission): self
+    {
+        if ($this->permissions->removeElement($permission)) {
+            // set the owning side to null (unless already changed)
+            if ($permission->getApplication() === $this) {
+                $permission->setApplication(null);
+            }
+        }
 
         return $this;
     }

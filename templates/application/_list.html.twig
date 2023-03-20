@@ -46,7 +46,9 @@
    </span>
    {{ include('common/_modal.html.twig', {
       'modalTitle': 'modal.title.application' | trans,
-      'formTemplate': 'application/_form.html.twig'
+      'formTemplate': 'application/_form.html.twig',
+      'scrollable': true,
+      'size': 'large',
       }) 
    }}
    {{ include('common/_alert.html.twig') }}

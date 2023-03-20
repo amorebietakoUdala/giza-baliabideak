@@ -3,9 +3,9 @@
 namespace App\Controller;
 
 use App\Controller\BaseController;
-use App\Entity\Department;
-use App\Form\DepartmentType;
-use App\Repository\DepartmentRepository;
+use App\Entity\Role;
+use App\Form\RoleType;
+use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,72 +19,73 @@ use Symfony\Component\Translation\TranslatableMessage;
  * })
  * @Security("is_granted('ROLE_ADMIN')")
  */
-class DepartmentController extends BaseController
+class RoleController extends BaseController
 {
 
-   private DepartmentRepository $repo;
+   private RoleRepository $repo;
    private EntityManagerInterface $em;
 
-   public function __construct(DepartmentRepository $repo, EntityManagerInterface $em) {
+   public function __construct(RoleRepository $repo, EntityManagerInterface $em) {
       $this->repo = $repo;
       $this->em = $em;
    }
 
      /**
-     * Creates or updates an department
+     * Creates or updates an role
      * 
-     * @Route("/department/new", name="department_new", methods={"GET","POST"})
+     * @Route("/role/new", name="role_new", methods={"GET","POST"})
      */
     public function createOrSave(Request $request): Response
     {
         $this->loadQueryParameters($request);
-        $department = $this->createDepartment($request);
-        $form = $this->createForm(DepartmentType::class, $department,[
+//        $role = $this->createRole($request);
+        $role = new Role();
+        $form = $this->createForm(RoleType::class, $role,[
             'readonly' => false,
             'locale' => $request->getLocale(),
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Department $permission */
-            $permission = $form->getData();
-            if (null !== $permission->getId()) {
-                $department = $this->repo->find($permission->getId());
-                $department->fill($permission);
-            } elseif ($this->checkAlreadyExists($department)) {
-                $this->addFlash('error', 'messages.departmentAlreadyExist');
+            /** @var Role $role */
+            $role = $form->getData();
+            if (null !== $role->getId()) {
+                $role = $this->repo->find($role->getId());
+                $role->fill($role);
+            } elseif ($this->checkAlreadyExists($role)) {
+                $this->addFlash('error', 'messages.roleAlreadyExist');
                 $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
-                return $this->render('department/' . $template, [
+                return $this->render('role/' . $template, [
                     'form' => $form->createView(),
                 ], new Response(null, 422));        
             }
-            $this->em->persist($department);
+            $this->em->persist($role);
             $this->em->flush();
             if ($this->getAjax() || $request->isXmlHttpRequest()) {
                return new Response(null, 204);
             }
-            return $this->redirectToRoute('department_index');
+            return $this->redirectToRoute('role_index');
         }
         $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
-        return $this->render('department/' . $template, [
+        return $this->render('role/' . $template, [
             'form' => $form->createView(),
         ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));        
    }
 
       /**
-       * Show the Department form specified by id.
-       * The Department can't be changed
+       * Show the role form specified by id.
+       * The Role can't be changed
        * 
-       * @Route("/department/{department}", name="department_show", methods={"GET"})
+       * @Route("/role/{role}", name="role_show", methods={"GET"})
        */
-      public function show(Request $request, Department $department): Response
+      public function show(Request $request, Role $role): Response
       {
-         $form = $this->createForm(DepartmentType::class, $department, [
+         $form = $this->createForm(RoleType::class, $role, [
                'readonly' => true,
                'locale' => $request->getLocale(),
          ]);
          $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
-         return $this->render('department/' . $template, [
-               'department' => $department,
+         return $this->render('role/' . $template, [
+               'role' => $role,
                'form' => $form->createView(),
                'readonly' => true,
                'new' => false,
@@ -92,27 +93,27 @@ class DepartmentController extends BaseController
       }
 
       /**
-      * Renders the Department form specified by id to edit it's fields
+      * Renders the Role form specified by id to edit it's fields
       * 
-      * @Route("/department/{department}/edit", name="department_edit", methods={"GET","POST"})
+      * @Route("/role/{role}/edit", name="role_edit", methods={"GET","POST"})
       */
-      public function edit(Request $request, Department $department): Response
+      public function edit(Request $request, Role $role): Response
       {
-         $form = $this->createForm(DepartmentType::class, $department, [
+         $form = $this->createForm(RoleType::class, $role, [
             'readonly' => false,
             'locale' => $request->getLocale(),
          ]);
          $form->handleRequest($request);
          if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Department $department */
-            $department = $form->getData();
-            $this->em->persist($department);
+            /** @var Role $role */
+            $role = $form->getData();
+            $this->em->persist($role);
             $this->em->flush();
          }
 
          $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
-         return $this->render('department/' . $template, [
-            'department' => $department,
+         return $this->render('role/' . $template, [
+            'role' => $role,
             'form' => $form->createView(),
             'readonly' => false,
             'new' => false,
@@ -121,21 +122,21 @@ class DepartmentController extends BaseController
 
 
     /**
-     * @Route("/department/{department}/delete", name="department_delete", methods={"DELETE"})
+     * @Route("/role/{role}/delete", name="role_delete", methods={"DELETE"})
      */
-    public function delete(Request $request, Department $department): Response
+    public function delete(Request $request, Role $role): Response
     {
-        $workers = $department->getWorkers();
+        $workers = $role->getApplications();
         if ( count($workers) > 0 ) {
-            $this->addFlash('error', new TranslatableMessage('error.departmentHasWorkers', 
+            $this->addFlash('error', new TranslatableMessage('error.roleHasApplications', 
             ['{workers}' => substr(implode(',',$workers->toArray()),0,50).'...'], 'messages'));
             return $this->render('common/_error.html.twig',[], new Response('', 422));
         }
-        if ($this->isCsrfTokenValid('delete'.$department->getId(), $request->get('_token'))) {
-            $this->em->remove($department);
+        if ($this->isCsrfTokenValid('delete'.$role->getId(), $request->get('_token'))) {
+            $this->em->remove($role);
             $this->em->flush();
             if (!$request->isXmlHttpRequest()) {
-                return $this->redirectToRoute('department_index');
+                return $this->redirectToRoute('role_index');
             } else {
                 return new Response(null, 204);
             }
@@ -145,37 +146,37 @@ class DepartmentController extends BaseController
     }   
 
    /**
-    * @Route("/department", name="department_index")
+    * @Route("/role", name="role_index")
     */
     public function index(Request $request): Response
     {
         $this->loadQueryParameters($request);
-        $departments = $this->repo->findAll();
-        $department = $this->createDepartment($request);
-        $form = $this->createForm(DepartmentType::class, $department,[
+        $roles = $this->repo->findAll();
+        $form = $this->createForm(RoleType::class, new Role(),[
             'readonly' => false,
             'locale' => $request->getLocale(),
         ]);
 
-        $template = !$this->getAjax() ? 'department/index.html.twig' : 'department/_list.html.twig';
+        $template = !$this->getAjax() ? 'role/index.html.twig' : 'role/_list.html.twig';
         return $this->render($template, [
-            'departments' => $departments,
+            'roles' => $roles,
             'form' => $form->createView(),
         ]);        
     }
 
-   private function checkAlreadyExists(Department $department) {
-      $result = $this->repo->findDepartmentByExample($department);
-      return $result !== null ? true : false;
-  }    
-
-   private function createDepartment(Request $request) {
-      $department = new Department();
-      if ( $request->get('name') ) {
-          $department->setNameEs($request->get('name'));
-      }
-      return $department;
-  }
-
+    private function checkAlreadyExists(Role $role) {
+        $result = $this->repo->findOneBy([
+            'nameEs' => $role->getNameEs(),
+        ]);
+        if ( $result !== null ) {
+            return $result !== null ? true : false;
+        }
+        $result = $this->repo->findOneBy([
+            'nameEu' => $role->getNameEu(),
+        ]);
+        if ( $result !== null ) {
+            return $result !== null ? true : false;
+        }
+    }    
 }
 

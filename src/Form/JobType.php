@@ -39,16 +39,6 @@ class JobType extends AbstractType
                     return $er->findBossesQB();
                 },                
             ])
-            ->add('applications', EntityType::class, [
-                'class' => Application::class,
-                'label' => 'worker.applications',
-                'query_builder' => function (ApplicationRepository $er) {
-                    return $er->findAllQB();
-                },
-                'multiple' => true,
-                'expanded' => true,
-                'disabled' => $readonly,
-            ])
         ;
     }
 

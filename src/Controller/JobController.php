@@ -31,6 +31,15 @@ class JobController extends BaseController
     }
 
     /**
+     * @Route("/job/permissions", name="job_permission_list")
+     */
+    public function permissions(Request $request) {
+        $id = $request->get('job');
+        $job = $this->repo->find($id);
+        return $this->json($job);
+    }
+
+    /**
      * @Route("/job/new", name="job_new")
      */
      public function new(Request $request) {
@@ -38,9 +47,9 @@ class JobController extends BaseController
         $form = $this->createForm(JobType::class, new Job());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Job $data */
-            $data = $form->getData();
-            $this->em->persist($data);
+            /** @var Job $job */
+            $job = $form->getData();
+            $this->em->persist($job);
             $this->em->flush();
             $this->addFlash('success', 'job.created');
 
@@ -63,9 +72,9 @@ class JobController extends BaseController
 
         $form->handleRequest($request);
         if ( $form->isSubmitted() && $form->isValid() ) {
-            /** @var Job $data */
-            $data = $form->getData();
-            $this->em->persist($data);
+            /** @var Job $job */
+            $job = $form->getData();
+            $this->em->persist($job);
             $this->em->flush();
             $this->addFlash('success', 'job.saved');
         }

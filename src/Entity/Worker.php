@@ -7,7 +7,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass=WorkerRepository::class)
@@ -26,26 +27,31 @@ class Worker
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"historic"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"historic"})
      */
     private $dni;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"historic"})
      */
     private $name;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"historic"})
      */
     private $surname1;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"historic"})
      */
     private $surname2;
 
@@ -71,11 +77,6 @@ class Worker
     private $department;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Application::class, inversedBy="workers")
-     */
-    private $applications;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Job::class, inversedBy="workers")
      */
     private $job;
@@ -92,12 +93,20 @@ class Worker
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="workers")
+     * @Groups({"historic"})
      */
     private $validatedBy;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Permission::class, mappedBy="worker")
+     * @Groups({"historic"})
+     * @MaxDepth(1)
+     */
+    private $permissions;
+
     public function __construct()
     {
-        $this->applications = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -218,30 +227,6 @@ class Worker
         return $this->name.' '.$this->surname1.' '.$this->surname2;
     }
 
-    /**
-     * @return Collection<int, Application>
-     */
-    public function getApplications(): Collection
-    {
-        return $this->applications;
-    }
-
-    public function addApplication(Application $application): self
-    {
-        if (!$this->applications->contains($application)) {
-            $this->applications[] = $application;
-        }
-
-        return $this;
-    }
-
-    public function removeApplication(Application $application): self
-    {
-        $this->applications->removeElement($application);
-
-        return $this;
-    }
-
     public function getJob(): ?Job
     {
         return $this->job;
@@ -276,11 +261,13 @@ class Worker
         $this->expedientNumber = $worker->getExpedientNumber();
         $this->department = $worker->getDepartment();
         $this->job = $worker->getJob();
-        if ( null !== $this->getApplications() ) {
-            $this->getApplications()->clear();
+        if ( null !== $this->getPermissions() ) {
+            $this->getPermissions()->clear();
         }
-        foreach ($worker->getApplications() as $app) {
-            $this->addApplication($app);
+        foreach ($worker->getPermissions() as $permission) {
+            $permissionCopy = Permission::copyPermission($permission);
+            $permissionCopy->setWorker($this);
+            $this->addPermission($permissionCopy);
         }
     }
 
@@ -292,6 +279,36 @@ class Worker
     public function setValidatedBy(?User $validatedBy): self
     {
         $this->validatedBy = $validatedBy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Permission>
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(Permission $permission): self
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions[] = $permission;
+            $permission->setWorker($this);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(Permission $permission): self
+    {
+        if ($this->permissions->removeElement($permission)) {
+            // set the owning side to null (unless already changed)
+            if ($permission->getWorker() === $this) {
+                $permission->setWorker(null);
+            }
+        }
 
         return $this;
     }

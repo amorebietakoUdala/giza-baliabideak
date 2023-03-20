@@ -1,17 +1,17 @@
-<div class="modal" tabindex="-1" data-entity-target="modal">
+<div class="modal fade" tabindex="-1" data-bs-backdrop="static" data-worker-form-target="modal">
 	<div class="modal-dialog {{ scrollable is defined and scrollable ? 'modal-dialog-scrollable': '' }} {{ size is defined and size == 'large' ? 'modal-lg': size is defined and size == 'extra-large' ? 'modal-xl' : '' }}">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" data-entity-target="modalTitle">{{ modalTitle }}</h5>
+				<h5 class="modal-title" data-worker-form-target="modalTitle">{{ modalTitle }}</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
-			<div class="modal-body" data-entity-target="modalBody">
-				{{ include (formTemplate,{
-                   form: form
-                }) }}
+			<div class="modal-body" data-worker-form-target="modalBody">
+				Loading...
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-action="entity#submitForm" data-entity-target="modalSaveButton">{{'btn.save' | trans}}</button>
+				<button type="button" class="btn btn-primary" 
+				data-action="worker-form#submitAddApplicationForm" 
+				data-worker-form-target="modalSaveButton">{{'btn.save' | trans}}</button>
 				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">{{'btn.cancel' | trans}}</button>
 			</div>
 		</div>

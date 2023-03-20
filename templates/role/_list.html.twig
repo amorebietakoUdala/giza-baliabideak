@@ -1,0 +1,59 @@
+<div  {{ stimulus_controller('entity', {
+         'entitySaveUrl': path('role_new'),
+		})}}>
+{% if roles is defined and roles|length > 0 %}
+<table class="table"
+   data-toggle="table"
+   data-table-target="table"
+   data-page-number="{{ page }}" 
+   data-page-size="{{ pageSize }}"
+   data-page-sortName="{{ sortName }}"
+   data-page-sortOrder="{{ sortOrder }}">
+   <thead>
+      <tr>
+            <th data-sortable="true">{{ 'role.id' | trans }}</th>
+            {%  if app.request.locale == 'es' %}
+               <th data-sortable="true">{{ 'role.nameEs' | trans }}</th>
+            {% else %}
+               <th data-sortable="true">{{ 'role.nameEu' | trans }}</th>
+            {% endif %}
+            <th data-sortable="true" data-field="options">{{"table.options" | trans }}</th>
+      </tr>
+   </thead>
+   <tbody>
+       {% for role in roles %}
+         <tr>
+               <td>{{ role.id }}</td>
+               {%  if app.request.locale == 'es' %}
+                  <td>{{ role.nameEs }}</td>
+               {% else %}
+                  <td>{{ role.nameEu }}</td>
+               {% endif %}
+               <td>
+                  <a href="{{ path('role_show', {'role': role.id}) }}" data-action="entity#edit"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
+                  <a href="{{ path('role_edit', {'role': role.id}) }}" data-action="entity#edit" data-allowEdit="true"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
+                  <a href="{{ path('role_delete', {'role': role.id}) }}" 
+                     data-action="click->entity#delete" 
+                     data-token="{{ csrf_token('delete' ~ role.id) }}">
+                     <i class="fa fa-trash" title='{{ "btn.delete" | trans | capitalize }}'></i>
+                  </a>&nbsp;
+               </td>
+         </tr>
+      {% endfor %}
+   </tbody>
+</table>
+{% else %}
+   <div class="alert alert-secondary mt-3" role="alert">{{"messages.results0" | trans }}</div>
+{% endif %}
+<span class="pull-right">
+   <a class="btn btn-primary rounded-circle fixed-bottom-right z-index-100" data-action="click->entity#new">
+      <i class="fa fa-plus" title='{{ "btn.new" | trans | capitalize }}'></i>
+   </a>
+</span>
+{{ include('common/_modal.html.twig', {
+   'modalTitle': 'modal.title.role' | trans,
+   'formTemplate': 'role/_form.html.twig'
+   }) 
+}}
+{{ include('common/_alert.html.twig') }}
+</div>

@@ -1,0 +1,10 @@
+{% for permission in permissions %}
+<li class="w-25 list-group-item d-flex flex-row justify-content-between">
+      {{ permission.application.name }}  {{ permission.subApplication != null ? '- '~ permission.subApplication.nameEs : '' }} - {{ permission.roles | join('|') }}
+      {% if removeAllowed %}
+      <a href="{{ path('permission_delete', {'permission': permission.id, '_token': csrf_token('delete' ~ permission.id) }) }}" class="ml-auto">
+            <span class="fa fa-close"></span>
+      </a>
+      {% endif %}
+</li>
+{% endfor %}

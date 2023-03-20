@@ -1,0 +1,33 @@
+
+{% block message %}
+	{{ include('common/_messages.html.twig') }}
+{% endblock %}
+
+<div {{ stimulus_controller('permission-form', {
+   'applicationRolesUrl': path('api_get_application')
+}) }}>
+   {{ form_start(form) }}
+      <div class="row">
+         {{ form_row(form.application, { 'attr': {
+            'data-permission-form-target' : 'applicationInput',
+            'data-action': 'permission-form#onApplicationChange',
+            'class' : 'form-select form-select-sm',
+         } }) }}
+         {{ form_row(form.subApplication, { 'attr': {
+            'data-permission-form-target' : 'subApplicationInput',
+            'class' : 'form-select form-select-sm',
+         } }) }}
+         {{ form_row(form.roles, { 'attr': {
+            'data-permission-form-target' : 'rolesInput',
+            'data-worker-form-target' : 'rolesInput',
+            'class' : 'form-select form-select-sm',
+         } }) }}
+      </div>
+      {{ form_widget(form) }}
+      <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
+      <a id="modal-cancel-button" href="#" class="btn btn-secondary">{{ 'btn.cancel' | trans }}</a>
+   {{ form_end(form) }}
+   {{ include('common/_alert.html.twig', {
+      'html' : 'error.almostOneRoleNeeded' | trans 
+   }) }}
+</div>

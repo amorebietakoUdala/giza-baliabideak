@@ -1,7 +1,15 @@
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
-    
+   static targets = ['permissionList'];
+   static values = {
+      url: String,
+   };
+
+   connect() {
+      console.log(this.urlValue);
+   }
+
    onJobChange(e) {
       const job = e.detail;
       this.reset(e);

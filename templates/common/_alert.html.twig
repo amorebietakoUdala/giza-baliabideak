@@ -27,3 +27,15 @@
 	</swal-button>
 	<swal-param name="allowEscapeKey" value="true"/>
 </template>
+
+<template id="error-html">
+	<swal-title>
+		{{ error|default('message.error' | trans) }}
+	</swal-title>
+	<swal-icon type="error" color="red"></swal-icon>
+   <swal-html>{{ html | default('message.deletionConfirmationText' | trans) }}</swal-html>
+	<swal-button type="confirm">
+		{{ btnOk|default('btn.ok' | trans) }}
+	</swal-button>
+	<swal-param name="allowEscapeKey" value="true"/>
+</template>

@@ -41,6 +41,7 @@ class ApplicationController extends BaseController
         $application = $this->createApplication($request);
         $form = $this->createForm(ApplicationType::class, $application,[
             'readonly' => false,
+            'new' => true,
             'locale' => $request->getLocale(),
         ]);
         $form->handleRequest($request);
@@ -55,6 +56,8 @@ class ApplicationController extends BaseController
                 $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
                 return $this->render('application/' . $template, [
                     'form' => $form->createView(),
+                    'new' => true,
+                    'readonly' => false,
                 ], new Response(null, 422));        
             }
             $this->em->persist($application);
@@ -66,6 +69,8 @@ class ApplicationController extends BaseController
         }
         $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
         return $this->render('application/' . $template, [
+            'readonly' => false,
+            'new' => true,
             'form' => $form->createView(),
         ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));        
    }
@@ -125,10 +130,9 @@ class ApplicationController extends BaseController
      */
     public function delete(Request $request, Application $application): Response
     {
-        $workers = $application->getWorkers();
-        if ( count($workers) > 0 ) {
-            $this->addFlash('error', new TranslatableMessage('error.applicationHasWorkers', 
-                ['{workers}' => substr(implode(',',$workers->toArray()),0,50).'...'], 'messages'));
+        $permissions = $application->getPermissions();
+        if ( count($permissions) > 0 ) {
+            $this->addFlash('error', new TranslatableMessage('error.applicationHasPermissions'));
             return $this->render('common/_error.html.twig',[], new Response('', 422));
         }
         if ($this->isCsrfTokenValid('delete'.$application->getId(), $request->get('_token'))) {

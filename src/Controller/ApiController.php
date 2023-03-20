@@ -2,12 +2,10 @@
 
 namespace App\Controller;
 
-use App\Entity\Job;
+use App\Repository\ApplicationRepository;
 use App\Repository\JobRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
@@ -17,9 +15,11 @@ class ApiController extends AbstractController
 {
 
    private JobRepository $repo;
+   private ApplicationRepository $appRepo;
 
-   public function __construct(JobRepository $repo) {
+   public function __construct(JobRepository $repo, ApplicationRepository $appRepo) {
       $this->repo = $repo;
+      $this->appRepo = $appRepo;
    }
 
    /**
@@ -30,5 +30,17 @@ class ApiController extends AbstractController
       return $this->json($job, 200, [], [
          'groups' => ['show']
       ]);
+   }
+
+   /**
+    * @Route("/application", name="api_get_application")
+    */
+   public function applicationRoles(Request $request) {
+      $id = $request->get('application');
+      $application = $this->appRepo->find($id);
+      return $this->json($application, 200, [], [
+         'groups' => ['show']
+      ]);
+
    }
 }

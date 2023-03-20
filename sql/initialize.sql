@@ -142,6 +142,14 @@ INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Cultura y deportes','Kul
 INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Promoción Ecónomica','Lan sustapena');
 INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Liburutegia','Liburutegia');
 INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Policía Municipal','Udaltzaingoa');
+INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Polideportivo (SE)','Kiroldegia (KZ)');
+INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Ludoteka (SE)','Ludoteka (KZ)');
+INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Gaztetxoko (SE)','Gaztetxoko (KZ)');
+INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Escuela de música (SE)','Música eskola (KZ)');
+INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Promoción ecónomica (SE)','Lan sustapena (KZ)');
+INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('EISE (SE)','EISE (KZ)');
+INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Drogodependencia (SE)','Drogomenpekotasuna (KZ)');
+INSERT INTO `department` (`name_es`,`name_eu`) VALUES ('Zainduz (SE)','Zainduz (KZ)');
 
 /*
 -- Query: SELECT * FROM `giza-baliabideak`.application
@@ -161,4 +169,63 @@ INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (9,'Katastro'
 INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (10,'Fitxatzeko Evalos','bgarate@amorebieta.eus,gizabaliabideak@amorebieta.eus');
 INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (11,'Eraikinetan sartzeko txartela','ealberdi@amorebieta.eus,udaltzaingoa@amorebieta.eus');
 INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (12,'Erantzun','agaray@amorebieta.eus,bulegoteknikoa@amorebieta.eus');
-INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (13,'Errolda','aatela@amorebieta.eus,idazkaritza@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (13,'Zerbikat','jsantamaria@amorebieta.eus,informatika@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (14,'Zerga ordenantzak','llatxiondo@amorebieta.eus,diruzaintza@amorebieta.eus');
+
+/*
+-- Query: SELECT * FROM `giza-baliabideak`.application
+LIMIT 0, 1000
+
+-- Date: 2023-02-28 10:43
+*/
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (1,'Archivo','Artxiboa',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (2,'Biblioteca','Liburutegia',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (3,'Catastro','Katastroa',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (4,'Concejalía','Zinegotzitza',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (5,'Contratación','Kontratazioa',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (6,'Cultura','Kultura',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (7,'Deportes','Kirolak',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (8,'Disciplina Urbanística','Disziplina urbanistikoa',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (9,'Educación','Hezkuntza',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (10,'Euskaltegia','Euskaltegia',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (11,'Euskera','Euskara',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (12,'Igualdad','Berdintasuna',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (13,'Infancia y Juventud','Gazteria',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (14,'Informática','Informatika',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (15,'Infraestructuras/Servicios','Azpiegiturak/Zerbitzuak',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (16,'Intervención, presupuesto y Contabilidad','Kontu-hartzailetza, aurrekontua eta kontabilitatea',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (17,'Planeamiento urbanístico','Plangintza urbanistikoa',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (18,'Policía municipal','Udaltzaingoa',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (19,'Promoción económica y empleo','Lan sustapena',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (20,'Recursos humanos','Giza baliabideak',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (21,'SAC','HAZ',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (22,'Secretaría de alcaldía','Alkatetzako idazkaritza',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (23,'Secretaría','Idazkaritza',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (24,'Servicios sociales','Gizarte zerbitzuak',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (25,'Sostenibilidad/Educación ambiental','Iraunkortasuna/Ingurumen hezkuntza',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (26,'Tesorería, Rentas y Recaudación','Diruzaintza, errentak eta diru-bilketa',1);
+Insert into `sub_application` (`id`,`name_es`,`name_eu`,`application_id`) values (27,'Urbanismo/Obras','Urbanismoa/Obrak',1);
+
+/*
+-- Query: SELECT * FROM giza-baliabideak.user
+LIMIT 0, 1000
+
+-- Date: 2023-03-20 08:13
+*/
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('aagirrebeitia','[\"ROLE_BOSS\", \"ROLE_USER\", \"ROLE_ADMIN\"]','$2y$13$XNgWJYz.ZM9pjcAA5hyG/eVa4Y/kfb0wS2yWbPbxMYtaRamO5.lSe','Andoni Agirrebeitia Abendibar','aagirrebeitia@amorebieta.eus',1,'2023-02-23 11:33:26');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('ietxebarriaz','[\"ROLE_BOSS\"]','$2y$13$ayf55uGIcaM.MdfQGwuiHeRSziyCtwgvo1r6FCc6eGYTdEUeO4Hlq','Iñigo Etxebarria Zubiaurre','ietxebarriaz@amorebieta.eus',1,'2023-03-17 14:44:18');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('uzeberio','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$axQke3Q0HIf05PY4SKnsJO4gWOdRKifL/jAp/O.IoEfXZs16MRbY2','Unai Zeberio Mendizabal','uzeberio@amorebieta.eus',1,'2023-02-02 15:08:55');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('egalarza','[\"ROLE_BOSS\"]','$2y$13$GqLfA1OCecBJBgpgFVIz7.fDmGFIp0216Qi6cy6vO3XND47lDrooa','Eider Galarza Garayo','egalarza@amorebieta.eus',1,'2023-03-10 15:54:16');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('agandiaga','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$SOyq/3mPYcjW5xJLagCeEuzg9J05ZSj5BjpCPSkBj9oOSb/I.KBk.','Anartz Gandiaga Zarazua','agandiaga@amorebieta.eus',1,'2023-02-08 13:49:16');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('rugalde','[\"ROLE_BOSS\"]','$2y$13$aR9IscMNHtpagHbGfYNEruLoSx3egjpjEaKzMA6CH1GDFhIDMYox.','Rafa Ugalde Iragorri','rugalde@amorebieta.eus',1,'2023-03-08 12:30:41');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('asalterain','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$H87KnnNYblxJksaMt5AjBeNR4I.nkHIPcymIb5OGU9LAPT2y5P3Pe','Ainhoa Salterain Gandarias','asalterain@amorebieta.eus',1,'2022-11-25 11:10:51');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('aurrutia','[\"ROLE_BOSS\"]','$2y$13$dwPyt8yQxpaykphr7rgxmueU3ROqDP/vsKdCkw6RgUuOeEqz9lYWu','Argia Urrutia Aristondo','aurrutia@amorebieta.eus',1,'2023-01-05 07:41:52');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('aatela','[\"ROLE_BOSS\"]','$2y$13$WdZnOZ4D7ygobkgyfB4bEuEJu3CbU2rCZNUOuOuQ2AE2B4gfAtiXK','Aizbea Atela Uriarte','aatela@amorebieta.eus',1,'2023-03-15 07:51:39');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('jsantamaria','[\"ROLE_ADMIN\", \"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$fXHFMnTKPgRLSSLwBEsObe1Riys5XCCZezgRFwzo1rbrpubD.ofIy','Jabier Santamaria Monteagudo','jsantamaria@amorebieta.eus',1,'2023-03-16 11:52:13');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('amatias','[\"ROLE_BOSS\"]','$2y$13$6no/uEw1zcOZX0zOTvm5vO1m8SEJOkwULf4cteapCy.J6a/SmBCMu','Alexander Matias Goiri','amatias@amorebieta.eus',1,'2023-03-10 08:35:44');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('igandarias','[\"ROLE_BOSS\"]','$2y$13$agyy4NKtHb2a.mpqxYVLD.3xQxaDiEHD/XSrz67vezpDADNssyPBS','Ines Gandarias Lekuona','igandarias@amorebieta.eus',1,'2023-03-14 07:53:04');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('setxebarria','[\"ROLE_BOSS\"]','$2y$13$DAFJZOHiYpDN817Q3KDxsuGXvFSzLZEdPCJqODMXIMbcf2qvgY4ca','Sabin Etxebarria Maguregi','setxebarria@amorebieta.eus',1,'2023-02-17 14:18:01');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('emartiartu','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$kNDdDLTSX4F08hDHvJLePuzr1plV5zD9Gxm7Kqsk5j/x2.ZBswlky','Estibaliz Martiartu','emartiartu@amorebieta.eus',1,'2022-12-07 13:45:40');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('llatxiondo','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$9WYxK/EXSnylNZ8b2l78hudS1IqB.FI5HONmTlr0BGDP.e8mDEbie','Leire Latxiondo Pumarejo','llatxiondo@amorebieta.eus',1,'2023-03-20 07:31:18');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('lmartinez','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$jIES7hVsi8Vf8QojAyrBb.DdnrRhM7CuUWfuuW2Tz6EyO1F3FAAfa','Luciano Martínez','lmartinez@amorebieta.eus',1,'2022-11-22 09:36:30');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('mkerexeta','[\"ROLE_BOSS\"]','$2y$13$5MN.OZ5uv0tSIpN7/GyIlOsWfwX5JysK1rxGNMaKK9el2n1TMT6iO','Mikel Kerexeta Kortabarria','mkerexeta@amorebieta.eus',1,'2023-02-24 13:17:30');

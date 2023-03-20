@@ -20,3 +20,4 @@ app.register('select2', select2 );
 app.register('table', table );
 app.register('action-changer', actionChanger );
 app.register('entity', entity );
+

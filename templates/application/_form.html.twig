@@ -4,7 +4,27 @@
 {% endblock %}
 
 {{ form_start(form) }}
-    {{ form_widget(form) }}
+    <div class="row align-items-center mb-1">
+        <div class="row">
+            <div class="col-lg-6">
+                {{ form_row(form.name, { 'attr': 
+                    { 'class' : 'form-control form-control-sm' }
+                }) }}
+            </div>
+            <div class="col-lg-6">
+                {{ form_row(form.appOwnersEmails, { 'attr': 
+                    { 'class' : 'form-control form-control-sm' }
+                }) }}
+            </div>
+        </div>
+        <div class="row">
+            {% for app in form.subApplications %}
+                <div class="col-lg-3">
+                {{ form_widget(app,{'attr': { 'class': 'form-check-input' } }) }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
     <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
     <a id="modal-cancel-button" href="{{ path('application_index') }}" class="btn btn-secondary">{{ 'btn.cancel' | trans }}</a>
 {{ form_end(form) }}

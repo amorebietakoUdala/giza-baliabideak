@@ -40,12 +40,6 @@ class Job
     private $titleEu;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Application::class, inversedBy="jobs")
-     * @Groups({"show"})
-     */
-    private $applications;
-
-    /**
      * @ORM\OneToMany(targetEntity=Worker::class, mappedBy="job")
      */
     private $workers;
@@ -55,11 +49,16 @@ class Job
      */
     private $bosses;
 
+    /**
+     * @ORM\OneToMany(targetEntity=JobPermission::class, mappedBy="job", cascade={"persist"})
+     */
+    private $permissions;
+
     public function __construct()
     {
-        $this->applications = new ArrayCollection();
         $this->workers = new ArrayCollection();
         $this->bosses = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -99,30 +98,6 @@ class Job
     public function setTitleEu(string $titleEu): self
     {
         $this->titleEu = $titleEu;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Application>
-     */
-    public function getApplications(): Collection
-    {
-        return $this->applications;
-    }
-
-    public function addApplication(Application $application): self
-    {
-        if (!$this->applications->contains($application)) {
-            $this->applications[] = $application;
-        }
-
-        return $this;
-    }
-
-    public function removeApplication(Application $application): self
-    {
-        $this->applications->removeElement($application);
 
         return $this;
     }
@@ -186,4 +161,33 @@ class Job
         return $this;
     }
 
+    /**
+     * @return Collection<int, JobPermission>
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(JobPermission $permission): self
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions[] = $permission;
+            $permission->setJob($this);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(JobPermission $permission): self
+    {
+        if ($this->permissions->removeElement($permission)) {
+            // set the owning side to null (unless already changed)
+            if ($permission->getJob() === $this) {
+                $permission->setJob(null);
+            }
+        }
+
+        return $this;
+    }
 }

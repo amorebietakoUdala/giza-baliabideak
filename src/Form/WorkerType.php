@@ -6,6 +6,7 @@ use App\Entity\Application;
 use App\Entity\Department;
 use App\Entity\Job;
 use App\Entity\Worker;
+use App\Entity\Permission;
 use App\Repository\ApplicationRepository;
 use App\Validator\IsValidDNI;
 use App\Validator\IsValidExpedientNumber;
@@ -13,6 +14,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -61,9 +63,9 @@ class WorkerType extends AbstractType
                 'disabled' => $readonly || $roleBossOnly,
                 'choice_label' => function ($job) use ($locale) {
                     if ('es' === $locale) {
-                        return $job->getTitleEs();
+                        return '('.$job->getCode().') '.$job->getTitleEs();
                     } else {
-                        return $job->getTitleEu();
+                        return '('.$job->getCode().') '.$job->getTitleEu();
                     }
                 },
                 'constraints' => [
@@ -112,20 +114,7 @@ class WorkerType extends AbstractType
                     new NotBlank(),
                 ]
             ])
-            ->add('applications', EntityType::class, [
-                'label' => 'worker.applications',
-                'class' => Application::class,
-                'required' => true,
-                'multiple' => true,
-                'expanded' => true,
-                'disabled' => $readonly,
-                'query_builder' => function (ApplicationRepository $er) {
-                    return $er->findAllQB();
-                },
-                // 'label_attr' => [
-                //     'class' => 'checkbox-inline',
-                // ],                
-            ]);
+            ;
             if (!$new) {
                 $builder->add('status',ChoiceType::class,[
                     'label' => 'worker.status',

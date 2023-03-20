@@ -1,100 +1,120 @@
-{{ form_start(form, {'attr': {'class': 'container-fluid',
-						 'novalidate': 'novalidate',
-                          'data-controller': 'apps-select',
-                           'data-action': 'job:changed->apps-select#onJobChange',
-						} 
-}) }}
-{{ form_errors(form) }}
-    <div class="row align-items-center mb-1">
-        <div class="col-lg-2 col-md-2 col-sm-6">
-            {{ form_row(form.dni, { 'attr': { 'class' : 'form-control form-control-sm' } }) }}
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-6">
-            {{ form_row(form.name, { 'attr': 
-                { 'class' : 'form-control form-control-sm' }
-            }) }}
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-6">
-            {{ form_row(form.surname1, { 'attr': 
-                { 'class' : 'form-control form-control-sm' }
-            }) }}
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-6">
-            {{ form_row(form.surname2, { 'attr': 
-                { 'class' : 'form-control form-control-sm' }
-            }) }}
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-6">
-            {{ form_row(form.expedientNumber, { 'attr': 
-                { 'class' : 'form-control form-control-sm' }
-            }) }}
-        </div>
-    </div>
-    <div class="row align-items-center mb-1">
-        <div class="col-lg-3 col-md-2 col-sm-6">
-            {{ form_row(form.job, { 'attr': 
-                { 'class' : 'form-select form-select-sm', 'data-controller' : 'job', 'data-job-url-value': path("api_get_job"), 'data-action': 'change->job#onChange' }
-            }) }}
-        </div>
-        <div class="col-lg-3 col-md-2 col-sm-6">
-            {{ form_row(form.department, { 'attr': 
-                { 'class' : 'form-select form-select-sm' }
-            }) }}
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-6">
-            {{ form_row(form.startDate, { 'attr': 
-                { 'class' : 'form-control form-control-sm', 'data-controller' : 'datetimepicker', 'data-datetimepicker-format-value': 'yyyy-MM-dd' }
-            }) }}
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-6">
-            {{ form_row(form.endDate, { 'attr': 
-                { 'class' : 'form-control form-control-sm', 'data-controller' : 'datetimepicker', 'data-datetimepicker-format-value': 'yyyy-MM-dd' }
-            }) }}
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-6">
-            {{ form_row(form.noEndDate) }}
-        </div>
-    </div>
-    {% if not new %}
+{% if not new %}
+<div {{ stimulus_controller('worker-form', {
+         'permissionAddUrl': path('permission_add_to_worker',{
+            'worker': form.vars.value.id is defined ? form.vars.value.id : null,
+         }),
+         'permissionListUrl': path('permission_list',{
+            'worker': form.vars.value.id is defined ? form.vars.value.id : null,
+         }),
+		})}}>
+{% endif %}
+    {{ form_start(form, {'attr': {'class': 'container-fluid', 'novalidate': 'novalidate' } }) }}
+    {{ form_errors(form) }}
+    <div>
         <div class="row align-items-center mb-1">
             <div class="col-lg-2 col-md-2 col-sm-6">
-                {% set RRHH = is_granted('ROLE_RRHH') %}
-                {{ form_row(form.status, { 'attr': 
-                    { 'class' : 'form-select form-select-sm' , 'disabled': not RRHH }
+                {{ form_row(form.dni, { 'attr': { 'class' : 'form-control form-control-sm' } }) }}
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6">
+                {{ form_row(form.name, { 'attr': 
+                    { 'class' : 'form-control form-control-sm' }
                 }) }}
             </div>
-            {% if readonly == false 
-                and new == false 
-                and form.status.vars.value == constant('App\\Entity\\Worker::STATUS_RRHH_NEW') 
-                and is_granted('ROLE_RRHH') %}
-                <div class="col-lg-auto">
-                    <button class="btn btn-success" type="button" data-url="{{ path('worker_send', {'worker': form.vars.value.id}) }}" {{ stimulus_controller('action-changer') }} data-action="action-changer#onClick">{{ 'btn.enviar' | trans }}</button>
-                </div>
-            {% endif %}
-        </div>
-    {% endif %}
-    <div class="row align-items-center mb-1">
-	<div class="row">
-		{% for app in form.applications %}
-            <div class="col-lg-2">
-			    {{ form_widget(app,{'attr': { 'class': 'form-check-input' } }) }}
+            <div class="col-lg-2 col-md-2 col-sm-6">
+                {{ form_row(form.surname1, { 'attr': 
+                    { 'class' : 'form-control form-control-sm' }
+                }) }}
             </div>
-		{% endfor %}
-	</div>
-
-        {# {{ form_row(form.applications) }} #}
-        {# {{ form_row(form.applications, { 'attr': 
-            { 'class' : 'form-select form-select-sm', 'data-controller' : 'select2' }
-        }) }} #}
-    </div>
-    <div class="row mt-1 mb-5 justify-content-center">
-        {% if readonly == false %}
-            <div class="col-auto">
-                <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
+            <div class="col-lg-2 col-md-2 col-sm-6">
+                {{ form_row(form.surname2, { 'attr': 
+                    { 'class' : 'form-control form-control-sm' }
+                }) }}
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6">
+                {{ form_row(form.expedientNumber, { 'attr': 
+                    { 'class' : 'form-control form-control-sm' }
+                }) }}
+            </div>
+        </div>
+        <div class="row align-items-center mb-1">
+            <div class="col-lg-3 col-md-2 col-sm-6">
+                {{ form_row(form.job, { 'attr': 
+                    { 'class' : 'form-select form-select-sm', 'data-controller' : 'job select2', 'data-job-url-value': path("api_get_job"), 'data-action': 'change->job#onChange' }
+                }) }}
+            </div>
+            <div class="col-lg-3 col-md-2 col-sm-6">
+                {{ form_row(form.department, { 'attr': 
+                    { 'class' : 'form-select form-select-sm' }
+                }) }}
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6">
+                {{ form_row(form.startDate, { 'attr': 
+                    { 'class' : 'form-control form-control-sm', 'data-controller' : 'datetimepicker', 'data-datetimepicker-format-value': 'yyyy-MM-dd' }
+                }) }}
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6">
+                {{ form_row(form.endDate, { 'attr': 
+                    { 'class' : 'form-control form-control-sm', 'data-controller' : 'datetimepicker', 'data-datetimepicker-format-value': 'yyyy-MM-dd' }
+                }) }}
+            </div>
+            <div class="col-lg-2 col-md-2 col-sm-6">
+                {{ form_row(form.noEndDate) }}
+            </div>
+        </div>
+        {% if not new %}
+            <div class="row align-items-center mb-1">
+                <div class="col-lg-2 col-md-2 col-sm-6">
+                    {% set RRHH = is_granted('ROLE_RRHH') %}
+                    {{ form_row(form.status, { 'attr': 
+                        { 'class' : 'form-select form-select-sm' , 'disabled': not RRHH }
+                    }) }}
+                </div>
+                {% if readonly == false 
+                    and new == false 
+                    and form.status.vars.value == constant('App\\Entity\\Worker::STATUS_RRHH_NEW') 
+                    and is_granted('ROLE_RRHH') %}
+                    <div class="col-lg-auto">
+                        <button class="btn btn-success" 
+                            type="button" 
+                            data-url="{{ path('worker_send', {'worker': form.vars.value.id}) }}" {{ stimulus_controller('action-changer') }} 
+                            data-action="action-changer#onClick" 
+                            data-worker-form-target="sendButton" disabled>
+                            {{ 'btn.enviar' | trans }}
+                        </button>
+                    </div>
+                {% endif %}
             </div>
         {% endif %}
-        <div class="col-auto">
-            <a href="{{ returnUrl is defined and not returnUrl is empty ? returnUrl : path('worker_index') }}" class="btn btn-secondary">{{ 'btn.cancel' | trans }}</a>
+        <div class="row align-items-center mb-1">
+            <div class="d-flex flex-row justify-content-start">
+                {% if not new %}
+                    <h3>{{ 'header.permissions' | trans }}</h3>&nbsp;
+                    {% if not readonly and not new %}
+                        <div class="col-lg-2 d-flex align-items-center">
+                            <button type="button" class="btn btn-secondary btn-sm" data-action="worker-form#showAddPermissionForm">{{ 'btn.addApplication' | trans }}</button>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <ul class="list-group list-group-horizontal d-flex flex-wrap" data-worker-form-target="permissionList"></ul>
         </div>
-    </div>
-{{ form_end(form) }}
+        <div class="row mt-2 mb-5 justify-content-center">
+            {% if readonly == false %}
+                <div class="col-auto">
+                    <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
+                </div>
+            {% endif %}
+            <div class="col-auto">
+                <a href="{{ returnUrl is defined and not returnUrl is empty ? returnUrl : path('worker_index') }}" class="btn btn-secondary">{{ 'btn.cancel' | trans }}</a>
+            </div>
+        </div>
+    </div>    
+    {{ form_end(form) }}
+{% if not new %}
+    {{ include('worker/_modal.html.twig', {
+        'modalTitle': 'modal.title.addPermission' | trans,
+        }) 
+    }}
+    {{ include('common/_alert.html.twig') }}
+</div>
+{% endif %}

@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Controller\BaseController;
 use App\Entity\Application;
 use App\Entity\Historic;
+use App\Entity\JobPermission;
+use App\Entity\Permission;
 use App\Entity\Worker;
 use App\Form\WorkerType;
 use App\Form\WorkerSearchType;
@@ -17,6 +19,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\SerializerInterface;
 
 /**
  * @Route("/{_locale}", requirements={
@@ -29,14 +33,14 @@ class WorkerController extends BaseController
     private WorkerRepository $repo;
     private EntityManagerInterface $em;
     private MailerInterface $mailer;
-//    private JobRepository $jobRepo;
+    private SerializerInterface $serializer;
     
-    public function __construct(WorkerRepository $repo, EntityManagerInterface $em, MailerInterface $mailer)
+    public function __construct(WorkerRepository $repo, EntityManagerInterface $em, MailerInterface $mailer, SerializerInterface $serializer)
     {
         $this->repo = $repo;
-//        $this->jobRepo = $jobRepo;
         $this->em = $em;
         $this->mailer = $mailer;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -51,12 +55,12 @@ class WorkerController extends BaseController
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Worker $data */
-            $data = $form->getData();
+            /** @var Worker $worker */
+            $worker = $form->getData();
             $existingWorker = $this->repo->findOneBy([
-                'dni' => $data->getDni(),
+                'dni' => $worker->getDni(),
             ]);
-            $error = $this->checkForErrors($data);
+            $error = $this->checkForErrors($worker);
             if ($error) {
                 return $this->renderEdit($form, true, false);
             }
@@ -65,25 +69,25 @@ class WorkerController extends BaseController
                     $this->addFlash('error','worker.alreadyExists');
                     return $this->renderEdit($form, true, false);
                 } else {
-                    $existingWorker->fill($data);
+                    $existingWorker->fill($worker);
                     $existingWorker->setStatus(Worker::STATUS_RRHH_NEW);
+                    $this->addJobPermissionsToWorker($existingWorker);
                     $this->em->persist($existingWorker);
-                    $this->updateJobApplications($existingWorker);
-                    $this->createHistoric($existingWorker);
+                    $this->createHistoric('alta ya existente', $this->serializer->serialize($existingWorker,'json',['groups' => 'historic']));
                     $this->em->flush();
-                    $this->sendMessage('Langile berria gorde da / Se ha dado de alta un nuevo empleado', [$this->getParameter('mailerBCC')], $data);
+                    $this->sendMessage('Langile berria gorde da / Se ha dado de alta un nuevo empleado', [$this->getParameter('mailerBCC')], $worker);
                     $this->addFlash('warning','worker.alreadyExistsStatusChanged');
                 }
             } else {
-                $data->setStatus(Worker::STATUS_RRHH_NEW);
-                $this->em->persist($data);
-                $this->updateJobApplications($data);
-                $this->createHistoric($data);
+                $worker->setStatus(Worker::STATUS_RRHH_NEW);
+                $this->addJobPermissionsToWorker($worker);
+                $this->em->persist($worker);
+                $this->createHistoric('alta', $this->serializer->serialize($worker,'json',['groups' => 'historic']));
                 $this->em->flush();
-                $this->sendMessage('Langile berria gorde da / Se ha dado de alta un nuevo empleado', [$this->getParameter('mailerBCC')], $data);
+                $this->sendMessage('Langile berria gorde da / Se ha dado de alta un nuevo empleado', [$this->getParameter('mailerBCC')], $worker);
                 $this->addFlash('success', 'worker.created');
             }
-            return $this->redirectToRoute('worker_edit', ['worker' => $data->getId()]);
+            return $this->redirectToRoute('worker_index');
         }
 
         return $this->renderEdit($form, true, false);
@@ -102,22 +106,25 @@ class WorkerController extends BaseController
 
         $form->handleRequest($request);
         if ( $form->isSubmitted() && $form->isValid() ) {
-            /** @var Worker $data */
-            $data = $form->getData();
-            if ( $data->getStatus() === Worker::STATUS_IN_PROGRESS ) {
+            /** @var Worker $worker */
+            $worker = $form->getData();
+            if ( $worker->getStatus() === Worker::STATUS_IN_PROGRESS ) {
                 $this->addFlash('error','error.alreadyValidated');
                 return $this->renderEdit($form, false, false);
             }
-            $data->setStatus(Worker::STATUS_IN_PROGRESS);
-            $data->setValidatedBy($this->getUser());
-            $this->em->persist($data);
-            $this->updateJobApplications($data);
-            $this->createHistoric($data);
-            $applications = $data->getApplications();
+            $worker->setStatus(Worker::STATUS_IN_PROGRESS);
+            $worker->setValidatedBy($this->getUser());
+            $this->em->persist($worker);
+            $this->createHistoric('validado', $this->serializer->serialize($worker,'json',['groups' => 'historic']));
+            $applications = [];
+            $permissions = $worker->getPermissions();
+            foreach($permissions as $permission) {
+                $applications[] = $permission->getApplication(); 
+            }
             foreach ($applications as $application) {
                 $this->sendMessageToAppOwners('Langile berriari honako baimenak emango zaizkio / Se le van a dar los siguientes permisos al nuevo empleado ', $worker, $application);
             }
-            $this->sendMessage('Langile berriari informatikak baimenak eman behar zaizkio / Informática tiene que dar los permisos al nuevo empleado', [$this->getParameter('mailerBCC')], $data);
+            $this->sendMessage('Langile berriari informatikak baimenak eman behar zaizkio / Informática tiene que dar los permisos al nuevo empleado', [$this->getParameter('mailerBCC')], $worker);
             $this->em->flush();
             $this->addFlash('success', 'worker.saved');
             return $this->redirectToRoute('worker_index');
@@ -138,15 +145,15 @@ class WorkerController extends BaseController
 
         $form->handleRequest($request);
         if ( $form->isSubmitted() && $form->isValid() ) {
-            /** @var Worker $data */
-            $data = $form->getData();
-            $data->setStatus(Worker::STATUS_REVISION_PENDING);
-            $this->em->persist($data);
-            $this->createHistoric($data);
-            $this->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $data);
+            /** @var Worker $worker */
+            $worker = $form->getData();
+            $worker->setStatus(Worker::STATUS_REVISION_PENDING);
+            $this->em->persist($worker);
+            $this->createHistoric("enviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']));
+            $this->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
             $this->em->flush();
             $this->addFlash('success', 'worker.sent');
-            $form = $this->createForm(WorkerType::class, $data,[
+            $form = $this->createForm(WorkerType::class, $worker,[
                 'locale' => $request->getLocale(),
             ]);
         }
@@ -166,15 +173,14 @@ class WorkerController extends BaseController
 
         $form->handleRequest($request);
         if ( $form->isSubmitted() && $form->isValid() ) {
-            /** @var Worker $data */
-            $data = $form->getData();
-            $error = $this->checkForErrors($data);
+            /** @var Worker $worker */
+            $worker = $form->getData();
+            $error = $this->checkForErrors($worker);
             if ($error) {
                 return $this->renderEdit($form, false, false);
             }
-            $this->em->persist($data);
-            $this->updateJobApplications($data);
-            $this->createHistoric($data);
+            $this->em->persist($worker);
+            $this->createHistoric('modificación', $this->serializer->serialize($worker,'json',['groups' => 'historic']));
             $this->em->flush();
             $this->addFlash('success', 'worker.saved');
         }
@@ -202,7 +208,7 @@ class WorkerController extends BaseController
     {
         $this->loadQueryParameters($request);
         $worker->setStatus(Worker::STATUS_DELETED);
-        $this->createHistoric($worker);
+        $this->createHistoric('baja', $this->serializer->serialize($worker,'json',['groups' => 'historic']));
         $this->sendMessage('Langile hau ezabatu egin da / El siguiente empleado se ha dado de baja', [$this->getParameter('mailerBCC')], $worker);
         $this->em->flush();
         $this->addFlash('success', 'worker.deleted');
@@ -234,17 +240,19 @@ class WorkerController extends BaseController
         ]);
     }
 
-    private function updateJobApplications(Worker $worker) 
+    /** 
+     *  This method is used when new Worker is created to assign permissions attached to the Job if there any.
+     *  This way a new Worker on the same Job inherits the previous worker job permissions
+    */
+    private function addJobPermissionsToWorker(Worker $worker) 
     {
         $job = $worker->getJob();
-        $applications = $worker->getApplications();
-        if ( null != $job->getApplications() ) {
-            $job->getApplications()->clear();
+        $permissions = $job->getPermissions();
+        foreach($permissions as $permission) {
+            $permissionCopy = JobPermission::copyPermission($permission, $worker);
+            $this->em->persist($permissionCopy);
+            $worker->addPermission($permissionCopy);
         }
-        foreach($applications as $app) {
-            $job->addApplication($app);
-        }
-        $this->em->persist($job);
     }
 
     private function checkForErrors(Worker $worker) 
@@ -290,9 +298,9 @@ class WorkerController extends BaseController
         return $worker;
     }    
 
-    private function createHistoric(Worker $worker) {
+    private function createHistoric($operation, $details) {
         $historic = new Historic();
-        $historic->fill($worker, $this->getUser());
+        $historic->fill($this->getUser(),$operation, $details);
         $this->em->persist($historic);
     }
 

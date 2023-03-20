@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use AMREU\UserBundle\Model\UserInterface as AMREUserInterface;
 use AMREU\UserBundle\Model\User as BaseUser;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Table(name="user")
@@ -27,6 +28,7 @@ class User extends BaseUser implements AMREUserInterface, PasswordAuthenticatedU
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Groups({"historic"})
      */
     protected $username;
 

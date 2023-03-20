@@ -23,15 +23,6 @@
          }) }}
       </div>
    </div>
-   <div class="row align-items-center mb-1">
-      <div class="row">
-         {% for app in form.applications %}
-               <div class="col-lg-2">
-               {{ form_widget(app,{'attr': { 'class': 'form-check-input' } }) }}
-               </div>
-         {% endfor %}
-      </div>
-   </div>
     <div class="row mt-1 mb-5 justify-content-center">
         {% if readonly == false %}
             <div class="col-auto">

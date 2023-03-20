@@ -13,6 +13,7 @@ export default class extends Controller {
       const response = await fetch(`${this.urlValue}?${params.toString()}`);
       const json = await response.text();
       const job = JSON.parse(json);
+      console.log(job);
       this.dispatch('changed', { 'detail' : job });
    }
 }
