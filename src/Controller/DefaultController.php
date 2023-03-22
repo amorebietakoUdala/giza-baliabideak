@@ -8,7 +8,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
- * @Security("is_granted('ROLE_USER')")
+ * @Security("is_granted('ROLE_GIZA_BALIABIDEAK')")
  */
 class DefaultController extends AbstractController
 {

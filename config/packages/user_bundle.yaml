@@ -1,7 +1,7 @@
 user:
     class: 'App\Entity\User'
 #    form_type: 'App\Form\UserType'
-    allowedRoles: ["ROLE_USER", "ROLE_RRHH", "ROLE_BOSS", "ROLE_ADMIN"]
+    allowedRoles: ["ROLE_GIZA_BALIABIDEAK", "ROLE_RRHH", "ROLE_BOSS", "ROLE_ADMIN"]
     domain: '%env(LDAP_ACCOUNTDOMAINNAME)%'
     ldap_users_dn: '%env(LDAP_USERS_DN)%'
     ldap_users_filter: '(&(objectclass=Person)(%env(LDAP_USERS_UUID)%={username}))'

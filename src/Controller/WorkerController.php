@@ -6,7 +6,6 @@ use App\Controller\BaseController;
 use App\Entity\Application;
 use App\Entity\Historic;
 use App\Entity\JobPermission;
-use App\Entity\Permission;
 use App\Entity\Worker;
 use App\Form\WorkerType;
 use App\Form\WorkerSearchType;
@@ -19,7 +18,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**

@@ -20,7 +20,9 @@ security:
                 property: username
 
     role_hierarchy:
-        ROLE_ADMIN:       [ROLE_USER, ROLE_RRHH, ROLE_BOSS]
+        ROLE_BOSS:      [ROLE_GIZA_BALIABIDEAK]
+        ROLE_RRHH:      [ROLE_GIZA_BALIABIDEAK]
+        ROLE_ADMIN:     [ROLE_GIZA_BALIABIDEAK, ROLE_RRHH, ROLE_BOSS]
 
     firewalls:
         dev:
@@ -48,9 +50,9 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/, roles: ROLE_GIZA_BALIABIDEAK }
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # - { path: ^/profile, roles: ROLE_GIZA_BALIABIDEAK }
 
 when@test:
     security:
