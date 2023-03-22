@@ -171,6 +171,18 @@ INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (11,'Eraikine
 INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (12,'Erantzun','agaray@amorebieta.eus,bulegoteknikoa@amorebieta.eus');
 INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (13,'Zerbikat','jsantamaria@amorebieta.eus,informatika@amorebieta.eus');
 INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (14,'Zerga ordenantzak','llatxiondo@amorebieta.eus,diruzaintza@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (15,'Adierazleak','informatika@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (16,'Deiak','informatika@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (17,'Etxez-etxeko zerbitzua','mkerexeta@amorebieta.eus,ongizatea@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (18,'Errezioak','llatxiondo@amorebieta.eus,diruzaintza@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (19,'Fitxa-soziala','mkerexeta@amorebieta.eus,ongizatea@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (20,'Giza-baliabideak','bgarate@amorebieta.eus,gizabaliabideak@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (21,'Izenemateak','informatika@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (22,'Kontratu-txikiak','jlegorburu@amorebieta.eus,idazkaritza@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (23,'Lagapenak','laguilar@amorebieta.eus,artxiboa@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (24,'Oporrak','bgarate@amorebieta.eus,gizabaliabideak@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (25,'SMS Bidalketa','informatika@amorebieta.eus');
+INSERT INTO `application` (`id`,`name`,`app_owners_emails`) VALUES (26,'Artzain','informatika@amorebieta.eus');
 
 /*
 -- Query: SELECT * FROM `giza-baliabideak`.application
@@ -212,20 +224,113 @@ LIMIT 0, 1000
 
 -- Date: 2023-03-20 08:13
 */
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('aagirrebeitia','[\"ROLE_BOSS\", \"ROLE_USER\", \"ROLE_ADMIN\"]','$2y$13$XNgWJYz.ZM9pjcAA5hyG/eVa4Y/kfb0wS2yWbPbxMYtaRamO5.lSe','Andoni Agirrebeitia Abendibar','aagirrebeitia@amorebieta.eus',1,'2023-02-23 11:33:26');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('ietxebarriaz','[\"ROLE_BOSS\"]','$2y$13$ayf55uGIcaM.MdfQGwuiHeRSziyCtwgvo1r6FCc6eGYTdEUeO4Hlq','Iñigo Etxebarria Zubiaurre','ietxebarriaz@amorebieta.eus',1,'2023-03-17 14:44:18');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('uzeberio','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$axQke3Q0HIf05PY4SKnsJO4gWOdRKifL/jAp/O.IoEfXZs16MRbY2','Unai Zeberio Mendizabal','uzeberio@amorebieta.eus',1,'2023-02-02 15:08:55');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('egalarza','[\"ROLE_BOSS\"]','$2y$13$GqLfA1OCecBJBgpgFVIz7.fDmGFIp0216Qi6cy6vO3XND47lDrooa','Eider Galarza Garayo','egalarza@amorebieta.eus',1,'2023-03-10 15:54:16');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('agandiaga','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$SOyq/3mPYcjW5xJLagCeEuzg9J05ZSj5BjpCPSkBj9oOSb/I.KBk.','Anartz Gandiaga Zarazua','agandiaga@amorebieta.eus',1,'2023-02-08 13:49:16');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('rugalde','[\"ROLE_BOSS\"]','$2y$13$aR9IscMNHtpagHbGfYNEruLoSx3egjpjEaKzMA6CH1GDFhIDMYox.','Rafa Ugalde Iragorri','rugalde@amorebieta.eus',1,'2023-03-08 12:30:41');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('asalterain','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$H87KnnNYblxJksaMt5AjBeNR4I.nkHIPcymIb5OGU9LAPT2y5P3Pe','Ainhoa Salterain Gandarias','asalterain@amorebieta.eus',1,'2022-11-25 11:10:51');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('aurrutia','[\"ROLE_BOSS\"]','$2y$13$dwPyt8yQxpaykphr7rgxmueU3ROqDP/vsKdCkw6RgUuOeEqz9lYWu','Argia Urrutia Aristondo','aurrutia@amorebieta.eus',1,'2023-01-05 07:41:52');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('aatela','[\"ROLE_BOSS\"]','$2y$13$WdZnOZ4D7ygobkgyfB4bEuEJu3CbU2rCZNUOuOuQ2AE2B4gfAtiXK','Aizbea Atela Uriarte','aatela@amorebieta.eus',1,'2023-03-15 07:51:39');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('jsantamaria','[\"ROLE_ADMIN\", \"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$fXHFMnTKPgRLSSLwBEsObe1Riys5XCCZezgRFwzo1rbrpubD.ofIy','Jabier Santamaria Monteagudo','jsantamaria@amorebieta.eus',1,'2023-03-16 11:52:13');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('amatias','[\"ROLE_BOSS\"]','$2y$13$6no/uEw1zcOZX0zOTvm5vO1m8SEJOkwULf4cteapCy.J6a/SmBCMu','Alexander Matias Goiri','amatias@amorebieta.eus',1,'2023-03-10 08:35:44');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('igandarias','[\"ROLE_BOSS\"]','$2y$13$agyy4NKtHb2a.mpqxYVLD.3xQxaDiEHD/XSrz67vezpDADNssyPBS','Ines Gandarias Lekuona','igandarias@amorebieta.eus',1,'2023-03-14 07:53:04');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('setxebarria','[\"ROLE_BOSS\"]','$2y$13$DAFJZOHiYpDN817Q3KDxsuGXvFSzLZEdPCJqODMXIMbcf2qvgY4ca','Sabin Etxebarria Maguregi','setxebarria@amorebieta.eus',1,'2023-02-17 14:18:01');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('emartiartu','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$kNDdDLTSX4F08hDHvJLePuzr1plV5zD9Gxm7Kqsk5j/x2.ZBswlky','Estibaliz Martiartu','emartiartu@amorebieta.eus',1,'2022-12-07 13:45:40');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('llatxiondo','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$9WYxK/EXSnylNZ8b2l78hudS1IqB.FI5HONmTlr0BGDP.e8mDEbie','Leire Latxiondo Pumarejo','llatxiondo@amorebieta.eus',1,'2023-03-20 07:31:18');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('lmartinez','[\"ROLE_USER\", \"ROLE_BOSS\"]','$2y$13$jIES7hVsi8Vf8QojAyrBb.DdnrRhM7CuUWfuuW2Tz6EyO1F3FAAfa','Luciano Martínez','lmartinez@amorebieta.eus',1,'2022-11-22 09:36:30');
-INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('mkerexeta','[\"ROLE_BOSS\"]','$2y$13$5MN.OZ5uv0tSIpN7/GyIlOsWfwX5JysK1rxGNMaKK9el2n1TMT6iO','Mikel Kerexeta Kortabarria','mkerexeta@amorebieta.eus',1,'2023-02-24 13:17:30');
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('ealberdi','[\"ROLE_BOSS\"]','$2y$13$aR9IscMNHtpagHbGfYNEruLoSx3egjpjEaKzMA6CH1GDFhIDMYox.','Ekain Alberdi Elorriaga','ealberdi@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('rugalde','[\"ROLE_BOSS\"]','$2y$13$aR9IscMNHtpagHbGfYNEruLoSx3egjpjEaKzMA6CH1GDFhIDMYox.','Rafa Ugalde Iragorri','rugalde@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('aurrutia','[\"ROLE_BOSS\"]','$2y$13$dwPyt8yQxpaykphr7rgxmueU3ROqDP/vsKdCkw6RgUuOeEqz9lYWu','Argia Urrutia Aristondo','aurrutia@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('aalberdi','[\"ROLE_BOSS\"]','$2y$13$dwPyt8yQxpaykphr7rgxmueU3ROqDP/vsKdCkw6RgUuOeEqz9lYWu','Antxon Alberdi','aalberdi@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('aatela','[\"ROLE_BOSS\"]','$2y$13$WdZnOZ4D7ygobkgyfB4bEuEJu3CbU2rCZNUOuOuQ2AE2B4gfAtiXK','Aizbea Atela Uriarte','aatela@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('jsantamaria','[\"ROLE_ADMIN\",\"ROLE_BOSS\"]','$2y$13$fXHFMnTKPgRLSSLwBEsObe1Riys5XCCZezgRFwzo1rbrpubD.ofIy','Jabier Santamaria Monteagudo','jsantamaria@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('amatias','[\"ROLE_BOSS\"]','$2y$13$6no/uEw1zcOZX0zOTvm5vO1m8SEJOkwULf4cteapCy.J6a/SmBCMu','Alexander Matias Goiri','amatias@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('igandarias','[\"ROLE_BOSS\"]','$2y$13$agyy4NKtHb2a.mpqxYVLD.3xQxaDiEHD/XSrz67vezpDADNssyPBS','Ines Gandarias Lekuona','igandarias@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('setxebarria','[\"ROLE_BOSS\"]','$2y$13$DAFJZOHiYpDN817Q3KDxsuGXvFSzLZEdPCJqODMXIMbcf2qvgY4ca','Sabin Etxebarria Maguregi','setxebarria@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('emartiartu','[\"ROLE_BOSS\"]','$2y$13$kNDdDLTSX4F08hDHvJLePuzr1plV5zD9Gxm7Kqsk5j/x2.ZBswlky','Estibaliz Martiartu','emartiartu@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('llatxiondo','["\ROLE_BOSS\"]','$2y$13$9WYxK/EXSnylNZ8b2l78hudS1IqB.FI5HONmTlr0BGDP.e8mDEbie','Leire Latxiondo Pumarejo','llatxiondo@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('lmartinez','[\"ROLE_BOSS\"]','$2y$13$jIES7hVsi8Vf8QojAyrBb.DdnrRhM7CuUWfuuW2Tz6EyO1F3FAAfa','Luciano Martínez','lmartinez@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('mkerexeta','[\"ROLE_BOSS\"]','$2y$13$5MN.OZ5uv0tSIpN7/GyIlOsWfwX5JysK1rxGNMaKK9el2n1TMT6iO','Mikel Kerexeta Kortabarria','mkerexeta@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('bgarate','[\"ROLE_BOSS\"]','$2y$13$5MN.OZ5uv0tSIpN7/GyIlOsWfwX5JysK1rxGNMaKK9el2n1TMT6iO','Beatriz Garate','bgarate@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('agaray','[\"ROLE_BOSS\"]','$2y$13$5MN.OZ5uv0tSIpN7/GyIlOsWfwX5JysK1rxGNMaKK9el2n1TMT6iO','Aitziber Garay','agaray@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('jlegorburu','[\"ROLE_BOSS\"]','$2y$13$5MN.OZ5uv0tSIpN7/GyIlOsWfwX5JysK1rxGNMaKK9el2n1TMT6iO','Jon Legorburu','jlegorburu@amorebieta.eus',1,null);
+INSERT INTO `user` (`username`,`roles`,`password`,`first_name`,`email`,`activated`,`last_login`) VALUES ('laguilar','[\"ROLE_BOSS\"]','$2y$13$5MN.OZ5uv0tSIpN7/GyIlOsWfwX5JysK1rxGNMaKK9el2n1TMT6iO','Leire Aguilar','jlegorburu@amorebieta.eus',1,null);
+
+/**
+ -- ROLES
+*/
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (1,'Acceso','Sarbidea');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (2,'Administrador','Administratzailea');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (3,'Super administrador','Super administratzailea');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (4,'HAZ','SAC');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (5,'Informática','Informatika');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (6,'Secretaría','Idazkaritza');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (7,'Recursos humanos','Giza baliabideak');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (8,'Economía','Ekonomia');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (9,'Responsable','Arduraduna');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (10,'Informador','Informatzailea');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (11,'Técnico externo','Kanpoko teknikaria');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (12,'Api','Api');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (13,'Recibos','Erreziboak');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (14,'Devoluciones','Diru-itzulketak');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (15,'Deudas','Zorrak');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (16,'Titularidad','Titularitatea');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (17,'Archivador','Artxibatzailea');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (18,'Aprobador de vacaciones','Opor onartzailea');
+INSERT INTO `role` (`id`,`name_es`,`name_eu`) VALUES (19,'Gestión','Kudeaketa');
+
+/**
+-- Aplication-Roles
+*/
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (1,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (1,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (2,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (3,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (4,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (5,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (5,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (6,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (6,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (7,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (7,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (8,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (8,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (9,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (10,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (10,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (11,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (12,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (12,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (12,8);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (12,9);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (12,10);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (13,19);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (13,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (13,3);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (14,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (14,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (14,3);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (15,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (15,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (15,4);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (15,5);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (15,6);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (15,7);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (15,8);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (16,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (16,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (17,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (17,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (18,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (18,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (18,13);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (18,14);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (18,15);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (18,16);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (19,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (19,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (20,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (20,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (20,7);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (20,9);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (21,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (21,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (22,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (22,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (23,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (23,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (23,17);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (24,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (24,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (24,7);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (24,18);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (25,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (25,2);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (26,1);
+INSERT INTO `application_role` (`application_id`,`role_id`) VALUES (26,2);
