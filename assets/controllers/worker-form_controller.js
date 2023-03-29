@@ -10,6 +10,7 @@ export default class extends Controller {
    static values = {
        permissionAddUrl: String,
        permissionListUrl: String,
+       status: String,
    };
    modal = null;
 
@@ -59,7 +60,9 @@ export default class extends Controller {
             method: 'GET',
          });
          this.permissionListTarget.innerHTML = response;
-         if (response !== '' && this.hasSendButtonTarget) {
+         // If status === 2 (Revision pending) the button must be disabled until at least 1 permission is set. 
+         // In status (RRHH_NEW) is can be activated without permissions
+         if (this.hasSendButtonTarget && ( response !== '' || this.statusValue !== 2)) {
             this.sendButtonTarget.disabled = false;
          }
       } catch(e) {
