@@ -2,7 +2,7 @@
 <html lang="{{ app.request.locale|split('_')[0] }}">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}{{ 'messages.appTitle' | trans }}{% endblock %}</title>
         <link rel="shortcut icon" href="{{ asset('build/images/favicon.ico') }}">
         {% block stylesheets %}
 				{{ encore_entry_link_tags('app') }}
