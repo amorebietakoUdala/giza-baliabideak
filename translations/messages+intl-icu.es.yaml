@@ -130,5 +130,8 @@ modal.title.department: "Nuevo departamento"
 modal.title.role: "Nuevo rol"
 modal.title.addPermission: "Añadir permiso"
 
-mail.messageToAppOwners: '{boss} ha solicitado acceso a la aplicación {application} para {worker} en el puesto {job}.'
-mail.disclaimer: "Si existe algún problema para la concesión de este acceso, pongáse en contacto con la persona responsable {boss}."
+mail.messageToAppOwnersAdding: '{boss} ha solicitado acceso a la aplicación {application} para {worker} en el puesto {job}.'
+mail.disclaimerAdding: "Si existe algún problema para la concesión de este acceso, pongáse en contacto con la persona responsable {boss}."
+
+mail.messageToAppOwnersRemoving: '{boss} ha solicitado quitar el permiso a la aplicación {application} para {worker} en el puesto {job}.'
+mail.disclaimerRemoving: "Si existe algún problema para quitar este acceso, pongáse en contacto con la persona responsable {boss}."

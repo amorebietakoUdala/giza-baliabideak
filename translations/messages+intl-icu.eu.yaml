@@ -130,5 +130,8 @@ modal.title.department: "Sail berria"
 modal.title.role: "Rol berria"
 modal.title.addPermission: "Baimen berria"
 
-mail.messageToAppOwners: '{boss} arduradunak {worker}-entzako {application}-era sartzeko baimena eskatu du {job} lanpostua betetzeko.'
-mail.disclaimer: "Baimen hau emateko arazoren bat egotekotan, {boss} arduranarekin harremanetan jar zaitez."
+mail.messageToAppOwnersAdding: '{boss} arduradunak {worker}-entzako {application}-era sartzeko baimena eskatu du {job} lanpostua betetzeko.'
+mail.disclaimerAdding: "Baimen hau emateko arazoren bat egotekotan, {boss} arduranarekin harremanetan jar zaitez."
+
+mail.messageToAppOwnersRemoving: '{boss} arduradunak {worker}-entzako {application}-era sartzeko baimena kentzea eskatu du {job} lanpostua betetzeko.'
+mail.disclaimerRemoving: "Baimen hau kentzeko arazoren bat egotekotan, {boss} arduranarekin harremanetan jar zaitez."

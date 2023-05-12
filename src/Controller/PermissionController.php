@@ -11,6 +11,8 @@ use App\Form\PermissionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -24,11 +26,13 @@ class PermissionController extends BaseController
 
     private EntityManagerInterface $em;
     private SerializerInterface $serializer;
+    private MailerInterface $mailer;
 
-    public function __construct(EntityManagerInterface $em, SerializerInterface $serializer) 
+    public function __construct(EntityManagerInterface $em, SerializerInterface $serializer, MailerInterface $mailer) 
     {
         $this->em = $em;
         $this->serializer = $serializer;
+        $this->mailer = $mailer;
     }
 
     /**
@@ -61,8 +65,17 @@ class PermissionController extends BaseController
             $this->em->persist($permission);
             $this->createHistoric('añadir permiso', $this->serializer->serialize([$permission, $permission->getWorker()],'json',['groups' => 'historic']));
             $this->addOrUpdatePermissionToJob($permission);
+            /** If status > 2 means it's a change in permissions after IT gives them the proper permissions, so we need to notify app owner 
+             *  if status is < 2 no need to notify it will be sent after validation.
+            */
+            $status = $worker->getStatus();
+            if ( $status > 2) {
+                $worker->setStatus(Worker::STATUS_IN_PROGRESS);
+                $this->em->persist($worker);
+                $this->createHistoric("enviado al responsable de la aplicación", $this->serializer->serialize($worker,'json',['groups' => 'historic']));
+                $this->sendMessages($permission, 'Langileari honako baimenak emango zaizkio / Se le van a dar los siguientes permisos al empleado');
+            }
             $this->em->flush();
-
             return $this->redirectToRoute('worker_edit', [
                 'worker' => $worker->getId(),
             ]);
@@ -82,7 +95,15 @@ class PermissionController extends BaseController
         if ($this->isCsrfTokenValid('delete'.$permission->getId(), $request->get('_token'))) {
             $this->removePermissionsFromJob($permission);
             $this->createHistoric('eliminar permiso', $this->serializer->serialize([$permission, $permission->getWorker()],'json',['groups' => 'historic']));
+            $worker = $permission->getWorker();
             $this->em->remove($permission);
+            $status = $worker->getStatus();
+            if ( $status > 2) {
+                $worker->setStatus(Worker::STATUS_IN_PROGRESS);
+                $this->em->persist($worker);
+                $this->createHistoric("enviado al responsable de la aplicación", $this->serializer->serialize($worker,'json',['groups' => 'historic']));
+                $this->sendMessages($permission, 'Langileari honako baimenak kenduko zaizkio / Se le van a quitar los siguientes permisos al empleado', true);
+            }
             $this->em->flush();
             if (!$request->isXmlHttpRequest()) {
                 return $this->redirectToRoute('worker_edit',[
@@ -184,4 +205,29 @@ class PermissionController extends BaseController
         $this->em->persist($historic);
     }
 
+    private function sendMessages(Permission $permission, $message, $remove = false) {
+        $worker = $permission->getWorker();
+        $this->sendMessageToAppOwners($message, $worker, $permission->getApplication(), $remove);
+    }
+
+    private function sendMessageToAppOwners($subject, Worker $worker, Application $application, bool $remove) {
+        if ($application !== null && $application->getAppOwnersEmails() !== null) {
+            $owners = explode(',', $application->getAppOwnersEmails());
+            $emails = [];
+            foreach ($owners as $owner) {
+                $emails[] = $owner;
+            }
+            $email = (new Email())
+                ->from($this->getParameter('mailer_from'))
+                ->to(...$emails)
+                ->subject($subject)
+                ->html($this->renderView('worker/appOwnersMail.html.twig', [
+                    'worker' => $worker,
+                    'application' => $application,
+                    'remove' => $remove,
+                ])
+            );
+            $this->mailer->send($email);
+        }
+    }
 }

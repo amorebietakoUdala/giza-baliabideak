@@ -6,6 +6,7 @@
          'permissionListUrl': path('permission_list',{
             'worker': form.vars.value.id is defined ? form.vars.value.id : null,
          }),
+         'new' : new,
 		})}}>
 {% endif %}
     {{ form_start(form, {'attr': {'class': 'container-fluid', 'novalidate': 'novalidate' } }) }}
@@ -91,7 +92,11 @@
                     <h3>{{ 'header.permissions' | trans }}</h3>&nbsp;
                     {% if not readonly and not new %}
                         <div class="col-lg-2 d-flex align-items-center">
-                            <button type="button" class="btn btn-secondary btn-sm" data-action="worker-form#showAddPermissionForm">{{ 'btn.addApplication' | trans }}</button>
+                            <button type="button" 
+                                class="btn btn-secondary btn-sm" 
+                                data-action="worker-form#showAddPermissionForm">
+                                {{ 'btn.addApplication' | trans }}
+                            </button>
                         </div>
                     {% endif %}
                 {% endif %}

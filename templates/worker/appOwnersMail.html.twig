@@ -7,7 +7,14 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
-      {{ 'mail.messageToAppOwners' | trans({
+      {% if not remove %}
+         {% set message = 'mail.messageToAppOwnersAdding' %}
+         {% set disclaimer = 'mail.disclaimerAdding' %}
+      {% else %}
+         {% set message = 'mail.messageToAppOwnersRemoving' %}
+         {% set disclaimer = 'mail.disclaimerRemoving' %}
+      {% endif %}
+      {{ message | trans({
          '{boss}': worker.validatedBy.username,
          '{application}': application,
          '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
@@ -15,7 +22,7 @@
          }) 
       }}
       <br><br>
-      {{ 'mail.disclaimer' | trans({
+      {{ disclaimer | trans({
          '{boss}': worker.validatedBy.username,
       }) }}
    </body>

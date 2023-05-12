@@ -168,7 +168,6 @@ class WorkerController extends BaseController
             'locale' => $request->getLocale(),
             'roleBossOnly' => $this->isGranted('ROLE_BOSS') && !$this->isGranted('ROLE_RRHH'),
         ]);
-
         $form->handleRequest($request);
         if ( $form->isSubmitted() && $form->isValid() ) {
             /** @var Worker $worker */
@@ -367,4 +366,13 @@ class WorkerController extends BaseController
         return $new_criteria;
     }
 
+    private function checkIfPermissionsChanged($previousPermissions, $permissions) {
+        dump($permissions);
+        foreach ($previousPermissions as $prev) {
+            if ($permissions->contains($prev)) {
+                dump($prev,  $permissions->contains($prev));
+            }
+        }
+        return false;
+    }
 }
