@@ -41,8 +41,10 @@ class DepartmentRepository extends ServiceEntityRepository
 
     public function findDepartmentByExample(Department $department) {
         $result = $this->createQueryBuilder('d')
-            ->andWhere('d.name = :name')
-            ->setParameter('name', $department->getName())
+            ->andWhere('d.nameEs = :nameEs')
+            ->setParameter('nameEs', $department->getNameEs())
+            ->orWhere('d.nameEu = :nameEu')
+            ->setParameter('nameEu', $department->getNameEu())
             ->getQuery()
             ->getOneOrNullResult();
         return $result;
