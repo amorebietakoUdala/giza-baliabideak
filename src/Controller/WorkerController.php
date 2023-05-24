@@ -120,7 +120,7 @@ class WorkerController extends BaseController
                 $applications[] = $permission->getApplication(); 
             }
             foreach ($applications as $application) {
-                $this->sendMessageToAppOwners('Langile berriari honako baimenak emango zaizkio / Se le van a dar los siguientes permisos al nuevo empleado ', $worker, $application);
+                $this->sendMessageToAppOwners('Langile berriari honako baimenak emango zaizkio / Se le van a dar los siguientes permisos al nuevo empleado ', $worker, $application, false);
             }
             $this->sendMessage('Langile berriari informatikak baimenak eman behar zaizkio / Informática tiene que dar los permisos al nuevo empleado', [$this->getParameter('mailerBCC')], $worker);
             $this->em->flush();
@@ -314,7 +314,7 @@ class WorkerController extends BaseController
         }
     }
 
-    private function sendMessageToAppOwners($subject, Worker $worker, Application $application) {
+    private function sendMessageToAppOwners($subject, Worker $worker, Application $application, bool $remove) {
         if ($application !== null && $application->getAppOwnersEmails() !== null) {
             $owners = explode(',', $application->getAppOwnersEmails());
             $emails = [];
@@ -328,6 +328,7 @@ class WorkerController extends BaseController
                 ->html($this->renderView('worker/appOwnersMail.html.twig', [
                     'worker' => $worker,
                     'application' => $application,
+                    'remove' => $remove,
                 ])
             );
             $this->mailer->send($email);

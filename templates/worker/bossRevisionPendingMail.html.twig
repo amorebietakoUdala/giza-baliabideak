@@ -12,7 +12,7 @@
       <b>{{ 'worker.surname1' | trans }}:</b> {{ worker.surname1 }}<br>
       <b>{{ 'worker.surname2' | trans }}:</b> {{ worker.surname2 }}<br>
       <b>{{ 'worker.startDate' | trans }}:</b> {{ worker.startDate | date('Y-m-d') }}<br>
-      <b>{{ 'worker.endDate' | trans }}:</b> {{ worker.endDate | date('Y-m-d') }}<br>
+      <b>{{ 'worker.endDate' | trans }}:</b> {{ worker.endDate != null ? worker.endDate | date('Y-m-d') : ''}}<br>
       <b>{{ 'worker.expedientNumber' | trans }}:</b> {{ worker.expedientNumber }}<br>
       <b>{{ 'worker.department' | trans }}:</b> {{ worker.department }}<br>
       <b>{{ 'worker.job' | trans }}:</b> {{ worker.job }}<br>
