@@ -135,3 +135,5 @@ mail.disclaimerAdding: "Baimen hau emateko arazoren bat egotekotan, {boss} ardur
 
 mail.messageToAppOwnersRemoving: '{boss} arduradunak {worker}-entzako {application}-era sartzeko baimena kentzea eskatu du {job} lanpostua betetzeko.'
 mail.disclaimerRemoving: "Baimen hau kentzeko arazoren bat egotekotan, {boss} arduranarekin harremanetan jar zaitez."
+
+mail.medicalRevision: "Langile berri hau altan eman dugu, azterketa medikua dela eta kontuan hartzeko."

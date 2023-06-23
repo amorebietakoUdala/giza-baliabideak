@@ -20,6 +20,8 @@
       <br>
       {% if validate %}
         <a href="{{ absolute_url( path('worker_validate', {'worker': worker.id}) ) }}">{{ 'message.selectApplications' | trans }}</a>
+      {% else %}
+        {{ 'mail.medicalRevision' | trans }}
       {% endif %}
     </body>
 </html> 

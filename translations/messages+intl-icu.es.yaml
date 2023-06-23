@@ -135,3 +135,5 @@ mail.disclaimerAdding: "Si existe algún problema para la concesión de este acc
 
 mail.messageToAppOwnersRemoving: '{boss} ha solicitado quitar el permiso a la aplicación {application} para {worker} en el puesto {job}.'
 mail.disclaimerRemoving: "Si existe algún problema para quitar este acceso, pongáse en contacto con la persona responsable {boss}."
+
+mail.medicalRevision: "Hemos dado de alta a este nuevo trabajador, tenlo en cuenta para reconocimientos médicos."
