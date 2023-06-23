@@ -73,7 +73,7 @@ class WorkerController extends BaseController
                     $this->em->persist($existingWorker);
                     $this->createHistoric('alta ya existente', $this->serializer->serialize($existingWorker,'json',['groups' => 'historic']));
                     $this->em->flush();
-                    $this->sendMessage('Langile berria gorde da / Se ha dado de alta un nuevo empleado', [$this->getParameter('mailerBCC')], $worker);
+                    $this->sendMessage('Langile berria gorde da / Se ha dado de alta un nuevo empleado', [$this->getParameter('mailerMM')], $worker);
                     $this->addFlash('warning','worker.alreadyExistsStatusChanged');
                 }
             } else {
@@ -82,7 +82,7 @@ class WorkerController extends BaseController
                 $this->em->persist($worker);
                 $this->createHistoric('alta', $this->serializer->serialize($worker,'json',['groups' => 'historic']));
                 $this->em->flush();
-                $this->sendMessage('Langile berria gorde da / Se ha dado de alta un nuevo empleado', [$this->getParameter('mailerBCC')], $worker);
+                $this->sendMessage('Langile berria gorde da / Se ha dado de alta un nuevo empleado', [$this->getParameter('mailerMM')], $worker);
                 $this->addFlash('success', 'worker.created');
             }
             return $this->redirectToRoute('worker_index');

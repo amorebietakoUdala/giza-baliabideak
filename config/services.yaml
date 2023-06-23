@@ -9,6 +9,7 @@ parameters:
     mailerBCC: '%env(MAILER_BCC)%'
     sendBCC: '%env(bool:SEND_BCC)%'
     mailerHHRR: '%env(MAILER_HHRR)%'
+    mailerMM: '%env(MAILER_MM)%'
 
 services:
     Symfony\Component\Ldap\Ldap:
