@@ -123,4 +123,15 @@ class WorkerRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    public function findExpired(): ?array
+    {
+        $today = new DateTime();
+        return $this->createQueryBuilder('w')
+            ->andWhere('w.endDate < :today')
+            ->setParameter('today', $today)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }

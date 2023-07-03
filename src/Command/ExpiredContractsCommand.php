@@ -15,10 +15,10 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
 
-class AboutToExpireContractsCommand extends Command
+class ExpiredContractsCommand extends Command
 {
-    protected static $defaultName = 'app:about-to-expire';
-    protected static $defaultDescription = 'Search for contracts about to expire in the specified days';
+    protected static $defaultName = 'app:expired';
+    protected static $defaultDescription = 'Search for contracts expired in the specified days';
 
     private WorkerRepository $repo;
     private MailerInterface $mailer;
@@ -37,17 +37,15 @@ class AboutToExpireContractsCommand extends Command
     protected function configure(): void
     {
         $this
-            ->addArgument('days', InputArgument::OPTIONAL, 'Number of days about to expire contracts')
 //            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $days = $input->getArgument('days') ?? 15;
-        $workers = $this->repo->findEndsInNextDays($days);
+        $workers = $this->repo->findExpired();
         if ( $workers ) {
-            $this->sendMessage('Amaitzear dauden kontratuak / Contratos a punto de terminar', [$this->params->get('mailerHHRR')], $workers);
+            $this->sendMessage('Iraungita dauden kontratuak / Contratos que han expirado', [$this->params->get('mailerBCC')], $workers);
         }
         return Command::SUCCESS;
     }
