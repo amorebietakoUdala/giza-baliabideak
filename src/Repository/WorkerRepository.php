@@ -130,6 +130,8 @@ class WorkerRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('w')
             ->andWhere('w.endDate < :today')
             ->setParameter('today', $today)
+            ->andWhere('w.status != :deleted') 
+            ->setParameter('deleted', Worker::STATUS_DELETED)
             ->getQuery()
             ->getResult()
         ;
