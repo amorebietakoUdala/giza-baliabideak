@@ -222,6 +222,7 @@ class PermissionController extends BaseController
                 ->to(...$emails)
                 ->subject($subject)
                 ->html($this->renderView('worker/appOwnersMail.html.twig', [
+                    'user' => $this->getUser(),
                     'worker' => $worker,
                     'application' => $application,
                     'remove' => $remove,

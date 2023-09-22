@@ -15,7 +15,7 @@
          {% set disclaimer = 'mail.disclaimerRemoving' %}
       {% endif %}
       {{ message | trans({
-         '{boss}': worker.validatedBy.username,
+         '{boss}': user.username,
          '{application}': application,
          '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
          '{job}': app.request.locale|split('_')[0] == 'es' ? worker.job.titleEs : worker.job.titleEu,
@@ -23,7 +23,7 @@
       }}
       <br><br>
       {{ disclaimer | trans({
-         '{boss}': worker.validatedBy.username,
+         '{boss}': user.username,
       }) }}
    </body>
 </html> 
