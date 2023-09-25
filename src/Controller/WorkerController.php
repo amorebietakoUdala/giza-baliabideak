@@ -94,31 +94,17 @@ class WorkerController extends BaseController
     }
 
     /**
-     * @Route("/worker/{worker}/send", name="worker_send", methods={"POST"})
+     * Sends message to boss to choose the authorized applications
+     * 
+     * @Route("/worker/{worker}/send", name="worker_send", methods={"GET"})
      */
     public function send(Request $request, Worker $worker) {
         $this->loadQueryParameters($request);
-        $form = $this->createForm(WorkerType::class, $worker,[
-            'locale' => $request->getLocale(),
-            'roleBossOnly' => $this->isGranted('ROLE_BOSS') && !$this->isGranted('ROLE_RRHH'),
-        ]);
+        $this->createHistoric("Reenviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']));
+        $this->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
+        $this->addFlash('success', 'worker.resent');
 
-        $form->handleRequest($request);
-        if ( $form->isSubmitted() && $form->isValid() ) {
-            /** @var Worker $worker */
-            $worker = $form->getData();
-            $worker->setStatus(Worker::STATUS_REVISION_PENDING);
-            $this->em->persist($worker);
-            $this->createHistoric("enviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']));
-            $this->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
-            $this->em->flush();
-            $this->addFlash('success', 'worker.sent');
-            $form = $this->createForm(WorkerType::class, $worker,[
-                'locale' => $request->getLocale(),
-            ]);
-        }
-
-        return $this->renderEdit($form, false, false);
+        return $this->redirectToRoute('worker_index');
     }
 
     /**
