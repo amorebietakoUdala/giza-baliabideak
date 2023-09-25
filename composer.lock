@@ -54,16 +54,16 @@
         },
         {
             "name": "amorebietakoudala/user-bundle",
-            "version": "1.4.4",
+            "version": "1.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/amorebietakoUdala/user-bundle.git",
-                "reference": "0c262afbf917c168e50a45acaf3708737ec72341"
+                "reference": "e55893d38b0b86e44839b273c01b94b887755dab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/amorebietakoUdala/user-bundle/zipball/0c262afbf917c168e50a45acaf3708737ec72341",
-                "reference": "0c262afbf917c168e50a45acaf3708737ec72341",
+                "url": "https://api.github.com/repos/amorebietakoUdala/user-bundle/zipball/e55893d38b0b86e44839b273c01b94b887755dab",
+                "reference": "e55893d38b0b86e44839b273c01b94b887755dab",
                 "shasum": ""
             },
             "require": {
@@ -96,9 +96,9 @@
             "description": "AmorebietakoUdala erabiltzaile bundlela",
             "support": {
                 "issues": "https://github.com/amorebietakoUdala/user-bundle/issues",
-                "source": "https://github.com/amorebietakoUdala/user-bundle/tree/1.4.4"
+                "source": "https://github.com/amorebietakoUdala/user-bundle/tree/1.4.5"
             },
-            "time": "2023-08-21T08:49:10+00:00"
+            "time": "2023-09-25T09:02:54+00:00"
         },
         {
             "name": "behat/transliterator",
