@@ -70,7 +70,7 @@
                         { 'class' : 'form-select form-select-sm' , 'disabled': not RRHH }
                     }) }}
                 </div>
-                {% if readonly == false 
+                {# {% if readonly == false 
                     and new == false 
                     and form.status.vars.value == constant('App\\Entity\\Worker::STATUS_RRHH_NEW') 
                     and is_granted('ROLE_RRHH') %}
@@ -83,7 +83,7 @@
                             {{ 'btn.enviar' | trans }}
                         </button>
                     </div>
-                {% endif %}
+                {% endif %} #}
             </div>
         {% endif %}
         <div class="row align-items-center mb-1">
@@ -106,7 +106,7 @@
         <div class="row mt-2 mb-5 justify-content-center">
             {% if readonly == false %}
                 <div class="col-auto">
-                    <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
+                    <button class="btn btn-primary" type="submit">{{ ( validate == false ) ? 'btn.save' | trans : 'btn.finish' | trans }}</button>
                 </div>
             {% endif %}
             <div class="col-auto">

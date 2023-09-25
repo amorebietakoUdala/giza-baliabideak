@@ -48,8 +48,8 @@
             <td>{{ status | trans }} </td>
             {# <td>{{ worker.applications }}</td> #}
             <td>
-               <a href="{{ path('worker_show', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
                {% if is_granted('ROLE_RRHH') or is_granted('ROLE_ADMIN') %}
+                  <a href="{{ path('worker_show', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
                   <a href="{{ path('worker_edit', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
                   <a href="{{ path('worker_delete', { worker: worker.id }) }}" 
                      data-action="click->table#onClick" 
@@ -58,7 +58,12 @@
                      <i class="fa fa-trash" title='{{ "btn.delete" | trans | capitalize }}'></i>
                   </a>&nbsp;
                {% elseif is_granted('ROLE_BOSS') %}
-                  <a href="{{ path('worker_edit', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
+                  {% if worker.status != constant('App\\Entity\\Worker::STATUS_REVISION_PENDING') %}
+                     <a href="{{ path('worker_show', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
+                     <a href="{{ path('worker_edit', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
+                  {% else %}
+                     <a href="{{ path('worker_validate', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-check-square" title='{{ "btn.validate" | trans | capitalize }}'></i></a>&nbsp;
+                  {% endif %}
                {% endif %}
             </td>
       </tr>

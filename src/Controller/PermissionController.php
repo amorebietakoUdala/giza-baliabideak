@@ -15,6 +15,7 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Translation\TranslatableMessage;
 
 /**
  * @Route("/{_locale}", requirements={
@@ -54,6 +55,11 @@ class PermissionController extends BaseController
             /** @var Permission $permission */
             $permission = $form->getData();
             $permission->setWorker($worker);
+            if ( !$worker->checkIfUserIsAllowedBoss($this->getUser()) ) {
+                $this->addFlash('error',new TranslatableMessage('error.notAllowedBoss', 
+                    ['{bosses}' => implode(',',$worker->getJob()->getBosses()->toArray())], 'messages'));
+                return $this->renderError($form, $template);
+            }
             if ($this->checkAlreadyAddedPermission($permission)) {
                 $this->addFlash('error', 'error.alreadyAddedApplication');
                 return $this->renderError($form, $template);

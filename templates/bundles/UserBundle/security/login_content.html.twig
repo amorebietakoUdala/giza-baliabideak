@@ -1,6 +1,9 @@
 {% trans_default_domain 'user_bundle' %}
 
 {% block user_content %}
+{% if error %}
+    <div class="alert alert-danger">{{ error.messageKey | trans }}</div>
+{% endif %}
 <form action="{{ path("user_security_login_check") }}" method="post">
     <div class="container margin-top-13">
         <div class="row">

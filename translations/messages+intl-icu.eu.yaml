@@ -105,6 +105,8 @@ btn.search: "Bilatu"
 btn.clean: "Garbitu"
 btn.enviar: "Bidali"
 btn.addApplication: "Aplikazioa gehitu"
+btn.finish: "Bukatu dut aplikazioak gehitzen"
+btn.validate: "Ikusi oneritzia emateko"
 
 link.logout: "Irten"
 
@@ -124,6 +126,7 @@ error.subAplicationNeeded: "AUPAC-eko negoziatu bat hautatu behar duzu."
 error.alreadyAddedApplication: "Aplikazioa jadanik gehituta dago. Ezaba ezazu lehenengo aldatu nahi baduzu."
 error.almostOneRoleNeeded: "Behintzat rol bat hautatu behar duzu"
 error.subAplicationHasPermissions: "Negoziatua baimenen batetan ezarrita dago. Ezin da borratu."
+error.notAllowedBoss: "Ezin da eragiketa burutu, bakarrik postu horren arduradunek oneritzi ditzakete langile horren baimenak.({bosses})"
 
 modal.title.application: "Aplikazio berria"
 modal.title.department: "Sail berria"
@@ -137,3 +140,4 @@ mail.messageToAppOwnersRemoving: '{boss} arduradunak {worker}-entzako {applicati
 mail.disclaimerRemoving: "Baimen hau kentzeko arazoren bat egotekotan, {boss} arduranarekin harremanetan jar zaitez."
 
 mail.medicalRevision: "Langile berri hau altan eman dugu, azterketa medikua dela eta kontuan hartzeko."
+mail.medicalRevisionDeletion: "Langile hau bajan eman dugu, azterketa medikua dela eta kontuan hartzeko."

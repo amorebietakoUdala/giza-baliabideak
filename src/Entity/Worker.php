@@ -312,5 +312,14 @@ class Worker
 
         return $this;
     }
+
+    public function checkIfUserIsAllowedBoss(User $user) {
+        $job = $this->getJob();
+        $bosses = $job->getBosses();
+        if ($bosses->contains($user)) {
+            return true;
+        }
+        return false;
+    }
 }
 

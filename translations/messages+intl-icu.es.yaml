@@ -105,6 +105,8 @@ btn.search: "Buscar"
 btn.clean: "Limpiar"
 btn.enviar: "Enviar"
 btn.addApplication: "Añadir aplicación"
+btn.finish: "He terminado de añadir aplicaciones"
+btn.validate: "Ver para validar"
 
 link.logout: "Salir"
 
@@ -124,6 +126,7 @@ error.subAplicationNeeded: "Debe seleccionar un negociado de AUPAC"
 error.alreadyAddedApplication: "Aplicación ya añadida. Elimínela si quiere cambiarla"
 error.almostOneRoleNeeded: "Al menos debe seleccionar un rol."
 error.subAplicationHasPermissions: "El negociado está aplicado a algún permiso de usuario. No se puede borrar."
+error.notAllowedBoss: "No realizar la operación, sólo los responsables de ese puesto pueden dar los permisos. ({bosses})"
 
 modal.title.application: "Nueva applicación"
 modal.title.department: "Nuevo departamento"
@@ -137,3 +140,4 @@ mail.messageToAppOwnersRemoving: '{boss} ha solicitado quitar el permiso a la ap
 mail.disclaimerRemoving: "Si existe algún problema para quitar este acceso, pongáse en contacto con la persona responsable {boss}."
 
 mail.medicalRevision: "Hemos dado de alta a este nuevo trabajador, tenlo en cuenta para reconocimientos médicos."
+mail.medicalRevisionDeletion: "Hemos dado de baja a este trabajador, tenlo en cuenta para reconocimientos médicos."
