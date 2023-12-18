@@ -26,19 +26,15 @@ class AppFixtures extends Fixture
 
         ApplicationFactory::createMany(10);
         DepartmentFactory::createMany(5);
-        JobFactory::createMany(20, function() {
-            return [
-                'applications' => ApplicationFactory::randomSet(3),
-                'bosses' => UserFactory::randomSet(2),
-            ];
-        });
-        WorkerFactory::createMany (20, function() {
-            return [
-                'department' => DepartmentFactory::random(),
-                'applications' => ApplicationFactory::randomSet(2),
-                'job' => JobFactory::random(),
-            ];
-        });
+        JobFactory::createMany(20, fn() => [
+            'applications' => ApplicationFactory::randomSet(3),
+            'bosses' => UserFactory::randomSet(2),
+        ]);
+        WorkerFactory::createMany (20, fn() => [
+            'department' => DepartmentFactory::random(),
+            'applications' => ApplicationFactory::randomSet(2),
+            'job' => JobFactory::random(),
+        ]);
 
         $manager->flush();
     }

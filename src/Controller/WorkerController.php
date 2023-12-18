@@ -17,35 +17,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Translation\TranslatableMessage;
 
-/**
- * @Route("/{_locale}", requirements={
- *	    "_locale": "es|eu|en"
- * })
-  */
+#[Route(path: '/{_locale}', requirements: ['_locale' => 'es|eu|en'])]
 class WorkerController extends BaseController
 {
 
-    private WorkerRepository $repo;
-    private EntityManagerInterface $em;
-    private MailerInterface $mailer;
-    private SerializerInterface $serializer;
-    
-    public function __construct(WorkerRepository $repo, EntityManagerInterface $em, MailerInterface $mailer, SerializerInterface $serializer)
+    public function __construct(private readonly WorkerRepository $repo, private readonly EntityManagerInterface $em, private readonly MailerInterface $mailer, private readonly SerializerInterface $serializer)
     {
-        $this->repo = $repo;
-        $this->em = $em;
-        $this->mailer = $mailer;
-        $this->serializer = $serializer;
     }
 
-    /**
-     * @Route("/worker/new", name="worker_new")
-     * @Security("is_granted('ROLE_RRHH')")
-     */
+    #[IsGranted('ROLE_RRHH')]
+    #[Route(path: '/worker/new', name: 'worker_new')]
     public function new(Request $request) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(WorkerType::class, new Worker(), [
@@ -95,9 +80,8 @@ class WorkerController extends BaseController
 
     /**
      * Sends message to boss to choose the authorized applications
-     * 
-     * @Route("/worker/{worker}/send", name="worker_send", methods={"GET"})
      */
+    #[Route(path: '/worker/{worker}/send', name: 'worker_send', methods: ['GET'])]
     public function send(Request $request, Worker $worker) {
         $this->loadQueryParameters($request);
         $this->createHistoric("Reenviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']));
@@ -107,10 +91,8 @@ class WorkerController extends BaseController
         return $this->redirectToRoute('worker_index');
     }
 
-    /**
-     * @Route("/worker/{worker}/validate", name="worker_validate")
-     * @Security("is_granted('ROLE_BOSS')")
-     */
+    #[IsGranted('ROLE_BOSS')]
+    #[Route(path: '/worker/{worker}/validate', name: 'worker_validate')]
     public function validate(Request $request, Worker $worker) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(WorkerType::class, $worker,[
@@ -152,9 +134,7 @@ class WorkerController extends BaseController
         return $this->renderEdit($form, false, false, true);
     }
 
-    /**
-     * @Route("/worker/{worker}/edit", name="worker_edit")
-     */
+    #[Route(path: '/worker/{worker}/edit', name: 'worker_edit')]
     public function edit(Request $request, Worker $worker) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(WorkerType::class, $worker, [
@@ -178,22 +158,7 @@ class WorkerController extends BaseController
         return $this->renderEdit($form, false, false);
     }
 
-    /**
-     * @Route("/worker/{worker}", name="worker_show")
-     */
-    public function show(Request $request, Worker $worker) {
-        $this->loadQueryParameters($request);
-        $form = $this->createForm(WorkerType::class, $worker,[
-            'readonly' => true,
-            'locale' => $request->getLocale(),
-        ]);
-
-        return $this->renderEdit($form);
-    }
-
-    /**
-     * @Route("/worker/{worker}/delete", name="worker_delete", methods={"GET"})
-     */
+    #[Route(path: '/worker/{worker}/delete', name: 'worker_delete', methods: ['GET'])]
     public function delete(Request $request, Worker $worker)
     {
         $this->loadQueryParameters($request);
@@ -206,9 +171,18 @@ class WorkerController extends BaseController
         return $this->redirectToRoute('worker_index');
     }    
 
-    /**
-     * @Route("/worker", name="worker_index")
-     */
+    #[Route(path: '/worker/{worker}', name: 'worker_show')]
+    public function show(Request $request, Worker $worker) {
+        $this->loadQueryParameters($request);
+        $form = $this->createForm(WorkerType::class, $worker,[
+            'readonly' => true,
+            'locale' => $request->getLocale(),
+        ]);
+
+        return $this->renderEdit($form);
+    }
+
+    #[Route(path: '/worker', name: 'worker_index')]
     public function index(Request $request): Response
     {
         $this->loadQueryParameters($request);
@@ -225,7 +199,7 @@ class WorkerController extends BaseController
         $workers = $this->repo->findByExample($worker);
         return $this->render('worker/index.html.twig', [
             'workers' => $workers,
-            'form' => $form->createView(),
+            'form' => $form,
             'filters' => $this->remove_blank_filters($worker),
         ]);
     }
@@ -272,7 +246,7 @@ class WorkerController extends BaseController
     
     private function renderEdit(FormInterface $form, $new = false, $readonly = true, $validate = false) {
         return $this->render('worker/edit.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'readonly' => $readonly,
             'new' => $new,
             'validate' => $validate,

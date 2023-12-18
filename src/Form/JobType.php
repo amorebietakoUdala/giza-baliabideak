@@ -35,9 +35,7 @@ class JobType extends AbstractType
                 'label' => 'job.bosses',
                 'multiple' => true,
                 'disabled' => $readonly,
-                'query_builder' => function(UserRepository $er) {
-                    return $er->findBossesQB();
-                },                
+                'query_builder' => fn(UserRepository $er) => $er->findBossesQB(),                
             ])
         ;
     }

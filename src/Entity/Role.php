@@ -8,40 +8,28 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=RoleRepository::class)
- */
-class Role
+#[ORM\Entity(repositoryClass: RoleRepository::class)]
+class Role implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"show"})
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['show'])]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"show", "historic"})
-    */
-    private $nameEs;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['show', 'historic'])]
+    private ?string $nameEs = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"show"})
-     */
-    private $nameEu;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['show'])]
+    private ?string $nameEu = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Application::class, mappedBy="roles")
-     */
-    private $applications;
+    #[ORM\ManyToMany(targetEntity: Application::class, mappedBy: 'roles')]
+    private Collection|array $applications;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Permission::class, mappedBy="roles")
-     */
-    private $permissions;
+    #[ORM\ManyToMany(targetEntity: Permission::class, mappedBy: 'roles')]
+    private Collection|array $permissions;
 
     public function __construct()
     {
@@ -112,9 +100,9 @@ class Role
         return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->nameEs;
+        return (string) $this->nameEs;
     }
 
     /**

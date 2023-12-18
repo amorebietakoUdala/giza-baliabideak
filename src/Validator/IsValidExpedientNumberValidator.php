@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class IsValidExpedientNumberValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
         /** @var $constraint \App\Validator\IsValidExpedientNumber */
 
@@ -40,7 +40,8 @@ class IsValidExpedientNumberValidator extends ConstraintValidator
         }
      }
 
-     private function validateExpCode(string $expCode) {
+     private function validateExpCode(string $expCode): bool 
+     {
         $pattern = '/^(.+)\/(.+)\/(.+)$/';
         $matches = preg_match($pattern, $expCode, $matchesArray);
         if (!$matches) {

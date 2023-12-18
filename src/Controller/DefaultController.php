@@ -5,16 +5,12 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Security("is_granted('ROLE_GIZA_BALIABIDEAK')")
- */
+#[IsGranted('ROLE_GIZA_BALIABIDEAK')]
 class DefaultController extends AbstractController
 {
-    /**
-     * @Route("/", name="app_home")
-     */
+    #[Route(path: '/', name: 'app_home')]
     public function index(): Response
     {
         return $this->redirectToRoute('worker_index');

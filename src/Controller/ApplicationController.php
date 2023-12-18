@@ -10,31 +10,22 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Translation\TranslatableMessage;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/{_locale}", requirements={
- *	    "_locale": "es|eu|en"
- * })
- * @Security("is_granted('ROLE_ADMIN')")
- */
+#[IsGranted('ROLE_ADMIN')]
+#[Route(path: '/{_locale}', requirements: ['_locale' => 'es|eu|en'])]
 class ApplicationController extends BaseController
 {
 
-   private ApplicationRepository $repo;
-   private EntityManagerInterface $em;
-
-   public function __construct(ApplicationRepository $repo, EntityManagerInterface $em) {
-      $this->repo = $repo;
-      $this->em = $em;
+   public function __construct(private readonly ApplicationRepository $repo, private readonly EntityManagerInterface $em)
+   {
    }
 
      /**
      * Creates or updates an application
-     * 
-     * @Route("/application/new", name="application_save", methods={"GET","POST"})
      */
+    #[Route(path: '/application/new', name: 'application_save', methods: ['GET', 'POST'])]
     public function createOrSave(Request $request): Response
     {
         $this->loadQueryParameters($request);
@@ -55,15 +46,15 @@ class ApplicationController extends BaseController
                 $this->addFlash('error', 'messages.applicationAlreadyExist');
                 $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
                 return $this->render('application/' . $template, [
-                    'form' => $form->createView(),
+                    'form' => $form,
                     'new' => true,
                     'readonly' => false,
-                ], new Response(null, 422));        
+                ], new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));        
             }
             $this->em->persist($application);
             $this->em->flush();
             if ($this->getAjax() || $request->isXmlHttpRequest()) {
-               return new Response(null, 204);
+               return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
             }
             return $this->redirectToRoute('application_index');
         }
@@ -71,16 +62,15 @@ class ApplicationController extends BaseController
         return $this->render('application/' . $template, [
             'readonly' => false,
             'new' => true,
-            'form' => $form->createView(),
+            'form' => $form,
         ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));        
    }
 
       /**
        * Show the application form specified by id.
        * The application can't be changed
-       * 
-       * @Route("/application/{application}", name="application_show", methods={"GET"})
        */
+      #[Route(path: '/application/{application}', name: 'application_show', methods: ['GET'])]
       public function show(Request $request, Application $application): Response
       {
          $form = $this->createForm(ApplicationType::class, $application, [
@@ -90,7 +80,7 @@ class ApplicationController extends BaseController
          $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'show.html.twig';
          return $this->render('application/' . $template, [
                'application' => $application,
-               'form' => $form->createView(),
+               'form' => $form,
                'readonly' => true,
                'new' => false,
          ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200,));
@@ -98,9 +88,8 @@ class ApplicationController extends BaseController
 
       /**
        * Renders the application form specified by id to edit it's fields
-      * 
-      * @Route("/application/{application}/edit", name="application_edit", methods={"GET","POST"})
-      */
+       */
+      #[Route(path: '/application/{application}/edit', name: 'application_edit', methods: ['GET', 'POST'])]
       public function edit(Request $request, Application $application, EntityManagerInterface $entityManager): Response
       {
          $form = $this->createForm(ApplicationType::class, $application, [
@@ -118,22 +107,20 @@ class ApplicationController extends BaseController
          $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
          return $this->render('application/' . $template, [
             'application' => $application,
-            'form' => $form->createView(),
+            'form' => $form,
             'readonly' => false,
             'new' => false,
          ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200,));
       }
 
 
-    /**
-     * @Route("/application/{application}/delete", name="application_delete", methods={"DELETE"})
-     */
+    #[Route(path: '/application/{application}/delete', name: 'application_delete', methods: ['DELETE'])]
     public function delete(Request $request, Application $application): Response
     {
         $permissions = $application->getPermissions();
         if ( count($permissions) > 0 ) {
             $this->addFlash('error', new TranslatableMessage('error.applicationHasPermissions'));
-            return $this->render('common/_error.html.twig',[], new Response('', 422));
+            return $this->render('common/_error.html.twig',[], new Response('', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));
         }
         if ($this->isCsrfTokenValid('delete'.$application->getId(), $request->get('_token'))) {
             $this->em->remove($application);
@@ -141,16 +128,14 @@ class ApplicationController extends BaseController
             if (!$request->isXmlHttpRequest()) {
                 return $this->redirectToRoute('application_index');
             } else {
-                return new Response(null, 204);
+                return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
             }
         } else {
-            return new Response('messages.invalidCsrfToken', 422);
+            return new Response('messages.invalidCsrfToken', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }   
 
-   /**
-    * @Route("/application", name="application_index")
-    */
+   #[Route(path: '/application', name: 'application_index')]
     public function index(Request $request): Response
     {
         $this->loadQueryParameters($request);
@@ -164,7 +149,7 @@ class ApplicationController extends BaseController
         $template = !$this->getAjax() ? 'application/index.html.twig' : 'application/_list.html.twig';
         return $this->render($template, [
             'applications' => $applications,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);        
     }
 

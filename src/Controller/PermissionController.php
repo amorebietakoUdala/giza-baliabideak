@@ -17,28 +17,15 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Translation\TranslatableMessage;
 
-/**
- * @Route("/{_locale}", requirements={
- *	    "_locale": "es|eu|en"
- * })
-  */
+#[Route(path: '/{_locale}', requirements: ['_locale' => 'es|eu|en'])]
 class PermissionController extends BaseController
 {
 
-    private EntityManagerInterface $em;
-    private SerializerInterface $serializer;
-    private MailerInterface $mailer;
-
-    public function __construct(EntityManagerInterface $em, SerializerInterface $serializer, MailerInterface $mailer) 
+    public function __construct(private readonly EntityManagerInterface $em, private readonly SerializerInterface $serializer, private readonly MailerInterface $mailer)
     {
-        $this->em = $em;
-        $this->serializer = $serializer;
-        $this->mailer = $mailer;
     }
 
-    /**
-     * @Route("/permission/add-to/worker/{worker}", name="permission_add_to_worker")
-     */
+    #[Route(path: '/permission/add-to/worker/{worker}', name: 'permission_add_to_worker')]
     public function addPermisionToWorker(Request $request, ?Worker $worker): Response
     {
         $workerApplication = new Permission();
@@ -89,13 +76,11 @@ class PermissionController extends BaseController
         return $this->render('permission/' . $template, [
             'readonly' => false,
             'new' => true,
-            'form' => $form->createView(),
+            'form' => $form,
         ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));
     }
 
-    /**
-     * @Route("/permission/{permission}/delete", name="permission_delete")
-     */
+    #[Route(path: '/permission/{permission}/delete', name: 'permission_delete')]
     public function deletePermisionToWorker(Request $request, Permission $permission): Response
     {
         if ($this->isCsrfTokenValid('delete'.$permission->getId(), $request->get('_token'))) {
@@ -116,16 +101,14 @@ class PermissionController extends BaseController
                     'worker' => $permission->getWorker()->getId(),
                 ]);
             } else {
-                return new Response(null, 204);
+                return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
             }
         } else {
-            return new Response('messages.invalidCsrfToken', 422);
+            return new Response('messages.invalidCsrfToken', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
 
-    /**
-     * @Route("/permission/list/worker/{worker}", name="permission_list")
-     */
+    #[Route(path: '/permission/list/worker/{worker}', name: 'permission_list')]
     public function list(Request $request, Worker $worker) {
         $removeAllowed = false;
         $referer = $request->headers->get('referer');
@@ -202,7 +185,7 @@ class PermissionController extends BaseController
             'readonly' => false,
             'new' => true,
             'form' => $form->createView(),
-        ], new Response(null, 422));
+        ], new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 
     private function createHistoric($operation, $details) {

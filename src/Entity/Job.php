@@ -8,51 +8,35 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=JobRepository::class)
- */
-class Job
+#[ORM\Entity(repositoryClass: JobRepository::class)]
+class Job implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"show"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['show'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups({"show"})
-     */
-    private $code;
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['show'])]
+    private ?int $code = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"show"})
-     */
-    private $titleEs;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['show'])]
+    private ?string $titleEs = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"show"})
-     */
-    private $titleEu;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['show'])]
+    private ?string $titleEu = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Worker::class, mappedBy="job")
-     */
-    private $workers;
+    #[ORM\OneToMany(targetEntity: Worker::class, mappedBy: 'job')]
+    private Collection|array $workers;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class)
-     */
-    private $bosses;
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    private Collection|array $bosses;
 
-    /**
-     * @ORM\OneToMany(targetEntity=JobPermission::class, mappedBy="job", cascade={"persist"})
-     */
-    private $permissions;
+    #[ORM\OneToMany(targetEntity: JobPermission::class, mappedBy: 'job', cascade: ['persist'])]
+    private Collection|array $permissions;
 
     public function __construct()
     {

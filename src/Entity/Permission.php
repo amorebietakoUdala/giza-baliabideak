@@ -9,42 +9,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=PermissionRepository::class)
- */
+#[ORM\Entity(repositoryClass: PermissionRepository::class)]
 class Permission
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Worker::class, inversedBy="permissions")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $worker;
+    #[ORM\ManyToOne(targetEntity: Worker::class, inversedBy: 'permissions')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Worker $worker = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Application::class, inversedBy="permissions")
-     * @Groups({"historic"})
-     */
-    private $application;
+    #[ORM\ManyToOne(targetEntity: Application::class, inversedBy: 'permissions')]
+    #[Groups(['historic'])]
+    private ?Application $application = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=SubApplication::class, inversedBy="permissions")
-     * @Groups({"historic"})
-     */
-    private $subApplication;
+    #[ORM\ManyToOne(targetEntity: SubApplication::class, inversedBy: 'permissions')]
+    #[Groups(['historic'])]
+    private ?SubApplication $subApplication = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="permissions")
-     * @Groups({"historic"})
-     * @MaxDepth(1)
-     */
-    private $roles;
+    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'permissions')]
+    #[Groups(['historic'])]
+    #[MaxDepth(1)]
+    private Collection|array $roles;
 
     public function __construct()
     {

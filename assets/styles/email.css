@@ -8,14 +8,13 @@ table {
 }
  
 th {
-background-color: green;
-Color: white;
+   background-color: green;
+   Color: white;
 }
 
-th,
-td {
-width: 150px;
-text-align: center;
-border: 1px solid black;
-padding: 5px
+th, td {
+   width: 150px;
+   text-align: center;
+   border: 1px solid black;
+   padding: 5px
 }

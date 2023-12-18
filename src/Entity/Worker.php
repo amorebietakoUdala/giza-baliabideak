@@ -10,99 +10,69 @@ use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 
-/**
- * @ORM\Entity(repositoryClass=WorkerRepository::class)
- */
-class Worker
+#[ORM\Entity(repositoryClass: WorkerRepository::class)]
+class Worker implements \Stringable
 {
     use TimestampableEntity;
     
-    const STATUS_RRHH_NEW = 1;
-    const STATUS_REVISION_PENDING = 2;
-    const STATUS_IN_PROGRESS = 3;
-    const STATUS_REGISTERED = 4;
-    const STATUS_DELETED = 5;
+    final public const STATUS_RRHH_NEW = 1;
+    final public const STATUS_REVISION_PENDING = 2;
+    final public const STATUS_IN_PROGRESS = 3;
+    final public const STATUS_REGISTERED = 4;
+    final public const STATUS_DELETED = 5;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"historic"})
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['historic'])]
     private $id;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"historic"})
-     */
-    private $dni;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['historic'])]
+    private ?string $dni = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"historic"})
-     */
-    private $name;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['historic'])]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"historic"})
-     */
-    private $surname1;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['historic'])]
+    private ?string $surname1 = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"historic"})
-     */
-    private $surname2;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['historic'])]
+    private ?string $surname2 = null;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    private $startDate;
+    #[ORM\Column(type: 'date', nullable: true)]
+    private ?\DateTimeInterface $startDate = null;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    private $endDate;
+    #[ORM\Column(type: 'date', nullable: true)]
+    private ?\DateTimeInterface $endDate = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $expedientNumber;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $expedientNumber = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Department::class, inversedBy="workers")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $department;
+    #[ORM\ManyToOne(targetEntity: Department::class, inversedBy: 'workers')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Department $department = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Job::class, inversedBy="workers")
-     */
-    private $job;
+    #[ORM\ManyToOne(targetEntity: Job::class, inversedBy: 'workers')]
+    private ?\App\Entity\Job $job = null;
 
-    /**
-     * @ORM\Column(type="integer", nullable=true)
-     */
-    private $status;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $status = null;
 
-    /**
-     * @ORM\Column(type="boolean", nullable=true)
-     */
-    private $noEndDate;
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $noEndDate = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="workers")
-     * @Groups({"historic"})
-     */
-    private $validatedBy;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'workers')]
+    #[Groups(['historic'])]
+    private ?User $validatedBy = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Permission::class, mappedBy="worker")
-     * @Groups({"historic"})
-     * @MaxDepth(1)
-     */
-    private $permissions;
+    #[ORM\OneToMany(targetEntity: Permission::class, mappedBy: 'worker')]
+    #[Groups(['historic'])]
+    #[MaxDepth(1)]
+    private Collection|array $permissions;
 
     public function __construct()
     {
@@ -222,7 +192,7 @@ class Worker
         return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->name.' '.$this->surname1.' '.$this->surname2;
     }

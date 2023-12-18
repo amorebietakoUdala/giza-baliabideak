@@ -8,39 +8,27 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=SubApplicationRepository::class)
- */
-class SubApplication
+#[ORM\Entity(repositoryClass: SubApplicationRepository::class)]
+class SubApplication implements \Stringable
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"historic"})
-     * 
-     */
-    private $nameEs;
+    
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['historic'])]
+    private ?string $nameEs = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $nameEu;
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $nameEu = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Application::class, inversedBy="subApplications")
-     */
-    private $application;
+    #[ORM\ManyToOne(targetEntity: Application::class, inversedBy: 'subApplications')]
+    private ?Application $application = null;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Permission::class, mappedBy="subApplication")
-     */
-    private $permissions;
+    #[ORM\OneToMany(targetEntity: Permission::class, mappedBy: 'subApplication')]
+    private Collection|array $permissions;
 
     public function __construct()
     {
@@ -101,9 +89,9 @@ class SubApplication
         return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->nameEs;
+        return (string) $this->nameEs;
     }
 
     /**
