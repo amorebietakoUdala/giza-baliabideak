@@ -10,31 +10,22 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Translation\TranslatableMessage;
 
-/**
- * @Route("/{_locale}", requirements={
- *	    "_locale": "es|eu|en"
- * })
- * @Security("is_granted('ROLE_ADMIN')")
- */
+#[IsGranted('ROLE_ADMIN')]
+#[Route(path: '/{_locale}', requirements: ['_locale' => 'es|eu|en'])]
 class SubApplicationController extends BaseController
 {
 
-   private SubApplicationRepository $repo;
-   private EntityManagerInterface $em;
-
-   public function __construct(SubApplicationRepository $repo, EntityManagerInterface $em) {
-      $this->repo = $repo;
-      $this->em = $em;
+   public function __construct(private readonly SubApplicationRepository $repo, private readonly EntityManagerInterface $em)
+   {
    }
 
      /**
      * Creates or updates an department
-     * 
-     * @Route("/sub-application/new", name="subApplication_new", methods={"GET","POST"})
      */
+    #[Route(path: '/sub-application/new', name: 'subApplication_new', methods: ['GET', 'POST'])]
     public function createOrSave(Request $request): Response
     {
         $this->loadQueryParameters($request);
@@ -55,28 +46,27 @@ class SubApplicationController extends BaseController
                 $this->addFlash('error', 'messages.departmentAlreadyExist');
                 $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
                 return $this->render('sub-application/' . $template, [
-                    'form' => $form->createView(),
-                ], new Response(null, 422));        
+                    'form' => $form,
+                ], new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));        
             }
             $this->em->persist($subApplication);
             $this->em->flush();
             if ($this->getAjax() || $request->isXmlHttpRequest()) {
-               return new Response(null, 204);
+               return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
             }
             return $this->redirectToRoute('department_index');
         }
         $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
         return $this->render('sub-application/' . $template, [
-            'form' => $form->createView(),
+            'form' => $form,
         ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));        
    }
 
       /**
        * Show the SubApplication form specified by id.
        * The SubApplication can't be changed
-       * 
-       * @Route("/sub-application/{subApplication}", name="subApplication_show", methods={"GET"})
        */
+      #[Route(path: '/sub-application/{subApplication}', name: 'subApplication_show', methods: ['GET'])]
       public function show(Request $request, SubApplication $subApplication): Response
       {
          $form = $this->createForm(SubApplicationType::class, $subApplication, [
@@ -86,17 +76,16 @@ class SubApplicationController extends BaseController
          $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
          return $this->render('sub-application/' . $template, [
                'department' => $subApplication,
-               'form' => $form->createView(),
+               'form' => $form,
                'readonly' => true,
                'new' => false,
          ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200,));
       }
 
       /**
-      * Renders the SubApplication form specified by id to edit it's fields
-      * 
-      * @Route("/sub-application/{subApplication}/edit", name="subApplication_edit", methods={"GET","POST"})
-      */
+       * Renders the SubApplication form specified by id to edit it's fields
+       */
+      #[Route(path: '/sub-application/{subApplication}/edit', name: 'subApplication_edit', methods: ['GET', 'POST'])]
       public function edit(Request $request, SubApplication $subApplication): Response
       {
          $form = $this->createForm(SubApplicationType::class, $subApplication, [
@@ -114,22 +103,20 @@ class SubApplicationController extends BaseController
          $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
          return $this->render('sub-application/' . $template, [
             'department' => $subApplication,
-            'form' => $form->createView(),
+            'form' => $form,
             'readonly' => false,
             'new' => false,
          ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200,));
       }
 
 
-    /**
-     * @Route("/sub-application/{subApplication}/delete", name="subApplication_delete", methods={"DELETE"})
-     */
+    #[Route(path: '/sub-application/{subApplication}/delete', name: 'subApplication_delete', methods: ['DELETE'])]
     public function delete(Request $request, SubApplication $subApplication): Response
     {
         $permissions = $subApplication->getPermissions();
         if ( count($permissions) > 0 ) {
             $this->addFlash('error', new TranslatableMessage('error.subAplicationHasPermissions'));
-            return $this->render('common/_error.html.twig',[], new Response('', 422));
+            return $this->render('common/_error.html.twig',[], new Response('', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));
         }
         if ($this->isCsrfTokenValid('delete'.$subApplication->getId(), $request->get('_token'))) {
             $this->em->remove($subApplication);
@@ -137,16 +124,14 @@ class SubApplicationController extends BaseController
             if (!$request->isXmlHttpRequest()) {
                 return $this->redirectToRoute('department_index');
             } else {
-                return new Response(null, 204);
+                return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
             }
         } else {
-            return new Response('messages.invalidCsrfToken', 422);
+            return new Response('messages.invalidCsrfToken', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }   
 
-   /**
-    * @Route("/sub-application", name="subApplication_index")
-    */
+   #[Route(path: '/sub-application', name: 'subApplication_index')]
     public function index(Request $request): Response
     {
         $this->loadQueryParameters($request);
@@ -159,7 +144,7 @@ class SubApplicationController extends BaseController
         $template = !$this->getAjax() ? 'sub-application/index.html.twig' : 'sub-application/_list.html.twig';
         return $this->render($template, [
             'subApplications' => $subApplications,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);        
     }
 

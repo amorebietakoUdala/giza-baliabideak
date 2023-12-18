@@ -10,31 +10,22 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Translation\TranslatableMessage;
 
-/**
- * @Route("/{_locale}", requirements={
- *	    "_locale": "es|eu|en"
- * })
- * @Security("is_granted('ROLE_ADMIN')")
- */
+#[IsGranted('ROLE_ADMIN')]
+#[Route(path: '/{_locale}', requirements: ['_locale' => 'es|eu|en'])]
 class RoleController extends BaseController
 {
 
-   private RoleRepository $repo;
-   private EntityManagerInterface $em;
-
-   public function __construct(RoleRepository $repo, EntityManagerInterface $em) {
-      $this->repo = $repo;
-      $this->em = $em;
+   public function __construct(private readonly RoleRepository $repo, private readonly EntityManagerInterface $em)
+   {
    }
 
      /**
      * Creates or updates an role
-     * 
-     * @Route("/role/new", name="role_new", methods={"GET","POST"})
      */
+    #[Route(path: '/role/new', name: 'role_new', methods: ['GET', 'POST'])]
     public function createOrSave(Request $request): Response
     {
         $this->loadQueryParameters($request);
@@ -55,28 +46,27 @@ class RoleController extends BaseController
                 $this->addFlash('error', 'messages.roleAlreadyExist');
                 $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
                 return $this->render('role/' . $template, [
-                    'form' => $form->createView(),
-                ], new Response(null, 422));        
+                    'form' => $form,
+                ], new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));        
             }
             $this->em->persist($role);
             $this->em->flush();
             if ($this->getAjax() || $request->isXmlHttpRequest()) {
-               return new Response(null, 204);
+               return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
             }
             return $this->redirectToRoute('role_index');
         }
         $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
         return $this->render('role/' . $template, [
-            'form' => $form->createView(),
+            'form' => $form,
         ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));        
    }
 
       /**
        * Show the role form specified by id.
        * The Role can't be changed
-       * 
-       * @Route("/role/{role}", name="role_show", methods={"GET"})
        */
+      #[Route(path: '/role/{role}', name: 'role_show', methods: ['GET'])]
       public function show(Request $request, Role $role): Response
       {
          $form = $this->createForm(RoleType::class, $role, [
@@ -86,17 +76,16 @@ class RoleController extends BaseController
          $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
          return $this->render('role/' . $template, [
                'role' => $role,
-               'form' => $form->createView(),
+               'form' => $form,
                'readonly' => true,
                'new' => false,
          ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200,));
       }
 
       /**
-      * Renders the Role form specified by id to edit it's fields
-      * 
-      * @Route("/role/{role}/edit", name="role_edit", methods={"GET","POST"})
-      */
+       * Renders the Role form specified by id to edit it's fields
+       */
+      #[Route(path: '/role/{role}/edit', name: 'role_edit', methods: ['GET', 'POST'])]
       public function edit(Request $request, Role $role): Response
       {
          $form = $this->createForm(RoleType::class, $role, [
@@ -114,23 +103,21 @@ class RoleController extends BaseController
          $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
          return $this->render('role/' . $template, [
             'role' => $role,
-            'form' => $form->createView(),
+            'form' => $form,
             'readonly' => false,
             'new' => false,
          ], new Response(null, $form->isSubmitted() && !$form->isValid() ? 422 : 200,));
       }
 
 
-    /**
-     * @Route("/role/{role}/delete", name="role_delete", methods={"DELETE"})
-     */
+    #[Route(path: '/role/{role}/delete', name: 'role_delete', methods: ['DELETE'])]
     public function delete(Request $request, Role $role): Response
     {
         $workers = $role->getApplications();
         if ( count($workers) > 0 ) {
             $this->addFlash('error', new TranslatableMessage('error.roleHasApplications', 
             ['{workers}' => substr(implode(',',$workers->toArray()),0,50).'...'], 'messages'));
-            return $this->render('common/_error.html.twig',[], new Response('', 422));
+            return $this->render('common/_error.html.twig',[], new Response('', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));
         }
         if ($this->isCsrfTokenValid('delete'.$role->getId(), $request->get('_token'))) {
             $this->em->remove($role);
@@ -138,16 +125,14 @@ class RoleController extends BaseController
             if (!$request->isXmlHttpRequest()) {
                 return $this->redirectToRoute('role_index');
             } else {
-                return new Response(null, 204);
+                return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
             }
         } else {
-            return new Response('messages.invalidCsrfToken', 422);
+            return new Response('messages.invalidCsrfToken', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }   
 
-   /**
-    * @Route("/role", name="role_index")
-    */
+   #[Route(path: '/role', name: 'role_index')]
     public function index(Request $request): Response
     {
         $this->loadQueryParameters($request);
@@ -160,7 +145,7 @@ class RoleController extends BaseController
         $template = !$this->getAjax() ? 'role/index.html.twig' : 'role/_list.html.twig';
         return $this->render($template, [
             'roles' => $roles,
-            'form' => $form->createView(),
+            'form' => $form,
         ]);        
     }
 

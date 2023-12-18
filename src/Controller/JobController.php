@@ -11,37 +11,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Translation\TranslatableMessage;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/{_locale}", requirements={
- *	    "_locale": "es|eu|en"
- * })
- * @Security("is_granted('ROLE_RRHH')")
- */
+#[IsGranted('ROLE_RRHH')]
+#[Route(path: '/{_locale}', requirements: ['_locale' => 'es|eu|en'])]
 class JobController extends BaseController
 {
 
-    private JobRepository $repo;
-    private EntityManagerInterface $em;
-
-    public function __construct(JobRepository $repo, EntityManagerInterface $em) {
-        $this->repo = $repo;
-        $this->em = $em;
+    public function __construct(private readonly JobRepository $repo, private readonly EntityManagerInterface $em)
+    {
     }
 
-    /**
-     * @Route("/job/permissions", name="job_permission_list")
-     */
+    #[Route(path: '/job/permissions', name: 'job_permission_list')]
     public function permissions(Request $request) {
         $id = $request->get('job');
         $job = $this->repo->find($id);
         return $this->json($job);
     }
 
-    /**
-     * @Route("/job/new", name="job_new")
-     */
+    #[Route(path: '/job/new', name: 'job_new')]
      public function new(Request $request) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(JobType::class, new Job());
@@ -57,15 +45,13 @@ class JobController extends BaseController
         }
 
         return $this->render('job/edit.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'readonly' => false,
             'new' => true,
         ]);        
     }
 
-    /**
-     * @Route("/job/{job}/edit", name="job_edit")
-     */
+    #[Route(path: '/job/{job}/edit', name: 'job_edit')]
     public function edit(Request $request, Job $job) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(JobType::class, $job);
@@ -80,15 +66,13 @@ class JobController extends BaseController
         }
 
         return $this->render('job/edit.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'readonly' => false,
             'new' => false,
         ]);        
     }
 
-    /**
-     * @Route("/job/{job}", name="job_show")
-     */
+    #[Route(path: '/job/{job}', name: 'job_show')]
     public function show(Request $request, Job $job) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(JobType::class, $job,[
@@ -96,15 +80,13 @@ class JobController extends BaseController
         ]);
 
         return $this->render('job/edit.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form,
             'readonly' => true,
             'new' => false,
         ]);
     }
 
-    /**
-     * @Route("/job/{job}/delete", name="job_delete", methods={"GET"})
-     */
+    #[Route(path: '/job/{job}/delete', name: 'job_delete', methods: ['GET'])]
     public function delete(Request $request, Job $job)
     {
         $workers = $job->getWorkers();
@@ -122,9 +104,7 @@ class JobController extends BaseController
     }    
 
 
-    /**
-     * @Route("/job", name="job_index")
-     */
+    #[Route(path: '/job', name: 'job_index')]
     public function index(Request $request): Response
     {
         $this->loadQueryParameters($request);

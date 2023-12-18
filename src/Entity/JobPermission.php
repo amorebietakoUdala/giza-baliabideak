@@ -7,38 +7,26 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=JobPermissionRepository::class)
- */
+#[ORM\Entity(repositoryClass: JobPermissionRepository::class)]
 class JobPermission
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Job::class, inversedBy="permissions", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $job;
+    #[ORM\ManyToOne(targetEntity: Job::class, inversedBy: 'permissions', cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Job $job = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Application::class, inversedBy="permissions")
-     */
-    private $application;
+    #[ORM\ManyToOne(targetEntity: Application::class, inversedBy: 'permissions')]
+    private ?Application $application = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=SubApplication::class, inversedBy="permissions")
-     */
-    private $subApplication;
+    #[ORM\ManyToOne(targetEntity: SubApplication::class, inversedBy: 'permissions')]
+    private ?SubApplication $subApplication = null;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="permissions", cascade={"persist"})
-     */
-    private $roles;
+    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'permissions', cascade: ['persist'])]
+    private Collection|array $roles;
 
     public function __construct()
     {

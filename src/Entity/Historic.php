@@ -6,35 +6,25 @@ use App\Repository\HistoricRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
-/**
- * @ORM\Entity(repositoryClass=HistoricRepository::class)
- */
+#[ORM\Entity(repositoryClass: HistoricRepository::class)]
 class Historic
 {
     use TimestampableEntity;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
     private $id;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="historics")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'historics')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $operation;
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $operation = null;
 
-    /**
-     * @ORM\Column(type="string", length=4096, nullable=true)
-     */
-    private $details;
+    #[ORM\Column(type: 'string', length: 4096, nullable: true)]
+    private ?string $details = null;
 
     public function getId(): ?int
     {

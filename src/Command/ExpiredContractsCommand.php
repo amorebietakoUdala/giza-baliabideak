@@ -15,22 +15,11 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Twig\Environment;
 
+#[\Symfony\Component\Console\Attribute\AsCommand('app:expired', 'Search for contracts expired in the specified days')]
 class ExpiredContractsCommand extends Command
 {
-    protected static $defaultName = 'app:expired';
-    protected static $defaultDescription = 'Search for contracts expired in the specified days';
-
-    private WorkerRepository $repo;
-    private MailerInterface $mailer;
-    private ParameterBagInterface $params;
-    private Environment $twig;
-    
-    public function __construct(MailerInterface $mailer, WorkerRepository $repo, ParameterBagInterface $params, Environment $twig)
+    public function __construct(private readonly MailerInterface $mailer, private readonly WorkerRepository $repo, private readonly ParameterBagInterface $params, private readonly Environment $twig)
     {
-        $this->repo = $repo;
-        $this->mailer = $mailer;
-        $this->params = $params;
-        $this->twig = $twig;
         parent::__construct();
     }
 

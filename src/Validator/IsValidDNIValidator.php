@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraint;
  */
 class IsValidDNIValidator extends ConstraintValidator
 {
-    public function validate($value, Constraint $constraint)
+    public function validate($value, Constraint $constraint): void
     {
         /* @var $constraint \App\Validator\IsValidDNI */
 
@@ -41,7 +41,7 @@ class IsValidDNIValidator extends ConstraintValidator
         }
     }
 
-    private function __valida_nif_cif_nie($cif)
+    private function __valida_nif_cif_nie($cif): int
     {
         //Copyright ©2005-2011 David Vidal Serra. Bajo licencia GNU GPL.
         //Este software viene SIN NINGUN TIPO DE GARANTIA; para saber mas detalles
@@ -49,7 +49,7 @@ class IsValidDNIValidator extends ConstraintValidator
         //Esto es software libre, y puede ser usado y redistribuirdo de acuerdo
         //con la condicion de que el autor jamas sera responsable de su uso.
         //Returns: 1 = NIF ok, 2 = CIF ok, 3 = NIE ok, -1 = NIF bad, -2 = CIF bad, -3 = NIE bad, 0 = ??? bad
-        $cif = strtoupper($cif);
+        $cif = strtoupper((string) $cif);
         for ($i = 0; $i < 9; ++$i) {
             $num[$i] = substr($cif, $i, 1);
         }
@@ -68,7 +68,7 @@ class IsValidDNIValidator extends ConstraintValidator
 
         //comprobacion de NIEs
         if (preg_match('/^[XYZ]{1}/', $cif)) {
-            if ($num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr(str_replace(array('X', 'Y', 'Z'), array('0', '1', '2'), $cif), 0, 8) % 23, 1)) {
+            if ($num[8] == substr('TRWAGMYFPDXBNJZSQVHLCKE', substr(str_replace(['X', 'Y', 'Z'], ['0', '1', '2'], $cif), 0, 8) % 23, 1)) {
                 return 3;
             } else {
                 return -3;
@@ -78,17 +78,17 @@ class IsValidDNIValidator extends ConstraintValidator
         //algoritmo para comprobacion de codigos tipo CIF
         $suma = $num[2] + $num[4] + $num[6];
         for ($i = 1; $i < 8; $i += 2) {
-            $suma += substr((2 * $num[$i]), 0, 1);
+            $suma += substr(((string) (2 * $num[$i])), 0, 1);
             // Si tiene 2 dígitos, se hace la multiplicación del segundo número, sino no.
             if ( 2 * $num[$i] >= 10) {
-                $suma += substr((2 * $num[$i]), 1, 1);
+                $suma += substr(((string) (2 * $num[$i])), 1, 1);
             }
         }
-        $n = 10 - \substr($suma, \strlen($suma) - 1, 1);
+        $n = 10 - \substr((string) $suma, \strlen((string) $suma) - 1, 1);
         
         //comprobacion de CIFs
         if (preg_match('/^[ABCDEFGHJNPQRSUVW]{1}/', $cif)) {
-            if ($num[8] == chr(64 + $n) || $num[8] == substr($n, strlen($n) - 1, 1)) {
+            if ($num[8] == chr(64 + $n) || $num[8] == substr((string) $n, strlen((string) $n) - 1, 1)) {
                 return 2;
             } else {
                 return -2;

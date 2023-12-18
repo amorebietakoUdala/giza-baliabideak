@@ -41,12 +41,12 @@ final class WorkerFactory extends ModelFactory
     {
         return [
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
-            'dni' => self::faker()->numberBetween(10000000,99999999).'H',
+            'dni' => self::faker()->numberBetween(10_000_000,99_999_999).'H',
             'name' => self::faker()->firstName(),
             'surname1' => self::faker()->lastName(),
             'surname2' => self::faker()->lastName(),
-            'startDate' => new \DateTime(sprintf('-%d days', rand(1, 100))),
-            'endDate' => new \DateTime(sprintf('%d days', rand(1, 100))),
+            'startDate' => new \DateTime(sprintf('-%d days', random_int(1, 100))),
+            'endDate' => new \DateTime(sprintf('%d days', random_int(1, 100))),
             'expedientNumber' => 'AYT/'.self::faker()->numberBetween(1,200).'/'.self::faker()->numberBetween(2022,2023),
             'createdAt' => new DateTime(),
             'updatedAt' => new DateTime(),

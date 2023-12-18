@@ -8,25 +8,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-/**
- * @Route("/api")
- * @Security("is_granted('ROLE_GIZA_BALIABIDEAK')")
- */
+#[IsGranted('ROLE_GIZA_BALIABIDEAK')]
+#[Route(path: '/api')]
 class ApiController extends AbstractController
 {
 
-   private JobRepository $repo;
-   private ApplicationRepository $appRepo;
-
-   public function __construct(JobRepository $repo, ApplicationRepository $appRepo) {
-      $this->repo = $repo;
-      $this->appRepo = $appRepo;
+   public function __construct(private readonly JobRepository $repo, private readonly ApplicationRepository $appRepo)
+   {
    }
 
-   /**
-    * @Route("/job", name="api_get_job")
-    */
+   #[Route(path: '/job', name: 'api_get_job')]
    public function show(Request $request) {
       $job = $this->repo->find($request->get('id'));
       return $this->json($job, 200, [], [
@@ -34,9 +27,7 @@ class ApiController extends AbstractController
       ]);
    }
 
-   /**
-    * @Route("/application", name="api_get_application")
-    */
+   #[Route(path: '/application', name: 'api_get_application')]
    public function applicationRoles(Request $request) {
       $id = $request->get('application');
       $application = $this->appRepo->find($id);

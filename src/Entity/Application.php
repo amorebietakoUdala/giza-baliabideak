@@ -9,49 +9,34 @@ use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass=ApplicationRepository::class)
- */
-class Application
+#[ORM\Entity(repositoryClass: ApplicationRepository::class)]
+class Application implements \Stringable
 {
+    final public const Application_AUPAC=1;
 
-    const Application_AUPAC=1;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(['show'])]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups({"show"})
-     */
-    private $id;
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['show', 'historic'])]
+    private ?string $name = null;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups({"show", "historic"})
-     */
-    private $name;
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $appOwnersEmails = null;
 
-    /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     */
-    private $appOwnersEmails;
+    #[ORM\OneToMany(targetEntity: SubApplication::class, cascade: ['persist', 'remove'], mappedBy: 'application')]
+    #[Groups(['show'])]
+    private Collection|array $subApplications;
 
-    /**
-     * @ORM\OneToMany(targetEntity=SubApplication::class, cascade={"persist", "remove"}, mappedBy="application")
-     * @Groups({"show"}) 
-     */
-    private $subApplications;
+    #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'applications')]
+    #[Groups(['show'])]
+    private Collection|array $roles;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Role::class, inversedBy="applications")
-     * @Groups({"show"})
-     */
-    private $roles;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Permission::class, mappedBy="application")
-     */
-    private $permissions;
+    #[ORM\OneToMany(targetEntity: Permission::class, mappedBy: 'application')]
+    private Collection|array $permissions;
 
     public function __construct()
     {
@@ -84,9 +69,9 @@ class Application
         return $this;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     public function fill(Application $data): self {
