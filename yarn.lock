@@ -7,7 +7,7 @@ __metadata:
 
 "@amorebietakoudala/stimulus-controller-bundle@file:vendor/amorebietakoudala/stimulus-controller-bundle/assets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.1.0
-  resolution: "@amorebietakoudala/stimulus-controller-bundle@file:vendor/amorebietakoudala/stimulus-controller-bundle/assets#vendor/amorebietakoudala/stimulus-controller-bundle/assets::hash=995591&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@amorebietakoudala/stimulus-controller-bundle@file:vendor/amorebietakoudala/stimulus-controller-bundle/assets#vendor/amorebietakoudala/stimulus-controller-bundle/assets::hash=58706c&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@eonasdan/tempus-dominus": ^6.2.10
     "@hotwired/stimulus": ^3.0.0
@@ -28,7 +28,7 @@ __metadata:
     select2-bootstrap-5-theme: ^1.3.0
     sweetalert2: 11.4.8
     tableexport.jquery.plugin: ^1.26.0
-  checksum: 0c4b2b6fb24c753968017444784b8fc8f3950c05bfb52a033c70e60fadab1f04d3774990cb053ac0fe5ff3cd8e7365c6527605bbe3b0f52feba9ca7e55c40e3d
+  checksum: 9113715e40f3a9b146a103dff880d7edd0f6c96aa71e6c4cc788b2f9986a2e68241d2c72e65001fd65449d8f8929413f7a81033bd29e39c2d8507dc41541e4a4
   languageName: node
   linkType: hard
 
@@ -2216,13 +2216,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"adler-32@npm:~1.3.0":
-  version: 1.3.1
-  resolution: "adler-32@npm:1.3.1"
-  checksum: c7f6b02df64a4392fcf1591862344f56733716a558e97a8b06a553dadeeaec792054512389000f42f371b13d2be5370e056e18db3b573944b595c4cb7742c5c6
-  languageName: node
-  linkType: hard
-
 "agent-base@npm:^7.0.2, agent-base@npm:^7.1.0":
   version: 7.1.0
   resolution: "agent-base@npm:7.1.0"
@@ -2770,16 +2763,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cfb@npm:~1.2.1":
-  version: 1.2.2
-  resolution: "cfb@npm:1.2.2"
-  dependencies:
-    adler-32: "npm:~1.3.0"
-    crc-32: "npm:~1.2.0"
-  checksum: cfb63a7d630a7fa415c1b25655dca66666584f29c95fb0ee90866ada1a28090857827f2ba70a9a50df28bdce05728ae58d495bce417249f305ef7b3c85840024
-  languageName: node
-  linkType: hard
-
 "chalk@npm:^2.4.2":
   version: 2.4.2
   resolution: "chalk@npm:2.4.2"
@@ -2874,13 +2857,6 @@ __metadata:
   version: 2.1.2
   resolution: "clone@npm:2.1.2"
   checksum: aaf106e9bc025b21333e2f4c12da539b568db4925c0501a1bf4070836c9e848c892fa22c35548ce0d1132b08bbbfa17a00144fe58fccdab6fa900fec4250f67d
-  languageName: node
-  linkType: hard
-
-"codepage@npm:~1.15.0":
-  version: 1.15.0
-  resolution: "codepage@npm:1.15.0"
-  checksum: 86bdfd8f8fd4d78ace6ddab02a1621cbb4a833686fe886984b4155d99cd0287581d69495774b816ab2f571c4dc851c1595e1dbb8d69bd6dbb5a631ebf317fab0
   languageName: node
   linkType: hard
 
@@ -3060,15 +3036,6 @@ __metadata:
   version: 1.0.3
   resolution: "core-util-is@npm:1.0.3"
   checksum: 9de8597363a8e9b9952491ebe18167e3b36e7707569eed0ebf14f8bba773611376466ae34575bca8cfe3c767890c859c74056084738f09d4e4a6f902b2ad7d99
-  languageName: node
-  linkType: hard
-
-"crc-32@npm:~1.2.0, crc-32@npm:~1.2.1":
-  version: 1.2.2
-  resolution: "crc-32@npm:1.2.2"
-  bin:
-    crc32: bin/crc32.njs
-  checksum: ad2d0ad0cbd465b75dcaeeff0600f8195b686816ab5f3ba4c6e052a07f728c3e70df2e3ca9fd3d4484dc4ba70586e161ca5a2334ec8bf5a41bf022a6103ff243
   languageName: node
   linkType: hard
 
@@ -4050,13 +4017,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"frac@npm:~1.1.2":
-  version: 1.1.2
-  resolution: "frac@npm:1.1.2"
-  checksum: fbfbb28003bb84506dd35e7aad8543c5a358bdc95451d0065b6127d40d2c45106f14221575c3e9ce3ea4bf0bbf1225b73c5d655965c9f4ce44332cbe1b34667d
-  languageName: node
-  linkType: hard
-
 "fresh@npm:0.5.2":
   version: 0.5.2
   resolution: "fresh@npm:0.5.2"
@@ -4952,13 +4912,6 @@ __metadata:
   version: 3.6.1
   resolution: "jquery@npm:3.6.1"
   checksum: 6177d866a74f1137cad800f142c7cdbd5ab19cd4282546f8bdb4890c9f933b1d542ab96f2aa15d007e43c98de7315b0513e849ec5359d3ac5640f720892fe547
-  languageName: node
-  linkType: hard
-
-"jquery@npm:>=3.2.1":
-  version: 3.7.1
-  resolution: "jquery@npm:3.7.1"
-  checksum: 4370b8139d6ae82867eb6f7f21d1edccf1d1bdf41c0840920ea80d366c2cd5dbe1ceebb110ee9772aa839b04400faa1572c5c560b507c688ed7b61cea26c0e27
   languageName: node
   linkType: hard
 
@@ -7085,15 +7038,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ssf@npm:~0.11.2":
-  version: 0.11.2
-  resolution: "ssf@npm:0.11.2"
-  dependencies:
-    frac: "npm:~1.1.2"
-  checksum: 6ecef6ae0a90e67dc4b05bc3cca883e2dffad9773b41124af36ee308884e4a29f98bde66d6c8d2bd1ccf5f860ea4f6c49338bd8d733007fc42ebe02dd5295dcf
-  languageName: node
-  linkType: hard
-
 "ssri@npm:^10.0.0":
   version: 10.0.5
   resolution: "ssri@npm:10.0.5"
@@ -7714,17 +7658,17 @@ __metadata:
   linkType: hard
 
 "webpack-dev-middleware@npm:^5.3.1":
-  version: 5.3.3
-  resolution: "webpack-dev-middleware@npm:5.3.3"
+  version: 5.3.4
+  resolution: "webpack-dev-middleware@npm:5.3.4"
   dependencies:
-    colorette: "npm:^2.0.10"
-    memfs: "npm:^3.4.3"
-    mime-types: "npm:^2.1.31"
-    range-parser: "npm:^1.2.1"
-    schema-utils: "npm:^4.0.0"
+    colorette: ^2.0.10
+    memfs: ^3.4.3
+    mime-types: ^2.1.31
+    range-parser: ^1.2.1
+    schema-utils: ^4.0.0
   peerDependencies:
     webpack: ^4.0.0 || ^5.0.0
-  checksum: dd332cc6da61222c43d25e5a2155e23147b777ff32fdf1f1a0a8777020c072fbcef7756360ce2a13939c3f534c06b4992a4d659318c4a7fe2c0530b52a8a6621
+  checksum: 90cf3e27d0714c1a745454a1794f491b7076434939340605b9ee8718ba2b85385b120939754e9fdbd6569811e749dee53eec319e0d600e70e0b0baffd8e3fb13
   languageName: node
   linkType: hard
 
@@ -7929,20 +7873,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wmf@npm:~1.0.1":
-  version: 1.0.2
-  resolution: "wmf@npm:1.0.2"
-  checksum: d336acb2c76fa868ef006fbb06c4e64c7c1ed5ff77d16c48a273cf1f4d0a44e35df209b8fde28d93dd4a924d652a9c4fc8a92ad57885a5e437df0b0900769e3b
-  languageName: node
-  linkType: hard
-
-"word@npm:~0.3.0":
-  version: 0.3.0
-  resolution: "word@npm:0.3.0"
-  checksum: f84e7061883380c1bcb0d98bd183b7f2b281688011924af7a96d3ed3ee20aeb12cc59a0451b66e5e57520338a056725ff8e0c07b358c0afecf5488a9557c19fe
-  languageName: node
-  linkType: hard
-
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version: 7.0.0
   resolution: "wrap-ansi@npm:7.0.0"
@@ -7987,20 +7917,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xlsx@npm:>=0.16.0":
-  version: 0.18.5
-  resolution: "xlsx@npm:0.18.5"
-  dependencies:
-    adler-32: "npm:~1.3.0"
-    cfb: "npm:~1.2.1"
-    codepage: "npm:~1.15.0"
-    crc-32: "npm:~1.2.1"
-    ssf: "npm:~0.11.2"
-    wmf: "npm:~1.0.1"
-    word: "npm:~0.3.0"
+"xlsx@https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz":
+  version: 0.20.2
+  resolution: "xlsx@https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   bin:
-    xlsx: bin/xlsx.njs
-  checksum: c5774d3c6abdf2db24f33a7b786e305255dac0e41a4e6bf6167c3f8517bfb5bfcb98e8207c39d5105f8304aa7416758da0400a993fb79aaf8e2ea4cfa8801f2e
+    xlsx: ./bin/xlsx.njs
+  checksum: d6a7cce81cdf5f832311feaef08c8918cb51cdaac235efd29c7f6caf881f7aa797aa51cdbcb583a491ba82d1e7c2b97f92ed082eda754de05731a4558768e68d
   languageName: node
   linkType: hard
 
