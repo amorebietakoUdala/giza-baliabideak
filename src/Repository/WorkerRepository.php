@@ -119,6 +119,8 @@ class WorkerRepository extends ServiceEntityRepository
             ->setParameter('startDate', $startDate)
             ->andWhere('w.endDate <= :endDate')
             ->setParameter('endDate', $endDate)
+            ->andWhere('w.status != :status')
+            ->setParameter( 'status' , Worker::STATUS_DELETED)
             ->getQuery()
             ->getResult()
         ;
