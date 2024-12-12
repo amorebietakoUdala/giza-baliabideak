@@ -7,6 +7,7 @@ use App\Entity\Department;
 use App\Entity\Job;
 use App\Entity\Worker;
 use App\Entity\Permission;
+use App\Entity\WorkerJob;
 use App\Repository\ApplicationRepository;
 use App\Validator\IsValidDNI;
 use App\Validator\IsValidExpedientNumber;
@@ -56,21 +57,19 @@ class WorkerType extends AbstractType
                 'label' => 'worker.surname2',
                 'disabled' => $readonly || $roleBossOnly,
             ])
-            ->add('job',EntityType::class,[
-                'class' => Job::class,
-                'label' => 'worker.job',
-                'placeholder' => 'worker.job.placeholder',
+            ->add('workerJob',WorkerJobType::class,[
                 'disabled' => $readonly || $roleBossOnly,
-                'choice_label' => function ($job) use ($locale) {
-                    if ('es' === $locale) {
-                        return '('.$job->getCode().') '.$job->getTitleEs();
-                    } else {
-                        return '('.$job->getCode().') '.$job->getTitleEu();
-                    }
-                },
-                'constraints' => [
-                    new NotBlank(),
-                ],
+                'locale' => $locale,
+                // 'choice_label' => function ($workerJob) use ($locale) {
+                //     if ('es' === $locale) {
+                //         return '('.$workerJob->getCode().') '.$workerJob->getJob()->getTitleEs();
+                //     } else {
+                //         return '('.$workerJob->getCode().') '.$workerJob->getJob()->getTitleEu();
+                //     }
+                // },
+                // 'constraints' => [
+                //     new NotBlank(),
+                // ],
             ])
             ->add('startDate', DateTimeType::class, [
                 'label' => 'worker.startDate',

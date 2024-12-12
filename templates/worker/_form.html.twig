@@ -38,16 +38,23 @@
             </div>
         </div>
         <div class="row align-items-center mb-1">
-            <div class="col-lg-3 col-md-2 col-sm-6">
-                {{ form_row(form.job, { 'attr': 
+            <div class="col-lg-auto col-md-auto col-sm-auto">
+                {{ form_row(form.workerJob.code, { 'attr': 
+                    { 'class' : 'form-control form-control-sm' }
+                }) }}
+            </div>
+            <div class="col-lg-auto col-md-auto col-sm-auto">
+                {{ form_row(form.workerJob.job, { 'attr': 
                     { 'class' : 'form-select form-select-sm', 'data-controller' : 'job select2', 'data-job-url-value': path("api_get_job"), 'data-action': 'change->job#onChange' }
                 }) }}
             </div>
             <div class="col-lg-3 col-md-2 col-sm-6">
                 {{ form_row(form.department, { 'attr': 
-                    { 'class' : 'form-select form-select-sm' }
+                    { 'class' : 'form-select form-select-sm', 'data-controller' : 'select2' }
                 }) }}
             </div>
+        </div>
+        <div class="row align-items-center mb-1">
             <div class="col-lg-2 col-md-2 col-sm-6">
                 {{ form_row(form.startDate, { 'attr': 
                     { 'class' : 'form-control form-control-sm', 'data-controller' : 'datetimepicker', 'data-datetimepicker-format-value': 'yyyy-MM-dd' }

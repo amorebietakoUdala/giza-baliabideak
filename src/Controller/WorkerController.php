@@ -110,7 +110,7 @@ class WorkerController extends BaseController
             }
             if ( !$worker->checkIfUserIsAllowedBoss($this->getUser()) ) {
                 $this->addFlash('error',new TranslatableMessage('error.notAllowedBoss', 
-                    ['{bosses}' => implode(',',$worker->getJob()->getBosses()->toArray())], 'messages'));
+                    ['{bosses}' => implode(',',$worker->getWorkerJob()->getJob()->getBosses()->toArray())], 'messages'));
                 return $this->renderEdit($form, false, false, true);
             }
             $worker->setStatus(Worker::STATUS_IN_PROGRESS);
@@ -210,7 +210,7 @@ class WorkerController extends BaseController
     */
     private function addJobPermissionsToWorker(Worker $worker) 
     {
-        $job = $worker->getJob();
+        $job = $worker->getWorkerJob()->getJob();
         $permissions = $job->getPermissions();
         foreach($permissions as $permission) {
             $permissionCopy = JobPermission::copyPermission($permission, $worker);
@@ -270,8 +270,8 @@ class WorkerController extends BaseController
     }
 
     private function sendMessageToBoss($subject, Worker $worker) {
-        if ($worker->getJob() !== null) {
-            $bosses = $worker->getJob()->getBosses();
+        if ($worker->getWorkerJob()->getJob() !== null) {
+            $bosses = $worker->getWorkerJob()->getJob()->getBosses();
             $emails = [];
             foreach ($bosses as $boss) {
                 if ($boss->getEmail()) {

@@ -15,7 +15,7 @@
       <b>{{ 'worker.endDate' | trans }}:</b> {{ worker.endDate != null ? worker.endDate | date('Y-m-d') : ''}}<br>
       <b>{{ 'worker.expedientNumber' | trans }}:</b> {{ worker.expedientNumber }}<br>
       <b>{{ 'worker.department' | trans }}:</b> {{ worker.department }}<br>
-      <b>{{ 'worker.job' | trans }}:</b> {{ worker.job }}<br>
+      <b>{{ 'worker.job' | trans }}:</b> {{ worker.workerJob.job }}<br>
       <b>{{ 'worker.status' | trans }}:</b> {{ ('status.'~worker.status) | trans }}<br>
       <br>
       {% if validate %}

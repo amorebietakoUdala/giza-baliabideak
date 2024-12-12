@@ -9,7 +9,7 @@
    data-page-sortOrder="{{ sortOrder }}">
    <thead>
       <tr>
-            <th data-sortable="true">{{ 'job.code' | trans }}</th>
+            <th data-sortable="true">{{ 'job.id' | trans }}</th>
             {% if app.request.locale == 'es' %}
                <th data-sortable="true">{{ 'job.titleEs' | trans }}</th>
             {% else %}
@@ -21,7 +21,7 @@
    <tbody>
    {% for job in jobs %}
       <tr>
-            <td>{{ job.code }}</td>
+            <td>{{ job.id }}</td>
             {% if app.request.locale == 'es' %}
                <td>{{ job.titleEs }}</td>
             {% else %}

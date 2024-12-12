@@ -2,9 +2,16 @@
 <li class="w-25 list-group-item d-flex flex-row justify-content-between">
       {{ permission.application.name }}  {{ permission.subApplication != null ? '- '~ permission.subApplication.nameEs : '' }} - {{ permission.roles | join('|') }}
       {% if removeAllowed %}
-      <a href="{{ path('permission_delete', {'permission': permission.id, '_token': csrf_token('delete' ~ permission.id) }) }}" class="ml-auto">
-            <span class="fa fa-close"></span>
-      </a>
+      <div>
+            {% if is_granted("ROLE_ADMIN") and not permission.granted %}
+                  <a href="{{ path('permission_granted', {'permission': permission.id, '_token': csrf_token('granted' ~ permission.id) }) }}" class="ml-auto">
+                        <span class="fa fa-check" title="{{ 'btn.granted' | trans }}" alt="{{ 'btn.granted' | trans }}"></span>
+                  </a>
+            {% endif %}
+            &nbsp;<a href="{{ path('permission_delete', {'permission': permission.id, '_token': csrf_token('delete' ~ permission.id) }) }}" class="ml-auto">
+                  <span class="fa fa-close text-danger" title="{{ 'btn.delete' | trans }}" alt="{{ 'btn.delete' | trans }}"></span>
+            </a>
+      </div>
       {% endif %}
 </li>
 {% endfor %}

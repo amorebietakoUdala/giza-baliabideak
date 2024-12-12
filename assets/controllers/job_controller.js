@@ -10,6 +10,7 @@ export default class extends Controller {
       const params = new URLSearchParams({
          id: e.currentTarget.value,
       });
+      console.log(this.urlValue);
       const response = await fetch(`${this.urlValue}?${params.toString()}`);
       const json = await response.text();
       const job = JSON.parse(json);
