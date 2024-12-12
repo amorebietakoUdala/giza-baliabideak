@@ -31,11 +31,11 @@
             <td>{{ worker.name }}</td>
             <td>{{ worker.surname1 }}</td>
             <td>{{ worker.surname2 }}</td>
-            {% if worker.job != null %}
+            {% if worker.workerjob != null %}
                {% if app.request.locale == 'es' %}
-                  <td>{{ worker.job.titleEs }}</td>
+                  <td>{{ worker.workerJob.job.titleEs }} ({{ worker.workerJob.code }})</td>
                {% else %}
-                  <td>{{ worker.job.titleEu }}</td>
+                  <td>{{ worker.workerJob.job.titleEu }} ({{ worker.workerJob.code }})</td>
                {% endif %}
             {% else %}
                <td></td>

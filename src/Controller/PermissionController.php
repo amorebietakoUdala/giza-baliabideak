@@ -44,7 +44,7 @@ class PermissionController extends BaseController
             $permission->setWorker($worker);
             if ( !$worker->checkIfUserIsAllowedBoss($this->getUser()) ) {
                 $this->addFlash('error',new TranslatableMessage('error.notAllowedBoss', 
-                    ['{bosses}' => implode(',',$worker->getJob()->getBosses()->toArray())], 'messages'));
+                    ['{bosses}' => implode(',',$worker->getWorkerJob()->getJob()->getBosses()->toArray())], 'messages'));
                 return $this->renderError($form, $template);
             }
             if ($this->checkAlreadyAddedPermission($permission)) {
@@ -101,11 +101,32 @@ class PermissionController extends BaseController
                     'worker' => $permission->getWorker()->getId(),
                 ]);
             } else {
-                return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
+                return new Response(null, Response::HTTP_NO_CONTENT);
             }
         } else {
-            return new Response('messages.invalidCsrfToken', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY);
+            return new Response('messages.invalidCsrfToken', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+    }
+
+    #[Route(path: '/permission/{permission}/granted', name: 'permission_granted', methods: ['GET'])]
+    public function markAsGranted(Request $request, Permission $permission): Response
+    {
+        if (!$this->isCsrfTokenValid('granted'.$permission->getId(), $request->get('_token'))) {
+            $this->addFlash('error', 'messages.invalidCsrfToken');
+            return $this->redirectToRoute('worker_edit',[
+                'worker' => $permission->getWorker()->getId(),
+            ]);
+        }
+        $permission->setGranted(true);
+        $this->em->persist($permission);
+        $this->em->flush();
+        if ($request->isXmlHttpRequest()) {
+            return new Response(null, Response::HTTP_NO_CONTENT);
+        }
+        $this->addFlash('success', 'message.permissionGranted');
+        return $this->redirectToRoute('worker_edit',[
+            'worker' => $permission->getWorker()->getId(),
+        ]);
     }
 
     #[Route(path: '/permission/list/worker/{worker}', name: 'permission_list')]
@@ -127,7 +148,7 @@ class PermissionController extends BaseController
      */
     private function addOrUpdatePermissionToJob(Permission $permission) 
     {
-        $job = $permission->getWorker()->getJob();
+        $job = $permission->getWorker()->getWorkerJob()->getJob();
         $permissions = $job->getPermissions();
         if (count($permissions) === 0) {
             $permissionCopy = JobPermission::createJobPermissionFromPermissionAndWorker($permission, $job);
@@ -159,7 +180,7 @@ class PermissionController extends BaseController
     }
 
     private function removePermissionsFromJob(Permission $permission) {
-        $job = $permission->getWorker()->getJob();
+        $job = $permission->getWorker()->getWorkerJob()->getJob();
         $permissions = $job->getPermissions();
         foreach($permissions as $perm) {
             if ($permission->getApplication() === $perm->getApplication()) {
@@ -185,7 +206,7 @@ class PermissionController extends BaseController
             'readonly' => false,
             'new' => true,
             'form' => $form->createView(),
-        ], new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));
+        ], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 
     private function createHistoric($operation, $details) {

@@ -17,10 +17,6 @@ class Job implements \Stringable
     #[Groups(['show'])]
     private $id;
 
-    #[ORM\Column(type: 'integer')]
-    #[Groups(['show'])]
-    private ?int $code = null;
-
     #[ORM\Column(type: 'string', length: 255)]
     #[Groups(['show'])]
     private ?string $titleEs = null;
@@ -29,37 +25,25 @@ class Job implements \Stringable
     #[Groups(['show'])]
     private ?string $titleEu = null;
 
-    #[ORM\OneToMany(targetEntity: Worker::class, mappedBy: 'job')]
-    private Collection|array $workers;
-
     #[ORM\ManyToMany(targetEntity: User::class)]
     private Collection|array $bosses;
 
     #[ORM\OneToMany(targetEntity: JobPermission::class, mappedBy: 'job', cascade: ['persist'])]
     private Collection|array $permissions;
 
+    #[ORM\OneToMany(targetEntity: WorkerJob::class, mappedBy: 'job', cascade: ['persist', 'remove'])]
+    private Collection|array $workerJob;
+
     public function __construct()
     {
-        $this->workers = new ArrayCollection();
         $this->bosses = new ArrayCollection();
         $this->permissions = new ArrayCollection();
+        $this->workerJob = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCode(): ?int
-    {
-        return $this->code;
-    }
-
-    public function setCode(int $code): self
-    {
-        $this->code = $code;
-
-        return $this;
     }
 
     public function getTitleEs(): ?string
@@ -86,39 +70,10 @@ class Job implements \Stringable
         return $this;
     }
 
-    /**
-     * @return Collection<int, Worker>
-     */
-    public function getWorkers(): Collection
-    {
-        return $this->workers;
-    }
-
-    public function addWorker(Worker $worker): self
-    {
-        if (!$this->workers->contains($worker)) {
-            $this->workers[] = $worker;
-            $worker->setJob($this);
-        }
-
-        return $this;
-    }
-
-    public function removeWorker(Worker $worker): self
-    {
-        if ($this->workers->removeElement($worker)) {
-            // set the owning side to null (unless already changed)
-            if ($worker->getJob() === $this) {
-                $worker->setJob(null);
-            }
-        }
-
-        return $this;
-    }
 
     public function __toString(): string
     {
-        return $this->code.'-'.$this->titleEs;
+        return $this->titleEs;
     }
 
     /**
@@ -174,4 +129,35 @@ class Job implements \Stringable
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, WorkerJob>
+     */
+    public function getWorkerJob(): Collection
+    {
+        return $this->workerJob;
+    }
+
+    public function addWorkerJob(WorkerJob $workerJob): self
+    {
+        if (!$this->workerJob->contains($workerJob)) {
+            $this->workerJob[] = $workerJob;
+            $workerJob->setJob($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorkerJob(JobPermission $workerJob): self
+    {
+        if ($this->workerJob->removeElement($workerJob)) {
+            // set the owning side to null (unless already changed)
+            if ($workerJob->getJob() === $this) {
+                $workerJob->setJob(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

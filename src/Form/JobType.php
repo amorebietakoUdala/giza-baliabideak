@@ -18,10 +18,6 @@ class JobType extends AbstractType
     {
         $readonly = $options['readonly'];
         $builder
-            ->add('code', null, [
-                'label' => 'job.code',
-                'disabled' => $readonly,
-            ])
             ->add('titleEs', null, [
                 'label' => 'job.titleEs',
                 'disabled' => $readonly,

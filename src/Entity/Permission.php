@@ -34,6 +34,9 @@ class Permission
     #[MaxDepth(1)]
     private Collection|array $roles;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $granted = null;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -115,5 +118,17 @@ class Permission
             $newPermission->addRole($rol);
         }
         return $newPermission;
+    }
+
+    public function isGranted(): ?bool
+    {
+        return $this->granted;
+    }
+
+    public function setGranted(?bool $granted): static
+    {
+        $this->granted = $granted;
+
+        return $this;
     }
 }

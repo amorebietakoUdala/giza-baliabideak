@@ -56,9 +56,6 @@ class Worker implements \Stringable
     #[ORM\JoinColumn(nullable: false)]
     private ?Department $department = null;
 
-    #[ORM\ManyToOne(targetEntity: Job::class, inversedBy: 'workers')]
-    private ?\App\Entity\Job $job = null;
-
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $status = null;
 
@@ -73,6 +70,9 @@ class Worker implements \Stringable
     #[Groups(['historic'])]
     #[MaxDepth(1)]
     private Collection|array $permissions;
+
+    #[ORM\OneToOne(mappedBy: 'worker', cascade: ['persist', 'remove'])]
+    private ?WorkerJob $workerJob = null;
 
     public function __construct()
     {
@@ -197,18 +197,6 @@ class Worker implements \Stringable
         return $this->name.' '.$this->surname1.' '.$this->surname2;
     }
 
-    public function getJob(): ?Job
-    {
-        return $this->job;
-    }
-
-    public function setJob(?Job $job): self
-    {
-        $this->job = $job;
-
-        return $this;
-    }
-
     public function getStatus(): ?int
     {
         return $this->status;
@@ -230,7 +218,10 @@ class Worker implements \Stringable
         $this->endDate = $worker->getEndDate();
         $this->expedientNumber = $worker->getExpedientNumber();
         $this->department = $worker->getDepartment();
-        $this->job = $worker->getJob();
+        $this->workerJob = new WorkerJob();
+        $this->workerJob->setWorker($this);
+        $this->workerJob->setJob($worker->getWorkerJob()->getJob());
+        $this->workerJob->setCode($worker->getWorkerJob()->getCode());
         if ( null !== $this->getPermissions() ) {
             $this->getPermissions()->clear();
         }
@@ -284,12 +275,29 @@ class Worker implements \Stringable
     }
 
     public function checkIfUserIsAllowedBoss(User $user) {
-        $job = $this->getJob();
+        $job = $this->getWorkerJob()->getJob();
         $bosses = $job->getBosses();
         if ($bosses->contains($user)) {
             return true;
         }
         return false;
+    }
+
+    public function getWorkerJob(): ?WorkerJob
+    {
+        return $this->workerJob;
+    }
+
+    public function setWorkerJob(WorkerJob $workerJob): static
+    {
+        // set the owning side of the relation if necessary
+        if ($workerJob->getWorker() !== $this) {
+            $workerJob->setWorker($this);
+        }
+
+        $this->workerJob = $workerJob;
+
+        return $this;
     }
 }
 
