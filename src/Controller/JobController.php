@@ -89,7 +89,7 @@ class JobController extends BaseController
     #[Route(path: '/job/{job}/delete', name: 'job_delete', methods: ['GET'])]
     public function delete(Request $request, Job $job)
     {
-        $workers = $job->getWorkers();
+        $workers = $job->getWorkerJob();
         if ( count($workers) > 0 ) {
             $this->addFlash('error', new TranslatableMessage('error.jobHasWorkers', 
             ['{workers}' => substr(implode(',',$workers->toArray()),0,50).'...'], 'messages'));
