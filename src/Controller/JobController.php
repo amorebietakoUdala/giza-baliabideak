@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Repository\JobRepository;
 use App\Controller\BaseController;
 use App\Entity\Job;
+use App\Entity\WorkerJob;
 use App\Form\JobType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,9 +117,9 @@ class JobController extends BaseController
 
     private function getWorkerDnisArray(array $workers) {
         $workerDnis = [];
-        /** @var Worker $worker */
-        foreach($workers as $worker) {
-            $workerDnis[] = $worker->getDni();
+        /** @var WorkerJob $workerJob */
+        foreach($workers as $workerJob) {
+            $workerDnis[] = $workerJob->getWorker()->getDni();
         }
         return $workerDnis;
     }
