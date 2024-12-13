@@ -126,7 +126,7 @@ placeholder.choose: "Seleccione una opción"
 
 error.departmentHasWorkers: "El departamento tiene trabajadores. No se puede borrar."
 error.applicationHasPermissions: "La aplicación no se puede borrar porque tiene permisos asociados."
-error.jobHasWorkers: "El puesto no se puede borrar porque está asignada a algunos trabajadores ({workers})."
+error.jobHasWorkers: "El puesto no se puede borrar porque está asignados a algunos trabajadores ({workers})."
 error.alreadyValidated: "El trabajador ya está validado."
 error.roleHasApplications: "El rol está asignado a varias aplicaciones. No se puede borrar."
 error.subAplicationNeeded: "Debe seleccionar un negociado de AUPAC"
