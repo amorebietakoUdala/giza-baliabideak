@@ -92,7 +92,7 @@ class JobController extends BaseController
         $workers = $job->getWorkerJob()->toArray();
         if ( count($workers) > 0 ) {
             $this->addFlash('error', new TranslatableMessage('error.jobHasWorkers', 
-            ['{workers}' => substr(implode(',',$this->getWorkerIdsArray($workers)),0,50).'...'], 'messages'));
+            ['{workers}' => substr(implode(',',$this->getWorkerDnisArray($workers)),0,50).'...'], 'messages'));
             return $this->redirectToRoute('job_index');
         }
         $this->loadQueryParameters($request);
@@ -114,12 +114,12 @@ class JobController extends BaseController
         ]);
     }
 
-    private function getWorkerIdsArray(array $workers) {
-        $workerIds = [];
+    private function getWorkerDnisArray(array $workers) {
+        $workerDnis = [];
         /** @var Worker $worker */
         foreach($workers as $worker) {
-            $workerIds[] = $worker->getId();
+            $workerDnis[] = $worker->getDni();
         }
-        return $workerIds;
+        return $workerDnis;
     }
 }
