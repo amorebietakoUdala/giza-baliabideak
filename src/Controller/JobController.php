@@ -89,10 +89,10 @@ class JobController extends BaseController
     #[Route(path: '/job/{job}/delete', name: 'job_delete', methods: ['GET'])]
     public function delete(Request $request, Job $job)
     {
-        $workers = $job->getWorkerJob();
+        $workers = $job->getWorkerJob()->toArray();
         if ( count($workers) > 0 ) {
             $this->addFlash('error', new TranslatableMessage('error.jobHasWorkers', 
-            ['{workers}' => substr(implode(',',$workers->toArray()),0,50).'...'], 'messages'));
+            ['{workers}' => substr(implode(',',$this->getWorkerIdsArray($workers)),0,50).'...'], 'messages'));
             return $this->redirectToRoute('job_index');
         }
         $this->loadQueryParameters($request);
@@ -112,5 +112,14 @@ class JobController extends BaseController
         return $this->render('job/index.html.twig', [
             'jobs' => $jobs,
         ]);
+    }
+
+    private function getWorkerIdsArray(array $workers) {
+        $workerIds = [];
+        /** @var Worker $worker */
+        foreach($workers as $worker) {
+            $workerIds[] = $worker->getId();
+        }
+        return $workerIds;
     }
 }
