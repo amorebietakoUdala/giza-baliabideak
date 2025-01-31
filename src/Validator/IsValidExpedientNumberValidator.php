@@ -42,21 +42,18 @@ class IsValidExpedientNumberValidator extends ConstraintValidator
 
      private function validateExpCode(string $expCode): bool 
      {
-        $pattern = '/^(.+)\/(.+)\/(.+)$/';
+        $pattern = '/^(\d+)\/(\d+)$/';
         $matches = preg_match($pattern, $expCode, $matchesArray);
         if (!$matches) {
             return false;
         }
-        if (mb_strtoupper($matchesArray[1]) !== 'AYT') {
+        if (is_int($matchesArray[1])) {
             return false;
         }
-        if (is_nan($matchesArray[2])) {
+        if (is_int($matchesArray[2])) {
             return false;
         }
-        if (is_nan($matchesArray[3])) {
-            return false;
-        }
-        if ( intVal($matchesArray[3]) < 1950 || intVal($matchesArray[3]) > 3000 ) {
+        if ( intVal($matchesArray[2]) < 1950 || intVal($matchesArray[2]) > 3000 ) {
             return false;
         }
         return true;
