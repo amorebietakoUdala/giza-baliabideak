@@ -94,6 +94,7 @@ class Application implements \Stringable
         $this->subApplications = $data->getSubApplications();
         $this->roles = $data->getRoles();
         $this->appOwners = $data->getAppOwners();
+        $this->general = $data->isGeneral();
         return $this;
     }
 
