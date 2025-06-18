@@ -115,6 +115,18 @@ class JobController extends BaseController
         ]);
     }
 
+
+    #[Route(path: '/job/{job}/permissions', name: 'job_permission_list')]
+    public function jobPermissions(Request $request, job $job): Response
+    {
+        $this->loadQueryParameters($request);
+        $permissions = $job->getPermissions();
+
+        return $this->render('permission/_job_permission_list.html.twig', [
+            'permissions' => $permissions,
+        ]);        
+    }
+
     private function getWorkerDnisArray(array $workers) {
         $workerDnis = [];
         /** @var WorkerJob $workerJob */

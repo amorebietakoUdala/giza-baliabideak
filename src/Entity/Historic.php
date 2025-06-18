@@ -26,6 +26,9 @@ class Historic
     #[ORM\Column(type: 'string', length: 4096, nullable: true)]
     private ?string $details = null;
 
+    #[ORM\ManyToOne(inversedBy: 'historics')]
+    private ?Worker $worker = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -68,9 +71,22 @@ class Historic
         return $this;
     }
 
-    public function fill(User $user, string $operation, string $details) {
+    public function fill(User $user, string $operation, string $details, Worker|null $worker): void{
         $this->setUser($user);
         $this->setOperation($operation);
         $this->setDetails($details);
+        $this->setWorker($worker);
+    }
+
+    public function getWorker(): ?Worker
+    {
+        return $this->worker;
+    }
+
+    public function setWorker(?Worker $worker): static
+    {
+        $this->worker = $worker;
+
+        return $this;
     }
 }

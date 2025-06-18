@@ -1,0 +1,19 @@
+<div class="modal fade" tabindex="-1" data-bs-backdrop="static" data-job-permission-form-target="modal">
+	<div class="modal-dialog {{ scrollable is defined and scrollable ? 'modal-dialog-scrollable': '' }} {{ size is defined and size == 'large' ? 'modal-lg': size is defined and size == 'extra-large' ? 'modal-xl' : '' }}">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" data-job-permission-form-target="modalTitle">{{ modalTitle }}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body" data-job-permission-form-target="modalBody">
+				Loading...
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" 
+				data-action="job-permission-form#submitAddApplicationForm" 
+				data-job-permission-form-target="modalSaveButton">{{'btn.save' | trans}}</button>
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">{{'btn.cancel' | trans}}</button>
+			</div>
+		</div>
+	</div>
+</div>

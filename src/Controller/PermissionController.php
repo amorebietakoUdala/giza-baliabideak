@@ -3,10 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Application;
+use App\Entity\Department;
+use App\Entity\DepartmentPermission;
 use App\Entity\Historic;
+use App\Entity\Job;
 use App\Entity\JobPermission;
 use App\Entity\Worker;
 use App\Entity\Permission;
+use App\Form\DepartmentPermissionType;
+use App\Form\JobPermissionType;
 use App\Form\PermissionType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Translation\TranslatableMessage;
 
@@ -25,6 +31,7 @@ class PermissionController extends BaseController
     {
     }
 
+    #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/permission/add-to/worker/{worker}', name: 'permission_add_to_worker')]
     public function addPermisionToWorker(Request $request, ?Worker $worker): Response
     {
@@ -35,6 +42,7 @@ class PermissionController extends BaseController
             ]),
             'readonly' => false,
             'locale' => $request->getLocale(),
+            'isAdmin' => $this->isGranted('ROLE_ADMIN'),
         ]);
         $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
         $form->handleRequest($request);
@@ -51,22 +59,22 @@ class PermissionController extends BaseController
                 $this->addFlash('error', 'error.alreadyAddedApplication');
                 return $this->renderError($form, $template);
             }
-            if ($permission->getApplication()->getId() === Application::Application_AUPAC && $permission->getSubApplication() === null) {
+            if ($permission->getApplication()->getId() === Application::Application_GESTIONA && $permission->getSubApplication() === null) {
                 $this->addFlash('error', 'error.subAplicationNeeded');
                 return $this->renderError($form, $template);            
             }
             $this->em->persist($permission);
-            $this->createHistoric('añadir permiso', $this->serializer->serialize([$permission, $permission->getWorker()],'json',['groups' => 'historic']));
+            $this->createHistoric("añadir permiso: $permission", $this->serializer->serialize([$permission, $permission->getWorker()],'json',['groups' => 'historic']), $worker);
             $this->addOrUpdatePermissionToJob($permission);
             /** If status > 2 means it's a change in permissions after IT gives them the proper permissions, so we need to notify app owner 
              *  if status is < 2 no need to notify it will be sent after validation.
             */
             $status = $worker->getStatus();
-            if ( $status > 2) {
-                $worker->setStatus(Worker::STATUS_IN_PROGRESS);
+            if ( $status > Worker::STATUS_REVISION_PENDING) {
+                $worker->setStatus(Worker::STATUS_APPROVAL_PENDING);
                 $this->em->persist($worker);
-                $this->createHistoric("enviado al responsable de la aplicación", $this->serializer->serialize($worker,'json',['groups' => 'historic']));
-                $this->sendMessages($permission, 'Langileari honako baimenak emango zaizkio / Se le van a dar los siguientes permisos al empleado');
+                $this->createHistoric("enviado al responsable $permission para su aprobación", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                $this->sendMessages('Langile berriaren baimena onartu / Aprobar el permiso del nuevo empleado', $worker, $permission, false);
             }
             $this->em->flush();
             return $this->redirectToRoute('worker_edit', [
@@ -80,20 +88,106 @@ class PermissionController extends BaseController
         ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));
     }
 
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route(path: '/permission/add-to/department/{department}', name: 'permission_add_to_department')]
+    public function addPermisionToDepartment(Request $request, Department $department): Response
+    {
+        $departmentPermission = new DepartmentPermission();
+        $form = $this->createForm(DepartmentPermissionType::class, $departmentPermission, [
+            'action' => $this->generateUrl('permission_add_to_department', [
+                'department' => $department->getId(),
+            ]),
+            'readonly' => false,
+            'locale' => $request->getLocale(),
+        ]);
+        $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var DepartmentPermission $permission */
+            $permission = $form->getData();
+            $permission->setDepartment($department);
+            if ($this->checkAlreadyAddedDepartmentPermission($permission)) {
+                $this->addFlash('error', 'error.alreadyAddedApplication');
+                return $this->renderError($form, $template);
+            }
+            if ($permission->getApplication()->getId() === Application::Application_GESTIONA && $permission->getSubApplication() === null) {
+                $this->addFlash('error', 'error.subAplicationNeeded');
+                return $this->renderError($form, $template);            
+            }
+            $this->em->persist($permission);
+            $this->em->flush();
+            /** If status > 2 means it's a change in permissions after IT gives them the proper permissions, so we need to notify app owner 
+             *  if status is < 2 no need to notify it will be sent after validation.
+            */
+            return $this->redirectToRoute('department_edit', [
+                'department' => $department->getId(),
+            ]);
+        }
+        return $this->render('permission/' . $template, [
+            'readonly' => false,
+            'new' => true,
+            'form' => $form,
+        ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));
+    }
+
+    #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
+    #[Route(path: '/permission/add-to/job/{job}', name: 'permission_add_to_job')]
+    public function addPermisionToJob(Request $request, Job $job): Response
+    {
+        $form = $this->createForm(JobPermissionType::class, new JobPermission(), [
+            'action' => $this->generateUrl('permission_add_to_job', [
+                'job' => $job->getId(),
+            ]),
+            'readonly' => false,
+            'locale' => $request->getLocale(),
+        ]);
+        $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var JobPermission $jobPermission */
+            $jobPermission = $form->getData();
+            $jobPermission->setJob($job);
+            if ($this->checkAlreadyAddedJobPermission($jobPermission)) {
+                $this->addFlash('error', 'error.alreadyAddedApplication');
+                return $this->renderError($form, $template);
+            }
+            if ($jobPermission->getApplication()->getId() === Application::Application_GESTIONA && $jobPermission->getSubApplication() === null) {
+                $this->addFlash('error', 'error.subAplicationNeeded');
+                return $this->renderError($form, $template);            
+            }
+            $this->em->persist($jobPermission);
+            $this->em->flush();
+            /** If status > 2 means it's a change in permissions after IT gives them the proper permissions, so we need to notify app owner 
+             *  if status is < 2 no need to notify it will be sent after validation.
+            */
+            return $this->redirectToRoute('job_edit', [
+                'job' => $job->getId(),
+            ]);
+        }
+        return $this->render('permission/' . $template, [
+            'readonly' => false,
+            'new' => true,
+            'form' => $form,
+        ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));
+    }
+
+    #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/permission/{permission}/delete', name: 'permission_delete')]
     public function deletePermisionToWorker(Request $request, Permission $permission): Response
     {
+        $worker = $permission->getWorker();
         if ($this->isCsrfTokenValid('delete'.$permission->getId(), $request->get('_token'))) {
             $this->removePermissionsFromJob($permission);
-            $this->createHistoric('eliminar permiso', $this->serializer->serialize([$permission, $permission->getWorker()],'json',['groups' => 'historic']));
+            $this->createHistoric("eliminar permiso $permission", $this->serializer->serialize([$permission, $permission->getWorker()],'json',['groups' => 'historic']), $worker);
             $worker = $permission->getWorker();
             $this->em->remove($permission);
             $status = $worker->getStatus();
             if ( $status > 2) {
                 $worker->setStatus(Worker::STATUS_IN_PROGRESS);
                 $this->em->persist($worker);
-                $this->createHistoric("enviado al responsable de la aplicación", $this->serializer->serialize($worker,'json',['groups' => 'historic']));
-                $this->sendMessages($permission, 'Langileari honako baimenak kenduko zaizkio / Se le van a quitar los siguientes permisos al empleado', true);
+                $application = $permission->getApplication();
+                $this->createHistoric("enviado al responsable de la aplicación $application", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                $this->sendMessages('Langileari honako baimenak kenduko zaizkio / Se le van a quitar los siguientes permisos al empleado', $worker, $permission, true);
             }
             $this->em->flush();
             if (!$request->isXmlHttpRequest()) {
@@ -108,6 +202,47 @@ class PermissionController extends BaseController
         }
     }
 
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route(path: '/department-permission/{departmentPermission}/delete', name: 'department_permission_delete')]
+    public function deleteDepartmentPermision(Request $request, DepartmentPermission $departmentPermission): Response
+    {
+        $departmentId = $departmentPermission->getDepartment()->getId();
+        if ($this->isCsrfTokenValid('delete'.$departmentPermission->getId(), $request->get('_token'))) {
+            $this->em->remove($departmentPermission);
+            $this->em->flush();
+            if (!$request->isXmlHttpRequest()) {
+                return $this->redirectToRoute('department_edit',[
+                    'department' => $departmentId
+                ]);
+            } else {
+                return new Response(null, Response::HTTP_NO_CONTENT);
+            }
+        } else {
+            return new Response('messages.invalidCsrfToken', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
+    #[Route(path: '/job-permission/{jobPermission}/delete', name: 'job_permission_delete')]
+    public function deleteJobPermision(Request $request, JobPermission $jobPermission): Response
+    {
+        $jobId = $jobPermission->getJob()->getId();
+        if ($this->isCsrfTokenValid('delete'.$jobPermission->getId(), $request->get('_token'))) {
+            $this->em->remove($jobPermission);
+            $this->em->flush();
+            if (!$request->isXmlHttpRequest()) {
+                return $this->redirectToRoute('job_edit',[
+                    'job' => $jobId
+                ]);
+            } else {
+                return new Response(null, Response::HTTP_NO_CONTENT);
+            }
+        } else {
+            return new Response('messages.invalidCsrfToken', Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/permission/{permission}/granted', name: 'permission_granted', methods: ['GET'])]
     public function markAsGranted(Request $request, Permission $permission): Response
     {
@@ -118,17 +253,27 @@ class PermissionController extends BaseController
             ]);
         }
         $permission->setGranted(true);
+        $permission->setGrantedAt(new \DateTimeImmutable());
+        $permission->setGrantedBy($this->getUser());
         $this->em->persist($permission);
+        $worker = $permission->getWorker();
+        $this->createHistoric("$permission concedido", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        $this->addFlash('success', 'message.permissionGranted');
+        if ( $worker->hasAllPermissionsGranted()) {
+            $this->em->persist($worker);
+            $worker->setStatus(Worker::STATUS_REGISTERED);
+            $this->createHistoric("Todos los permisos concedidos. Paso a estado alta.", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        }
         $this->em->flush();
         if ($request->isXmlHttpRequest()) {
             return new Response(null, Response::HTTP_NO_CONTENT);
         }
-        $this->addFlash('success', 'message.permissionGranted');
         return $this->redirectToRoute('worker_edit',[
             'worker' => $permission->getWorker()->getId(),
         ]);
     }
 
+    #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/permission/list/worker/{worker}', name: 'permission_list')]
     public function list(Request $request, Worker $worker) {
         $removeAllowed = false;
@@ -137,9 +282,89 @@ class PermissionController extends BaseController
             $removeAllowed = true;
         }
         $permissions = $worker->getPermissions();
+        /** @var User $user */
+        $user = $this->getUser();
         return $this->render('permission/_list.html.twig',[
             'permissions' => $permissions,
             'removeAllowed' => $removeAllowed, 
+            'applicationIds' => $user->getApplicationIds(),
+        ]);
+    }
+
+    /**
+     * Approves a permission for a worker and sends a message to the user creators to create the user.
+     * 
+     * @param Request $request
+     * @param Permission $permission
+     * @return Response
+     */
+    #[IsGranted('ROLE_APP_OWNER')]
+    #[Route(path: '/permission/{permission}/approve', name: 'permission_approve')]
+    public function approve(Request $request, Permission $permission) {
+        $worker = $permission->getWorker();
+        if ($permission->isApproved()) {
+            $this->addFlash('success', 'message.allreadyApproved');
+            return $this->redirectToRoute('worker_edit',[
+                'worker' => $worker->getId(),
+            ]);
+        }        
+        $permission->setApproved(true);
+        $permission->setApprovedAt(new \DateTimeImmutable());
+        $permission->setApprovedBy($this->getUser());
+        // check if there is no more permissions to approve or deny. If so change status to in progress
+        $allApproved = $worker->hasAllPermissionsApprovedOrDenied();
+        if ($allApproved) {
+            $worker->setStatus(Worker::STATUS_IN_PROGRESS);
+            $this->createHistoric("permiso $permission aprobado. No hay más permisos pendientes de aprobación.", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        } else {
+            $this->createHistoric("permiso $permission aprobado", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        }
+        $this->sendMessageToUserCreators('Langile berriaren erabiltzailea sortu / Cree el usuario del nuevo trabajador', $worker, $permission);
+        $this->em->persist($permission);
+        $this->em->flush();
+        $this->addFlash('success', 'message.permissionApproved');
+        return $this->redirectToRoute('worker_edit', [
+            'worker' => $worker->getId(),
+        ]);
+    }
+
+    /**
+     * Denies a permission for a worker and sends a message to the user creators to delete the user.
+     * 
+     * @param Request $request
+     * @param Permission $permission
+     * @return Response
+     */
+    #[IsGranted('ROLE_APP_OWNER')]
+    #[Route(path: '/permission/{permission}/deny', name: 'permission_deny')]
+    public function deny(Request $request, Permission $permission) {
+        $worker = $permission->getWorker();
+        if (!$permission->isApproved() && $permission->isApproved() !== null) {
+            $this->addFlash('success', 'message.allreadyDenied');
+            return $this->redirectToRoute('worker_edit',[
+                'worker' => $worker->getId(),
+            ]);
+        }        
+
+        $permission->setApproved(false);
+        $permission->setApprovedAt(new \DateTimeImmutable());
+        $permission->setApprovedBy($this->getUser());
+        // check if there is no more permissions to approve or deny. If so change status to in progress
+        $allApproved = $worker->hasAllPermissionsApprovedOrDenied();
+        if ($allApproved) {
+            $worker->setStatus(Worker::STATUS_IN_PROGRESS);
+            $this->createHistoric("permiso $permission denegado. No hay más permisos pendientes de aprobación.", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        } else {
+            $this->createHistoric("permiso $permission denegado", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        }
+        if ($permission->isGranted()){
+            $this->sendMessageToUserCreators('Mesedez, langile honen erabiltzailea ezabatu / Por favor, elimine el usuario del siguiente trabajador', $worker, $permission, true);
+        }
+        $this->em->persist($permission);
+        $this->em->flush();
+        $this->addFlash('success', 'message.permissionDenied');
+        return $this->redirectToRoute('worker_edit', [
+            'worker' => $worker->getId(),
         ]);
     }
 
@@ -201,6 +426,28 @@ class PermissionController extends BaseController
         return false;
     }
 
+    private function checkAlreadyAddedDepartmentPermission(DepartmentPermission $permission) {
+        $department = $permission->getDepartment();
+        $apps = $department->getPermissions();
+        foreach ($apps as $app ) {
+            if ($permission->getApplication() === $app->getApplication()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function checkAlreadyAddedJobPermission(JobPermission $permission) {
+        $job = $permission->getJob();
+        $apps = $job->getPermissions();
+        foreach ($apps as $app ) {
+            if ($permission->getApplication() === $app->getApplication()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private function renderError($form, $template) {
         return $this->render('permission/' . $template, [
             'readonly' => false,
@@ -209,18 +456,19 @@ class PermissionController extends BaseController
         ], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));
     }
 
-    private function createHistoric($operation, $details) {
+    private function createHistoric($operation, $details, Worker $worker) {
         $historic = new Historic();
-        $historic->fill($this->getUser(),$operation, $details);
+        $historic->fill($this->getUser(),$operation, $details, $worker);
         $this->em->persist($historic);
     }
 
-    private function sendMessages(Permission $permission, $message, $remove = false) {
+    private function sendMessages($message, Worker $worker, Permission $permission, $remove = false) {
         $worker = $permission->getWorker();
-        $this->sendMessageToAppOwners($message, $worker, $permission->getApplication(), $remove);
+        $this->sendMessageToAppOwners($message, $worker, $permission, $remove);
     }
 
-    private function sendMessageToAppOwners($subject, Worker $worker, Application $application, bool $remove) {
+    private function sendMessageToAppOwners($subject, Worker $worker, Permission $permission, bool $remove) {
+        $application = $permission->getApplication();
         if ($application !== null && $application->getAppOwnersEmails() !== null) {
             $owners = explode(',', $application->getAppOwnersEmails());
             $emails = [];
@@ -234,11 +482,36 @@ class PermissionController extends BaseController
                 ->html($this->renderView('worker/appOwnersMail.html.twig', [
                     'user' => $this->getUser(),
                     'worker' => $worker,
-                    'application' => $application,
+                    'permission' => $permission,
                     'remove' => $remove,
+                    'appOwners' => $owners,
                 ])
             );
             $this->mailer->send($email);
         }
     }
+
+    private function sendMessageToUserCreators($subject, Worker $worker, Permission $permission, bool $remove = false) {
+        $application = $permission->getApplication();
+        if ($application !== null && $application->getUserCreatorEmail() !== null) {
+            $creators = explode(',', $application->getUserCreatorEmail());
+            $emails = [];
+            foreach ($creators as $creator) {
+                $emails[] = $creator;
+            }
+            $email = (new Email())
+                ->from($this->getParameter('mailer_from'))
+                ->to(...$emails)
+                ->subject($subject)
+                ->html($this->renderView('worker/userCreatorsMail.html.twig', [
+                    'user' => $this->getUser(),
+                    'worker' => $worker,
+                    'permission' => $permission,
+                    'remove' => $remove,
+                    'application' => $application,
+                ])
+            );
+            $this->mailer->send($email);
+        }
+    }    
 }

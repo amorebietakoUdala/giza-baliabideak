@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Application;
 use App\Entity\Department;
 use App\Entity\Job;
+use App\Entity\User;
 use App\Entity\Worker;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -97,6 +98,22 @@ class WorkerRepository extends ServiceEntityRepository
            ->getQuery()
            ->getResult();
    }
+
+   /**
+    * @return Worker[] Returns an array of Worker objects
+    */
+    public function findByAppOwner(User $appOwner): array
+    {
+        $qb = $this->createQueryBuilder('w')
+            ->distinct()
+            ->innerjoin('w.permissions', 'p')
+            ->innerjoin('p.application', 'a')
+            ->innerjoin('a.appOwners', 'ao')
+            ->andWhere('ao.id = :appOwner')
+            ->setParameter('appOwner', $appOwner)
+            ->orderBy('w.id', 'DESC');
+        return $qb->getQuery()->getResult();
+    }
 
     private function remove_blank_filters($criteria)
     {

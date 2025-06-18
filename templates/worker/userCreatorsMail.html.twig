@@ -1,0 +1,42 @@
+{% apply inline_css(source('@styles/email.css')) %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|split('_')[0] }}">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+      <b>{{ 'worker.dni' | trans }}:</b> {{ worker.dni }}<br>
+      <b>{{ 'worker.name' | trans }}:</b> {{ worker.name }}<br>
+      <b>{{ 'worker.surname1' | trans }}:</b> {{ worker.surname1 }}<br>
+      <b>{{ 'worker.surname2' | trans }}:</b> {{ worker.surname2 }}<br>
+      <b>{{ 'worker.username' | trans }}:</b> {{ worker.username }}<br>
+      <b>{{ 'worker.startDate' | trans }}:</b> {{ worker.startDate | date('Y-m-d') }}<br>
+      {# <b>{{ 'worker.endDate' | trans }}:</b> {{ worker.endDate != null ? worker.endDate | date('Y-m-d') : ''}}<br>
+      <b>{{ 'worker.expedientNumber' | trans }}:</b> {{ worker.expedientNumber }}<br> #}
+      <b>{{ 'worker.department' | trans }}:</b> {{ worker.department }}<br>
+      <b>{{ 'worker.job' | trans }}:</b> {{ worker.workerJob.job }}<br>
+      {# <b>{{ 'worker.status' | trans }}:</b> {{ ('status.'~worker.status) | trans }}<br> #}
+      <br>
+
+      {% if not remove %}
+         {{ 'mail.messageToUserCreator' | trans({
+            '{application}': application,
+            '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
+            '{job}': app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu,
+         }) }}
+         {{ 'mail.disclaimerUserCreator' | trans({'{application}': application}) }}
+         {{ 'mail.disclaimerUserCreatorDetails' | trans }}
+      {% else %}
+         {{ 'mail.messageToUserCreatorUserRemove' | trans({
+            '{application}': application,
+            '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
+            '{job}': app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu,
+         }) }}
+         {{ 'mail.disclaimerUserCreatorUserRemove' | trans({'{application}': application}) }}
+      {% endif %}
+    </body>
+</html> 
+{% endapply %}
+

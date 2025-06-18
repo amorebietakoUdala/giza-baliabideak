@@ -14,17 +14,34 @@
          {% set message = 'mail.messageToAppOwnersRemoving' %}
          {% set disclaimer = 'mail.disclaimerRemoving' %}
       {% endif %}
+      <b>{{ 'worker.dni' | trans }}:</b> {{ worker.dni }}<br>
+      <b>{{ 'worker.name' | trans }}:</b> {{ worker.name }}<br>
+      <b>{{ 'worker.surname1' | trans }}:</b> {{ worker.surname1 }}<br>
+      <b>{{ 'worker.surname2' | trans }}:</b> {{ worker.surname2 }}<br>
+      <b>{{ 'worker.username' | trans }}:</b> {{ worker.username }}<br>
+      <b>{{ 'worker.startDate' | trans }}:</b> {{ worker.startDate | date('Y-m-d') }}<br>
+      <b>{{ 'worker.endDate' | trans }}:</b> {{ worker.endDate != null ? worker.endDate | date('Y-m-d') : ''}}<br>
+      <b>{{ 'worker.department' | trans }}:</b> {{ worker.department }}<br>
+      <b>{{ 'worker.job' | trans }}:</b> {{ worker.workerJob.job }}<br>
+
       {{ message | trans({
          '{boss}': user.username,
-         '{application}': application,
+         '{permission}': permission,
          '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
-         '{job}': app.request.locale|split('_')[0] == 'es' ? worker.job.titleEs : worker.job.titleEu,
+         '{job}': app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu,
          }) 
       }}
       <br><br>
       {{ disclaimer | trans({
          '{boss}': user.username,
       }) }}
+      {% if not remove %}
+         {{ 'mail.disclaimerAdding2' | trans({ 
+               '{appOwners}' : appOwners | join(',')
+         })}}
+      {% endif %}
+      <br><br>
+      <a href="{{ absolute_url(path('permission_approve', { permission: permission.id } )) }}">{{ 'mail.approve' | trans }}</a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="{{ absolute_url(path('permission_deny', { permission: permission.id } )) }}">{{ 'mail.deny' | trans }}</a>
    </body>
 </html> 
 {% endapply %}

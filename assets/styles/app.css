@@ -59,10 +59,21 @@ a {
     display: none;
 }
 
+#departmentAddPermissionsButton, #jobAddPermissionsButton {
+    display: block;
+}
+
 .modal-body #modal-cancel-button {
     display: none;
 }
 
+.modal-body .form-label {
+    font-weight: bold;
+}
+
+.modal-body .col-form-label {
+    font-weight: bold;
+}
 
 @media (max-width: 767px) {
 	.logo {

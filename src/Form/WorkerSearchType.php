@@ -29,8 +29,9 @@ class WorkerSearchType extends AbstractType
                 'label' => 'worker.status',
                 'placeholder' => 'worker.status.placeholder',
                 'choices' => [
-                    'status.'.Worker::STATUS_RRHH_NEW => Worker::STATUS_RRHH_NEW,
+                    'status.'.Worker::STATUS_USERNAME_PENDING => Worker::STATUS_USERNAME_PENDING,
                     'status.'.Worker::STATUS_REVISION_PENDING => Worker::STATUS_REVISION_PENDING,
+                    'status.'.Worker::STATUS_APPROVAL_PENDING => Worker::STATUS_APPROVAL_PENDING,
                     'status.'.Worker::STATUS_IN_PROGRESS => Worker::STATUS_IN_PROGRESS,
                     'status.'.Worker::STATUS_REGISTERED => Worker::STATUS_REGISTERED,
                     'status.'.Worker::STATUS_DELETED => Worker::STATUS_DELETED,

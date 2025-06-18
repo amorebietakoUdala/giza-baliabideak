@@ -1,16 +1,38 @@
 {% for permission in permissions %}
 <li class="w-25 list-group-item d-flex flex-row justify-content-between">
-      {{ permission.application.name }}  {{ permission.subApplication != null ? '- '~ permission.subApplication.nameEs : '' }} - {{ permission.roles | join('|') }}
+      <span>
+            {{ permission.application.name }}  {{ permission.subApplication != null ? '- '~ permission.subApplication.nameEs : '' }} - {{ permission.roles | join('|') }}&nbsp;
+
+            {% if permission.approved is defined and permission.approved is not null %} 
+                  {% if permission.approved %} 
+                        <span class="fa fa-thumbs-up text-success" title="{{ 'label.approved' | trans }}" alt="{{ 'label.approved' | trans }}"></span>
+                  {% else %}
+                        <span class="fa fa-thumbs-down text-danger" title="{{ 'label.denied' | trans }}" alt="{{ 'label.denied' | trans }}"></span>
+                  {% endif %}
+            {% endif %}
+      </span>
       {% if removeAllowed %}
       <div>
+            {% if is_granted("ROLE_APP_OWNER") and permission.approved is defined and permission.approved is null %}
+                  {% if permission.application.id in applicationIds or is_granted("ROLE_ADMIN") %}
+                        <a href="{{ path('permission_approve', {'permission': permission.id, '_token': csrf_token('permission_approve' ~ permission.id) }) }}" class="ml-auto">
+                              <span class="fa fa-thumbs-up" title="{{ 'label.approve' | trans }}" alt="{{ 'label.approve' | trans }}"></span>
+                        </a>&nbsp;
+                        <a href="{{ path('permission_deny', {'permission': permission.id, '_token': csrf_token('permission_deny' ~ permission.id) }) }}" class="ml-auto">
+                              <span class="fa fa-thumbs-down" title="{{ 'label.deny' | trans }}" alt="{{ 'label.deny' | trans }}"></span>
+                        </a>&nbsp;
+                  {% endif %}
+            {% endif %}
             {% if is_granted("ROLE_ADMIN") and not permission.granted %}
                   <a href="{{ path('permission_granted', {'permission': permission.id, '_token': csrf_token('granted' ~ permission.id) }) }}" class="ml-auto">
                         <span class="fa fa-check" title="{{ 'btn.granted' | trans }}" alt="{{ 'btn.granted' | trans }}"></span>
                   </a>
             {% endif %}
-            &nbsp;<a href="{{ path('permission_delete', {'permission': permission.id, '_token': csrf_token('delete' ~ permission.id) }) }}" class="ml-auto">
-                  <span class="fa fa-close text-danger" title="{{ 'btn.delete' | trans }}" alt="{{ 'btn.delete' | trans }}"></span>
-            </a>
+            {% if is_granted("ROLE_BOSS") %}
+                  &nbsp;<a href="{{ path('permission_delete', {'permission': permission.id, '_token': csrf_token('delete' ~ permission.id) }) }}" class="ml-auto">
+                        <span class="fa fa-close text-danger" title="{{ 'btn.delete' | trans }}" alt="{{ 'btn.delete' | trans }}"></span>
+                  </a>
+            {% endif %}
       </div>
       {% endif %}
 </li>

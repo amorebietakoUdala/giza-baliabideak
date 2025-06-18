@@ -1,6 +1,20 @@
+{% if not new %}
+   <div {{ stimulus_controller('job-permission-form', {
+   'permissionAddUrl': path('permission_add_to_job',{
+         'job': form.vars.value.id,
+   }),
+   'permissionListUrl': path('job_permission_list',{
+         'job': form.vars.value.id,
+   }),
+   'new' : new,
+   })}}>
+{% else %}
+   <div>
+{% endif %}
+
 {{ form_start(form, {'attr': {'class': 'container-fluid',
-						 'novalidate': 'novalidate'
-						} 
+                  'novalidate': 'novalidate'
+                  } 
 }) }}
 {{ form_errors(form) }}
    <div class="row align-items-center mb-1">
@@ -20,14 +34,42 @@
          }) }}
       </div>
    </div>
-    <div class="row mt-1 mb-5 justify-content-center">
-        {% if readonly == false %}
-            <div class="col-auto">
-                <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
+   {% if not new %}
+      <div class="row">
+            {% set isAdmin = is_granted("ROLE_ADMIN") %}
+            <div class="d-flex flex-row justify-content-start {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }}">
+               <h3>{{ 'header.permissions' | trans }}</h3>&nbsp;
+               <div class="col-lg-auto d-flex align-items-baseline">
+                  <button id="jobAddPermissionsButton" type="button" 
+                        class="btn btn-secondary btn-sm" 
+                        data-action="job-permission-form#showAddPermissionForm">
+                        {{ 'btn.addApplication' | trans }}
+                  </button>
+               </div>
             </div>
-        {% endif %}
-        <div class="col-auto">
+      </div>
+      <div class="row">
+            <div class="row align-items-start mb-1">
+               <ul class="list-group list-group-horizontal d-flex flex-wrap {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }}" data-job-permission-form-target="permissionList"></ul>
+            </div>            
+      </div>
+   {% endif %}
+   <div class="row mt-1 mb-5 justify-content-center">
+      {% if readonly == false %}
+            <div class="col-auto">
+               <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
+            </div>
+      {% endif %}
+      <div class="col-auto">
             <a href="{{ returnUrl is defined and not returnUrl is empty ? returnUrl : path('job_index') }}" class="btn btn-secondary">{{ 'btn.cancel' | trans }}</a>
-        </div>
-    </div>
+      </div>
+   </div>
 {{ form_end(form) }}
+
+{% if not new %}
+   {{ include('job/_modal.html.twig', {
+      'modalTitle': 'modal.title.addPermission' | trans,
+      }) 
+   }}
+{% endif %}
+</div>

@@ -19,9 +19,11 @@ security:
                 property: username
 
     role_hierarchy:
-        ROLE_BOSS:      [ROLE_GIZA_BALIABIDEAK]
-        ROLE_RRHH:      [ROLE_GIZA_BALIABIDEAK]
-        ROLE_ADMIN:     [ROLE_GIZA_BALIABIDEAK, ROLE_RRHH, ROLE_BOSS]
+        ROLE_BOSS:         [ROLE_GIZA_BALIABIDEAK]
+        ROLE_RRHH:         [ROLE_GIZA_BALIABIDEAK]
+        ROLE_APP_OWNER:    [ROLE_GIZA_BALIABIDEAK]
+#        ROLE_USER_CREATOR: [ROLE_GIZA_BALIABIDEAK]
+        ROLE_ADMIN:        [ROLE_GIZA_BALIABIDEAK, ROLE_RRHH, ROLE_BOSS, ROLE_APP_OWNER]
 
     firewalls:
         dev:

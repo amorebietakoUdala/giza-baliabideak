@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ApplicationRepository::class)]
 class Application implements \Stringable
 {
-    final public const Application_AUPAC=1;
+    final public const Application_GESTIONA=1;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -38,11 +38,24 @@ class Application implements \Stringable
     #[ORM\OneToMany(targetEntity: Permission::class, mappedBy: 'application')]
     private Collection|array $permissions;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $userCreatorEmail = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'applications')]
+    private Collection $appOwners;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $general = false;
+
     public function __construct()
     {
         $this->subApplications = new ArrayCollection();
         $this->roles = new ArrayCollection();
         $this->permissions = new ArrayCollection();
+        $this->appOwners = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -80,6 +93,7 @@ class Application implements \Stringable
         $this->appOwnersEmails = $data->getAppOwnersEmails();
         $this->subApplications = $data->getSubApplications();
         $this->roles = $data->getRoles();
+        $this->appOwners = $data->getAppOwners();
         return $this;
     }
 
@@ -166,6 +180,54 @@ class Application implements \Stringable
                 $permission->setApplication(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUserCreatorEmail(): ?string
+    {
+        return $this->userCreatorEmail;
+    }
+
+    public function setUserCreatorEmail(?string $userCreatorEmail): static
+    {
+        $this->userCreatorEmail = $userCreatorEmail;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getAppOwners(): Collection
+    {
+        return $this->appOwners;
+    }
+
+    public function addAppOwner(User $appOwner): static
+    {
+        if (!$this->appOwners->contains($appOwner)) {
+            $this->appOwners->add($appOwner);
+        }
+
+        return $this;
+    }
+
+    public function removeAppOwner(User $appOwner): static
+    {
+        $this->appOwners->removeElement($appOwner);
+
+        return $this;
+    }
+
+    public function isGeneral(): ?bool
+    {
+        return $this->general;
+    }
+
+    public function setGeneral(?bool $general): static
+    {
+        $this->general = $general;
 
         return $this;
     }

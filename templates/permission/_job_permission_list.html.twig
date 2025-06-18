@@ -1,0 +1,10 @@
+{% for permission in permissions %}
+      <li class="w-25 list-group-item d-flex flex-row justify-content-between">
+            <span>
+                  {{ permission.application.name }}  {{ permission.subApplication != null ? '- '~ permission.subApplication.nameEs : '' }} - {{ permission.roles | join('|') }}&nbsp;
+            </span>
+            <a href="{{ path('job_permission_delete', {'jobPermission': permission.id, '_token': csrf_token('delete' ~ permission.id) }) }}" class="ml-auto">
+                  <span class="fa fa-close text-danger" title="{{ 'btn.delete' | trans }}" alt="{{ 'btn.delete' | trans }}"></span>
+            </a>
+      </li>
+{% endfor %}

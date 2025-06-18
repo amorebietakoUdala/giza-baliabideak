@@ -5,9 +5,12 @@ namespace App\Form;
 use App\Entity\Application;
 use App\Entity\Role;
 use App\Entity\SubApplication;
+use App\Entity\User;
 use App\Repository\SubApplicationRepository;
+use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -19,6 +22,7 @@ class ApplicationType extends AbstractType
         $readonly = $options['readonly'];
         $locale = $options['locale'];
         $application = $options['data'];
+        $isAdmin = $options['isAdmin'];
         $builder
             ->add('id', HiddenType::class)
             ->add('name', null, [
@@ -27,6 +31,10 @@ class ApplicationType extends AbstractType
             ])
             ->add('appOwnersEmails', null, [
                 'label' => 'application.appOwnersEmails',
+                'disabled' => $readonly,
+            ])
+            ->add('userCreatorEmail', null, [
+                'label' => 'application.userCreatorEmail',
                 'disabled' => $readonly,
             ])
             ->add('subApplications', EntityType::class, [
@@ -53,6 +61,21 @@ class ApplicationType extends AbstractType
                 'required' => false,
                 'expanded' => true,
             ])
+            ->add('appOwners', EntityType::class, [
+                'class' => User::class,
+                'label' => 'application.appOwners',
+                'disabled' => $readonly,
+                'multiple' => true,
+                'required' => false,
+                'expanded' => true,
+                'query_builder' => function (UserRepository $er) {
+                    return $er->findByRolQB("ROLE_APP_OWNER");
+                },
+            ])
+            ->add('general', CheckboxType::class, [
+                'label' => 'application.general',
+                'disabled' => $readonly,
+            ]);
         ;
     }
 
@@ -63,6 +86,7 @@ class ApplicationType extends AbstractType
             'readonly' => false,
             'new' => true,
             'locale' => 'es',
+            'isAdmin' => false,
         ]);
     }
 }

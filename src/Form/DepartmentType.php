@@ -3,6 +3,9 @@
 namespace App\Form;
 
 use App\Entity\Department;
+use App\Entity\DepartmentPermission;
+use App\Entity\Permission;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
