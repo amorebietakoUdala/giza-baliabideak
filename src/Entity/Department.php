@@ -24,10 +24,16 @@ class Department implements \Stringable
     #[ORM\OneToMany(targetEntity: Worker::class, mappedBy: 'department')]
     private Collection|array $workers;
 
+    /**
+     * @var Collection<int, DepartmentPermission>
+     */
+    #[ORM\OneToMany(targetEntity: DepartmentPermission::class, mappedBy: 'department', cascade: ['persist', 'remove'])]
+    private Collection $permissions;
 
     public function __construct()
     {
         $this->workers = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -106,5 +112,29 @@ class Department implements \Stringable
     public function __toString(): string
     {
         return (string) $this->nameEs;
+    }
+
+    /**
+     * @return Collection<int, DepartmentPermission>
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(DepartmentPermission $permission): static
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions->add($permission);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(DepartmentPermission $permission): static
+    {
+        $this->permissions->removeElement($permission);
+
+        return $this;
     }
 }

@@ -26,6 +26,7 @@ navitem.departments: "Sailak"
 navitem.roles: "Rolak"
 
 header.permissions: "Baimenak"
+header.historic: "Historikoa"
 
 worker.dni: "NAN"
 worker.name: "Izena"
@@ -54,6 +55,7 @@ worker.endDateGreaterThanStartDate: "Hasiera data, amaiera data baino handiagoa 
 worker.endDateNotSet: "Amaiera data zehaztu ala amaiera data barik hautatu"
 worker.cannotsetEndDateAndNoEndDate: "Ezin amaiera data zehaztu eta amaiera data barik aukera hautatu"
 worker.sent: "Langilea behar bezala gorde da."
+worker.username: "Erabiltzaile izena"
 
 workerJob.code: "Kodea"
 workerJob.job: "Postua"
@@ -63,6 +65,9 @@ application.name: "Izena"
 application.appOwnersEmails: "Komen bitartez banaturiko arduradunen emailak"
 application.roles: "Rolak"
 application.subApplications: "Negoziatua"
+application.userCreatorEmail: "Erabiltzaile sortzailearen emaila"
+application.appOwners: "Aplikazioaren arduradunak"
+application.general: "Orokorra"
 
 subApplication.id: "Id"
 subApplication.nameEs: "Izena"
@@ -77,11 +82,12 @@ department.id: "Id"
 department.nameEs: "Izena"
 department.nameEu: "Izena (Euskaraz)"
 
-status.1: "Giza baliabideetan alta"
+status.1: "Erabiltzaile izenaren zain"
 status.2: "Arduradunaren gainbegiradaren zain"
-status.3: "Alta informatikoa prozesuan"
-status.4: "Alta"
-status.5: "Baja"
+status.3: "Aplikazioa arduranen oneritziaren zain"
+status.4: "Alta informatikoa prozesuan"
+status.5: "Alta"
+status.6: "Baja"
 
 job.code: "Kodea"
 job.titleEs: "Titulua"
@@ -97,6 +103,11 @@ role.nameEu: "Izena (Euskaraz)"
 
 label.yes: "Bai"
 label.no: "Ez"
+label.approved: "Onartua"
+label.denied: "Ukatua"
+label.approve: "Onartu"
+label.deny: "Ukatu"
+
 
 table.options: "Aukerak"
 btn.save: "Gorde"
@@ -113,6 +124,7 @@ btn.finish: "Bukatu dut aplikazioak gehitzen"
 btn.validate: "Ikusi oneritzia emateko"
 btn.resend: "Berbidali"
 btn.granted: "Baimena emanda bezala markatu"
+btn.permissionApprove: "Baimenak onartzeko sartu"
 
 link.logout: "Irten"
 
@@ -121,6 +133,12 @@ messages.applicationAlreadyExist: "Aplikazioa dagoeneko existitzen da"
 messages.invalidCsrfToken: "CSRF Tokena ez da zuzena"
 message.selectApplications: "Aplikazioak hautatu"
 message.permissionGranted: "Baimena emanda bezala markatu da"
+message.permissionApproved: "Baimena onartu da"
+message.permissionDenied: "Ukatu egin da"
+message.allreadyApproved: "Baimena jadanik onartuta zegoen"
+message.allreadyDenied: "Baimena jadanik ukatua zegoen"
+message.departmentSaved: "Saila behar bezala gorde da"
+message.departmentDeleted: "Saila behar bezala ezabatu da"
 
 placeholder.choose: "Hautatu aukera bat"
 
@@ -140,11 +158,24 @@ modal.title.department: "Sail berria"
 modal.title.role: "Rol berria"
 modal.title.addPermission: "Baimen berria"
 
-mail.messageToAppOwnersAdding: '{boss} arduradunak {worker}-entzako {application}-era sartzeko baimena eskatu du {job} lanpostua betetzeko.'
-mail.disclaimerAdding: "Baimen hau emateko arazoren bat egotekotan, {boss} arduranarekin harremanetan jar zaitez."
+mail.approve: "Onartu"
+mail.deny: "Ukatu"
 
-mail.messageToAppOwnersRemoving: '{boss} arduradunak {worker}-entzako {application}-era sartzeko baimena kentzea eskatu du {job} lanpostua betetzeko.'
+mail.messageToAppOwnersAdding: '{boss} arduradunak {worker}-entzako {permission}-era sartzeko baimena eskatu du {job} lanpostua betetzeko.'
+mail.disclaimerAdding: "Baimen hau emateko arazoren bat egotekotan, {boss} arduranarekin harremanetan jar zaitez."
+mail.disclaimerAdding2: "Aplikazio honen arduradunak: {appOwners}. Lanean ez baleude, mesedez, jar zaitez informatikarekin harremanetan konponbide bat aurkitzeko."
+
+mail.messageToAppOwnersRemoving: '{boss} arduradunak {worker}-entzako {permission}-era sartzeko baimena kentzea eskatu du {job} lanpostua betetzeko.'
 mail.disclaimerRemoving: "Baimen hau kentzeko arazoren bat egotekotan, {boss} arduranarekin harremanetan jar zaitez."
 
 mail.medicalRevision: "Langile berri hau altan eman dugu, azterketa medikua dela eta kontuan hartzeko."
 mail.medicalRevisionDeletion: "Langile hau bajan eman dugu, azterketa medikua dela eta kontuan hartzeko."
+
+mail.assignUsername: "Mesedez, asigne erabiltzaile izen bat hautatu langile honentzako."
+
+mail.messageToUserCreator: '{worker}-arentzako baimena onartu da {application} aplikazioan {job} lanpostuan.'
+mail.disclaimerUserCreator: "Mesedez, egitzazu behar diren kudeaketak {application}-an erabiltzailea sortzeko."
+mail.disclaimerUserCreatorDetails: "Sortu ondoren, bidal iezazkiozue sartzeko erabiltzaile eta pasahitza."
+
+mail.messageToUserCreatorRemoveUser: '{worker} langilea bajan eman da.'
+mail.disclaimerUserCreatorRemoveUser: "Mesedez, egitzazu behar diren kudeaketak {application}-an erabiltzailea desgaitzeko."

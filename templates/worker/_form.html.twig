@@ -1,75 +1,70 @@
-{% if not new %}
-<div {{ stimulus_controller('worker-form', {
-         'permissionAddUrl': path('permission_add_to_worker',{
-            'worker': form.vars.value.id is defined ? form.vars.value.id : null,
-         }),
-         'permissionListUrl': path('permission_list',{
-            'worker': form.vars.value.id is defined ? form.vars.value.id : null,
-         }),
-         'new' : new,
-		})}}>
-{% endif %}
-    {{ form_start(form, {'attr': {'class': 'container-fluid', 'novalidate': 'novalidate' } }) }}
-    {{ form_errors(form) }}
-    <div>
-        <div class="row align-items-center mb-1">
-            <div class="col-lg-2 col-md-2 col-sm-6">
-                {{ form_row(form.dni, { 'attr': { 'class' : 'form-control form-control-sm' } }) }}
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
-                {{ form_row(form.name, { 'attr': 
-                    { 'class' : 'form-control form-control-sm' }
-                }) }}
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
-                {{ form_row(form.surname1, { 'attr': 
-                    { 'class' : 'form-control form-control-sm' }
-                }) }}
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
-                {{ form_row(form.surname2, { 'attr': 
-                    { 'class' : 'form-control form-control-sm' }
-                }) }}
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
-                {{ form_row(form.expedientNumber, { 'attr': 
-                    { 'class' : 'form-control form-control-sm' }
-                }) }}
-            </div>
+{{ form_start(form, {'attr': {'class': 'container-fluid', 'novalidate': 'novalidate' } }) }}
+{{ form_errors(form) }}
+<div>
+    <div class="row align-items-center mb-1">
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.dni, { 'attr': { 'class' : 'form-control form-control-sm' } }) }}
         </div>
-        <div class="row align-items-center mb-1">
-            <div class="col-lg-auto col-md-auto col-sm-auto">
-                {{ form_row(form.workerJob.code, { 'attr': 
-                    { 'class' : 'form-control form-control-sm' }
-                }) }}
-            </div>
-            <div class="col-lg-auto col-md-auto col-sm-auto">
-                {{ form_row(form.workerJob.job, { 'attr': 
-                    { 'class' : 'form-select form-select-sm', 'data-controller' : 'job select2', 'data-job-url-value': path("api_get_job"), 'data-action': 'change->job#onChange' }
-                }) }}
-            </div>
-            <div class="col-lg-3 col-md-2 col-sm-6">
-                {{ form_row(form.department, { 'attr': 
-                    { 'class' : 'form-select form-select-sm', 'data-controller' : 'select2' }
-                }) }}
-            </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.name, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
         </div>
-        <div class="row align-items-center mb-1">
-            <div class="col-lg-2 col-md-2 col-sm-6">
-                {{ form_row(form.startDate, { 'attr': 
-                    { 'class' : 'form-control form-control-sm', 'data-controller' : 'datetimepicker', 'data-datetimepicker-format-value': 'yyyy-MM-dd' }
-                }) }}
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
-                {{ form_row(form.endDate, { 'attr': 
-                    { 'class' : 'form-control form-control-sm', 'data-controller' : 'datetimepicker', 'data-datetimepicker-format-value': 'yyyy-MM-dd' }
-                }) }}
-            </div>
-            <div class="col-lg-2 col-md-2 col-sm-6">
-                {{ form_row(form.noEndDate) }}
-            </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.surname1, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
         </div>
-        {% if not new %}
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.surname2, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
+        </div>
+        <div class="col-lg-1 col-md-2 col-sm-6">
+            {{ form_row(form.username, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.expedientNumber, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
+        </div>
+    </div>
+    <div class="row align-items-center mb-1">
+        <div class="col-lg-auto col-md-auto col-sm-auto">
+            {{ form_row(form.workerJob.code, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
+        </div>
+        <div class="col-lg-auto col-md-auto col-sm-auto">
+            {{ form_row(form.workerJob.job, { 'attr': 
+                { 'class' : 'form-select form-select-sm', 'data-controller' : 'job select2', 'data-job-url-value': path("api_get_job"), 'data-action': 'change->job#onChange' }
+            }) }}
+        </div>
+        <div class="col-lg-3 col-md-2 col-sm-6">
+            {{ form_row(form.department, { 'attr': 
+                { 'class' : 'form-select form-select-sm', 'data-controller' : 'select2' }
+            }) }}
+        </div>
+    </div>
+    <div class="row align-items-center mb-1">
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.startDate, { 'attr': 
+                { 'class' : 'form-control form-control-sm', 'data-controller' : 'datetimepicker', 'data-datetimepicker-format-value': 'yyyy-MM-dd' }
+            }) }}
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.endDate, { 'attr': 
+                { 'class' : 'form-control form-control-sm', 'data-controller' : 'datetimepicker', 'data-datetimepicker-format-value': 'yyyy-MM-dd' }
+            }) }}
+        </div>
+        <div class="col-lg-2 col-md-2 col-sm-6">
+            {{ form_row(form.noEndDate) }}
+        </div>
+    </div>
+    {% if not new %}
+        <div class="row align-items-center mb-1">
             <div class="row align-items-center mb-1">
                 <div class="col-lg-2 col-md-2 col-sm-6">
                     {% set RRHH = is_granted('ROLE_RRHH') %}
@@ -79,7 +74,7 @@
                 </div>
                 {# {% if readonly == false 
                     and new == false 
-                    and form.status.vars.value == constant('App\\Entity\\Worker::STATUS_RRHH_NEW') 
+                    and form.status.vars.value == constant('App\\Entity\\Worker::STATUS_USERNAME_PENDING') 
                     and is_granted('ROLE_RRHH') %}
                     <div class="col-lg-auto">
                         <button class="btn btn-success" 
@@ -92,24 +87,9 @@
                     </div>
                 {% endif %} #}
             </div>
-        {% endif %}
-        <div class="row align-items-center mb-1">
-            <div class="d-flex flex-row justify-content-start">
-                {% if not new %}
-                    <h3>{{ 'header.permissions' | trans }}</h3>&nbsp;
-                    {% if not readonly and not new %}
-                        <div class="col-lg-2 d-flex align-items-center">
-                            <button type="button" 
-                                class="btn btn-secondary btn-sm" 
-                                data-action="worker-form#showAddPermissionForm">
-                                {{ 'btn.addApplication' | trans }}
-                            </button>
-                        </div>
-                    {% endif %}
-                {% endif %}
-            </div>
-            <ul class="list-group list-group-horizontal d-flex flex-wrap" data-worker-form-target="permissionList"></ul>
         </div>
+    {% endif %}
+    {% if is_granted("ROLE_BOSS") or is_granted("ROLE_RRHH") %}
         <div class="row mt-2 mb-5 justify-content-center">
             {% if readonly == false %}
                 <div class="col-auto">
@@ -120,13 +100,60 @@
                 <a href="{{ returnUrl is defined and not returnUrl is empty ? returnUrl : path('worker_index') }}" class="btn btn-secondary">{{ 'btn.cancel' | trans }}</a>
             </div>
         </div>
-    </div>    
-    {{ form_end(form) }}
+    {% endif %}
+</div>    
+{{ form_end(form) }}
+
 {% if not new %}
-    {{ include('worker/_modal.html.twig', {
-        'modalTitle': 'modal.title.addPermission' | trans,
-        }) 
-    }}
-    {{ include('common/_alert.html.twig') }}
-</div>
+    <div data-controller="historic-preload" data-historic-preload-url-value="{{ path('worker_historic_list', {'worker': form.vars.value.id}) }}" data-action="worker-form:updated->historic-preload#onPermissionChange">
+        <div {{ stimulus_controller('worker-form', {
+                    'permissionAddUrl': path('permission_add_to_worker',{
+                        'worker': form.vars.value.id is defined ? form.vars.value.id : null,
+                    }),
+                    'permissionListUrl': path('permission_list',{
+                        'worker': form.vars.value.id is defined ? form.vars.value.id : null,
+                    }),
+                    'new' : new,
+                })}}>
+                {% set isAdmin = is_granted('ROLE_ADMIN') %}
+                    <div class="row">
+                        <div class="d-flex flex-row justify-content-start {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }}">
+                            {% if not new %}
+                                <h3>{{ 'header.permissions' | trans }}</h3>&nbsp;
+                                {% if not readonly and not new %}
+                                    <div class="col-lg-2 d-flex align-items-baseline">
+                                        {% if is_granted("ROLE_BOSS") %}
+                                            <button type="button" 
+                                                class="btn btn-secondary btn-sm" 
+                                                data-action="worker-form#showAddPermissionForm">
+                                                {{ 'btn.addApplication' | trans }}
+                                            </button>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                        </div>
+                        {% if isAdmin and not new %}
+                            <div class="col-lg-6">
+                                <h3>{{ 'header.historic' | trans }}</h3>&nbsp;
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <div class="row align-items-start mb-1">
+                    <ul class="list-group list-group-horizontal d-flex flex-wrap {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }}" data-worker-form-target="permissionList"></ul>
+                    {% if isAdmin %}
+                        <div class="d-flex flex-wrap col-lg-6">
+                            <ul class="list-group" data-historic-preload-target="historicList"></ul>
+                        </div>
+                    {% endif %}
+                </div>
+
+            {{ include('worker/_modal.html.twig', {
+                'modalTitle': 'modal.title.addPermission' | trans,
+                }) 
+            }}
+            {{ include('common/_alert.html.twig') }}
+        </div>
+    </div>
 {% endif %}

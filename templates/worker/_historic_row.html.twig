@@ -1,0 +1,3 @@
+{% for historic in historics %}
+   <li class="list-group-item">{{ ( historic.createdAt | date('Y-m-d H:i')) ~ ' (' ~ historic.user ~ ') ' ~  historic.operation }}</li>
+{% endfor %}

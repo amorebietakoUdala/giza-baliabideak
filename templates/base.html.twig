@@ -9,7 +9,6 @@
 			{% endblock %}
     </head>
     <body>
-		
 		{% block header %}
 			{{ include('common/_header.html.twig') }}
 		{% endblock header %}
@@ -19,10 +18,11 @@
 		{% block message %}
 			{{ include('common/_messages.html.twig') }}
 		{% endblock message %}
-        {% block body %}{% endblock %}
-        {% block javascripts %}
+      
+		{% block body %}{% endblock %}
+      
+		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
-
     </body>
 </html>

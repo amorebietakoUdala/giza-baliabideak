@@ -9,15 +9,19 @@
    {{ form_start(form) }}
       <div class="row">
          {{ form_row(form.application, { 'attr': {
+            'data-department-permission-form-target' : 'applicationInput',
             'data-permission-form-target' : 'applicationInput',
             'data-action': 'permission-form#onApplicationChange',
             'class' : 'form-select form-select-sm',
          } }) }}
          {{ form_row(form.subApplication, { 'attr': {
+            'data-department-permission-form-target' : 'subApplicationInput',
             'data-permission-form-target' : 'subApplicationInput',
             'class' : 'form-select form-select-sm',
          } }) }}
          {{ form_row(form.roles, { 'attr': {
+            'data-department-permission-form-target' : 'rolesInput',
+            'data-job-permission-form-target' : 'rolesInput',
             'data-permission-form-target' : 'rolesInput',
             'data-worker-form-target' : 'rolesInput',
             'class' : 'form-select form-select-sm',

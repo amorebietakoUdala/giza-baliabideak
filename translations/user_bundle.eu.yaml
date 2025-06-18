@@ -2,3 +2,5 @@ security.login.remember_me: "Oroitu"
 
 ROLE_BOSS: "Arduraduna"
 ROLE_RRHH: "Giza Baliabideak"
+#ROLE_USER_CREATOR: "Erabiltzaile Sortzailea"
+ROLE_APP_OWNER: "Aplikazioaren arduraduna"

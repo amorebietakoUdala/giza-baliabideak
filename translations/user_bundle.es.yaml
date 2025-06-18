@@ -2,3 +2,5 @@ security.login.remember_me: "Recordarme"
 
 ROLE_BOSS: "Responsable"
 ROLE_RRHH: "Recursos Humanos"
+#ROLE_USER_CREATOR: "Creador de Usuarios"
+ROLE_APP_OWNER: "Propietario de la Aplicación"

@@ -1,7 +1,4 @@
 {% if departments is defined and departments|length > 0 %}
-<div  {{ stimulus_controller('entity', {
-         'entitySaveUrl': path('department_new'),
-		})}}>
 <table class="table"
    data-toggle="table"
    data-table-target="table"
@@ -32,9 +29,7 @@
                <td>
                   <a href="{{ path('department_show', {'department': department.id}) }}" data-action="entity#edit"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
                   <a href="{{ path('department_edit', {'department': department.id}) }}" data-action="entity#edit" data-allowEdit="true"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
-                  <a href="{{ path('department_delete', {'department': department.id}) }}" 
-                     data-action="click->entity#delete" 
-                     data-token="{{ csrf_token('delete' ~ department.id) }}">
+                  <a href="{{ path('department_delete', {'department': department.id, '_token': csrf_token('delete-department' ~ department.id)}) }}">
                      <i class="fa fa-trash" title='{{ "btn.delete" | trans | capitalize }}'></i>
                   </a>&nbsp;
                </td>
@@ -46,14 +41,8 @@
    <div class="alert alert-secondary mt-3" role="alert">{{"messages.results0" | trans }}</div>
 {% endif %}
 <span class="pull-right">
-   <a class="btn btn-primary rounded-circle fixed-bottom-right z-index-100" data-action="click->entity#new">
+   <a class="btn btn-primary rounded-circle fixed-bottom-right z-index-100" href="{{ path('department_new') }}">
       <i class="fa fa-plus" title='{{ "btn.new" | trans | capitalize }}'></i>
    </a>
 </span>
-{{ include('common/_modal.html.twig', {
-   'modalTitle': 'modal.title.department' | trans,
-   'formTemplate': 'department/_form.html.twig'
-   }) 
-}}
 {{ include('common/_alert.html.twig') }}
-</div>

@@ -31,15 +31,29 @@ class Role implements \Stringable
     #[ORM\ManyToMany(targetEntity: Permission::class, mappedBy: 'roles')]
     private Collection|array $permissions;
 
+    /**
+     * @var Collection<int, DepartmentPermission>
+     */
+    #[ORM\ManyToMany(targetEntity: DepartmentPermission::class, mappedBy: 'roles')]
+    private Collection $departmentPermissions;
+
     public function __construct()
     {
         $this->applications = new ArrayCollection();
         $this->permissions = new ArrayCollection();
+        $this->departmentPermissions = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): self
+    {
+        $this->id = $id;
+        
+        return $this;
     }
 
     public function getNameEs(): ?string
@@ -127,6 +141,33 @@ class Role implements \Stringable
     {
         if ($this->permissions->removeElement($permissions)) {
             $permissions->removeRole($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DepartmentPermission>
+     */
+    public function getDepartmentPermissions(): Collection
+    {
+        return $this->departmentPermissions;
+    }
+
+    public function addDepartmentPermission(DepartmentPermission $departmentPermission): static
+    {
+        if (!$this->departmentPermissions->contains($departmentPermission)) {
+            $this->departmentPermissions->add($departmentPermission);
+            $departmentPermission->addRole($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDepartmentPermission(DepartmentPermission $departmentPermission): static
+    {
+        if ($this->departmentPermissions->removeElement($departmentPermission)) {
+            $departmentPermission->removeRole($this);
         }
 
         return $this;

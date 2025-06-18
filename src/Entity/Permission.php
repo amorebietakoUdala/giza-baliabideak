@@ -12,6 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PermissionRepository::class)]
 class Permission
 {
+   
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -36,6 +37,21 @@ class Permission
 
     #[ORM\Column(nullable: true)]
     private ?bool $granted = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $grantedAt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'permissions')]
+    private ?User $grantedBy = null;
+
+    #[ORM\ManyToOne(inversedBy: 'approvedPermissions')]
+    private ?User $approvedBy = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $approvedAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $approved = null;
 
     public function __construct()
     {
@@ -107,11 +123,22 @@ class Permission
         return $this;
     }
 
-    public static function copyPermission(Permission $permission, Worker $worker = null) {
+    public static function copyPermission(Permission $permission, Worker|null $worker = null) {
         $newPermission = new Permission();
         if ( null !== $worker ) {
             $newPermission->setWorker($worker);
         }
+        $newPermission->setApplication($permission->getApplication());
+        $newPermission->setSubApplication($permission->getSubApplication());
+        foreach ($permission->getRoles() as $rol) {
+            $newPermission->addRole($rol);
+        }
+        return $newPermission;
+    }
+
+    public static function createPermissionFromJobPermission(JobPermission $permission, Worker $worker) {
+        $newPermission = new Permission();
+        $newPermission->setWorker($worker);
         $newPermission->setApplication($permission->getApplication());
         $newPermission->setSubApplication($permission->getSubApplication());
         foreach ($permission->getRoles() as $rol) {
@@ -128,6 +155,79 @@ class Permission
     public function setGranted(?bool $granted): static
     {
         $this->granted = $granted;
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        $roles = [];
+        foreach ($this->getRoles() as $role) {
+            $roles[] = $role->getNameEs();
+        }
+        return sprintf(
+            '%s (%s)',
+            $this->getApplication()->getName(),
+            implode(', ', $roles)
+        );
+    }
+
+    public function getGrantedAt(): ?\DateTimeImmutable
+    {
+        return $this->grantedAt;
+    }
+
+    public function setGrantedAt(?\DateTimeImmutable $grantedAt): static
+    {
+        $this->grantedAt = $grantedAt;
+
+        return $this;
+    }
+
+    public function getGrantedBy(): ?User
+    {
+        return $this->grantedBy;
+    }
+
+    public function setGrantedBy(?User $grantedBy): static
+    {
+        $this->grantedBy = $grantedBy;
+
+        return $this;
+    }
+
+    public function getApprovedBy(): ?User
+    {
+        return $this->approvedBy;
+    }
+
+    public function setApprovedBy(?User $approvedBy): static
+    {
+        $this->approvedBy = $approvedBy;
+
+        return $this;
+    }
+
+    public function getApprovedAt(): ?\DateTimeImmutable
+    {
+        return $this->approvedAt;
+    }
+
+    public function setApprovedAt(?\DateTimeImmutable $approvedAt): static
+    {
+        $this->approvedAt = $approvedAt;
+
+        return $this;
+    }
+
+    public function isApproved(): ?bool
+    {
+        return $this->approved;
+    }
+
+    public function setApproved(?bool $approved): static
+    {
+        $this->approved = $approved;
 
         return $this;
     }

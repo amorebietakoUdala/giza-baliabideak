@@ -38,11 +38,11 @@ class RoleController extends BaseController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Role $role */
-            $role = $form->getData();
-            if (null !== $role->getId()) {
-                $role = $this->repo->find($role->getId());
-                $role->fill($role);
-            } elseif ($this->checkAlreadyExists($role)) {
+            $roleData = $form->getData();
+            if (null !== $roleData->getId()) {
+                $role = $this->repo->find($roleData->getId());
+                $role->fill($roleData);
+            } elseif ($this->checkAlreadyExists($roleData)) {
                 $this->addFlash('error', 'messages.roleAlreadyExist');
                 $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
                 return $this->render('role/' . $template, [

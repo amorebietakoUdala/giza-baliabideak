@@ -29,7 +29,6 @@ class SubApplicationController extends BaseController
     public function createOrSave(Request $request): Response
     {
         $this->loadQueryParameters($request);
-//        $subApplication = $this->createSubApplication($request);
         $subApplication = new SubApplication();
         $form = $this->createForm(SubApplicationType::class, $subApplication,[
             'readonly' => false,

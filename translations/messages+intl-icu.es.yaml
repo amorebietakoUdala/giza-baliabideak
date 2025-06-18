@@ -26,6 +26,7 @@ navitem.departments: "Departamentos"
 navitem.roles: "Roles"
 
 header.permissions: "Permisos"
+header.historic: "Histórico"
 
 worker.dni: "DNI"
 worker.name: "Nombre"
@@ -54,6 +55,7 @@ worker.endDateGreaterThanStartDate: "La fecha de inicio es mayor que la fecha de
 worker.endDateNotSet: "Debe seleccionar una fecha de fin de contrato o contrato indefinido"
 worker.cannotsetEndDateAndNoEndDate: "No puede seleccionar una fecha de fin de contrato y contrato indefinido a la vez"
 worker.sent: "El trabajador se ha guardado correctamente"
+worker.username: "Nombre de usuario"
 
 workerJob.code: "Código"
 workerJob.job: "Puesto"
@@ -63,6 +65,10 @@ application.name: "Nombre"
 application.appOwnersEmails: "Emails de los responsables separados por comas"
 application.roles: "Roles"
 application.subApplications: "Negociados"
+application.userCreatorEmail: "Email del creador de usuarios"
+application.appOwners: "Responsables de la aplicación"
+application.general: "General"
+
 
 subApplication.id: "Id"
 subApplication.nameEs: "Nombre"
@@ -77,11 +83,12 @@ department.id: "Id"
 department.nameEs: "Nombre"
 department.nameEu: "Nombre (Euskera)"
 
-status.1: "Alta recursos humanos"
+status.1: "Pendiente de nombre de usuario"
 status.2: "Pendiente de revisión"
-status.3: "En proceso alta informática"
-status.4: "Alta"
-status.5: "Baja"
+status.3: "Pendiente de aprobación por responsables de cada aplicación"
+status.4: "En proceso alta informática"
+status.5: "Alta"
+status.6: "Baja"
 
 job.code: "Código"
 job.titleEs: "Título"
@@ -97,6 +104,11 @@ role.nameEu: "Nombre (Euskera)"
 
 label.yes: "Sí"
 label.no: "No"
+label.approved: "Aprobado"
+label.denied: "Denegado"
+label.approve: "Aprobar"
+label.deny: "Denegar"
+
 
 table.options: "Opciones"
 btn.save: "Guardar"
@@ -113,6 +125,7 @@ btn.finish: "He terminado de añadir aplicaciones"
 btn.validate: "Ver para validar"
 btn.resend: "Reenviar"
 btn.granted: "Marcar como permiso concedido"
+btn.permissionApprove: "Entrar para aprobar permisos"
 
 link.logout: "Salir"
 
@@ -121,6 +134,12 @@ messages.applicationAlreadyExist: "La aplicación ya existe"
 messages.invalidCsrfToken: "CSRF Token inválido"
 message.selectApplications: "Seleccionar aplicaciones"
 message.permissionGranted: "El permiso se ha marcado como concedido"
+message.permissionApproved: "El permiso se ha aprobado"
+message.permissionDenied: "El permiso se ha denegado"
+message.allreadyApproved: "El permiso ya estaba aprobado"
+message.allreadyDenied: "El permiso ya estaba denegado"
+message.departmentSaved: "El departamento se ha guardado correctamente"
+message.departmentDeleted: "El departamento se ha eliminado correctamente"
 
 placeholder.choose: "Seleccione una opción"
 
@@ -140,11 +159,24 @@ modal.title.department: "Nuevo departamento"
 modal.title.role: "Nuevo rol"
 modal.title.addPermission: "Añadir permiso"
 
-mail.messageToAppOwnersAdding: '{boss} ha solicitado acceso a la aplicación {application} para {worker} en el puesto {job}.'
-mail.disclaimerAdding: "Si existe algún problema para la concesión de este acceso, pongáse en contacto con la persona responsable {boss}."
+mail.approve: "Aprobar"
+mail.deny: "Denegar"
 
-mail.messageToAppOwnersRemoving: '{boss} ha solicitado quitar el permiso a la aplicación {application} para {worker} en el puesto {job}.'
-mail.disclaimerRemoving: "Si existe algún problema para quitar este acceso, pongáse en contacto con la persona responsable {boss}."
+mail.messageToAppOwnersAdding: '{boss} ha solicitado acceso a {permission} para {worker} en el puesto {job}.'
+mail.disclaimerAdding: "Por favor, apruebe o deniegue utilizando el enlace de abajo. Si tiene algún problema para conceder este acceso, póngase en contacto con {boss}."
+mail.disclaimerAdding2: "Los responsables de la aplicación son: {appOwners}. En caso de no estar disponibles, póngase en contacto con informática para buscar una solución."
+
+mail.messageToAppOwnersRemoving: '{boss} ha solicitado quitar el permiso {permission} para {worker} en el puesto {job}.'
+mail.disclaimerRemoving: "Por favor, apruebe o deniegue utilizando el enlace de abajo. Si existe algún problema para quitar este acceso, pongáse en contacto con la persona responsable {boss}."
 
 mail.medicalRevision: "Hemos dado de alta a este nuevo trabajador, tenlo en cuenta para reconocimientos médicos."
 mail.medicalRevisionDeletion: "Hemos dado de baja a este trabajador, tenlo en cuenta para reconocimientos médicos."
+
+mail.assignUsername: "Por favor, asigne un nombre de usuario a este trabajador."
+
+mail.messageToUserCreator: 'Se han aprobado los permisos solicitados en la aplicación {application} para {worker} en el puesto {job}.'
+mail.disclaimerUserCreator: "Por favor, realice la gestiones necesarias para el usuario en la aplicación {application}."
+mail.disclaimerUserCreatorDetails: "Una vez creado, enviadle las credenciales de acceso."
+
+mail.messageToUserCreatorRemoveUser: 'El trabajador {worker} se ha dado de baja.'
+mail.disclaimerUserCreatorRemoveUser: "Por favor, realice la gestiones necesarias para deshabilitar su usuario en la aplicación {application}."

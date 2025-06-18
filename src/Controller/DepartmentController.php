@@ -26,7 +26,7 @@ class DepartmentController extends BaseController
      * Creates or updates an department
      */
     #[Route(path: '/department/new', name: 'department_new', methods: ['GET', 'POST'])]
-    public function createOrSave(Request $request): Response
+    public function new(Request $request): Response
     {
         $this->loadQueryParameters($request);
         $department = $this->createDepartment($request);
@@ -36,29 +36,25 @@ class DepartmentController extends BaseController
         ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var Department $permission */
-            $permission = $form->getData();
-            if (null !== $permission->getId()) {
-                $department = $this->repo->find($permission->getId());
-                $department->fill($permission);
-            } elseif ($this->checkAlreadyExists($department)) {
+            /** @var Department $department */
+            $department = $form->getData();
+                if ($this->checkAlreadyExists($department)) {
                 $this->addFlash('error', 'messages.departmentAlreadyExist');
-                $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
-                return $this->render('department/' . $template, [
+                return $this->render('department/edit.html.twig', [
                     'form' => $form,
-                ], new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));        
+                    'readonly' => false,
+                    'new' => true,
+                ]);        
             }
             $this->em->persist($department);
             $this->em->flush();
-            if ($this->getAjax() || $request->isXmlHttpRequest()) {
-               return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
-            }
             return $this->redirectToRoute('department_index');
         }
-        $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
-        return $this->render('department/' . $template, [
+        return $this->render('department/edit.html.twig', [
             'form' => $form,
-        ], new Response(null, $form->isSubmitted() && ( !$form->isValid() )? 422 : 200,));        
+            'readonly' => false,
+            'new' => true,
+        ]);        
    }
 
       /**
@@ -95,6 +91,7 @@ class DepartmentController extends BaseController
          if ($form->isSubmitted() && $form->isValid()) {
             /** @var Department $department */
             $department = $form->getData();
+            $this->addFlash('success', 'message.departmentSaved');
             $this->em->persist($department);
             $this->em->flush();
          }
@@ -109,27 +106,37 @@ class DepartmentController extends BaseController
       }
 
 
-    #[Route(path: '/department/{department}/delete', name: 'department_delete', methods: ['DELETE'])]
+    #[Route(path: '/department/{department}/delete', name: 'department_delete', methods: ['GET'])]
     public function delete(Request $request, Department $department): Response
     {
         $workers = $department->getWorkers();
         if ( count($workers) > 0 ) {
             $this->addFlash('error', new TranslatableMessage('error.departmentHasWorkers', 
-            ['{workers}' => substr(implode(',',$workers->toArray()),0,50).'...'], 'messages'));
-            return $this->render('common/_error.html.twig',[], new Response('', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));
+                ['{workers}' => substr(implode(',',$workers->toArray()),0,50).'...'], 'messages'));
+            return $this->redirectToRoute('department_index');
         }
-        if ($this->isCsrfTokenValid('delete'.$department->getId(), $request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete-department'.$department->getId(), $request->get('_token'))) {
+            $this->addFlash('success', 'message.departmentDeleted');
             $this->em->remove($department);
             $this->em->flush();
-            if (!$request->isXmlHttpRequest()) {
-                return $this->redirectToRoute('department_index');
-            } else {
-                return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
-            }
+            return $this->redirectToRoute('department_index');
         } else {
-            return new Response('messages.invalidCsrfToken', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY);
+            $this->addFlash('error', 'error.csrfTokenInvalid');
+            return $this->redirectToRoute('department_index');
         }
-    }   
+    }
+
+    #[Route(path: '/department/{department}/permissions', name: 'department_permission_list')]
+    public function permissions(Request $request, Department $department): Response
+    {
+        $this->loadQueryParameters($request);
+        $permissions = $department->getPermissions();
+        return $this->render('permission/_department_list.html.twig', [
+            'permissions' => $permissions,
+        ]);        
+    }
+
+    
 
    #[Route(path: '/department', name: 'department_index')]
     public function index(Request $request): Response

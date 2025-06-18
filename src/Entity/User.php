@@ -54,10 +54,31 @@ class User extends BaseUser implements AMREUserInterface, PasswordAuthenticatedU
     #[ORM\OneToMany(targetEntity: Worker::class, mappedBy: 'validatedBy')]
     private Collection|array $workers;
 
+    /**
+     * @var Collection<int, Permission>
+     */
+    #[ORM\OneToMany(mappedBy: 'grantedBy', targetEntity: Permission::class)]
+    private Collection $permissions;
+
+    /**
+     * @var Collection<int, Permission>
+     */
+    #[ORM\OneToMany(mappedBy: 'approvedBy', targetEntity: Permission::class)]
+    private Collection $approvedPermissions;
+
+    /**
+     * @var Collection<int, Application>
+     */
+    #[ORM\ManyToMany(targetEntity: Application::class, mappedBy: 'appOwners')]
+    private Collection $applications;
+
     public function __construct()
     {
         $this->historics = new ArrayCollection();
         $this->workers = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
+        $this->approvedPermissions = new ArrayCollection();
+        $this->applications = new ArrayCollection();
     }
 
     /**
@@ -115,6 +136,102 @@ class User extends BaseUser implements AMREUserInterface, PasswordAuthenticatedU
             if ($worker->getValidatedBy() === $this) {
                 $worker->setValidatedBy(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Permission>
+     */
+    public function getPermissions(): Collection
+    {
+        return $this->permissions;
+    }
+
+    public function addPermission(Permission $permission): static
+    {
+        if (!$this->permissions->contains($permission)) {
+            $this->permissions->add($permission);
+            $permission->setGrantedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removePermission(Permission $permission): static
+    {
+        if ($this->permissions->removeElement($permission)) {
+            // set the owning side to null (unless already changed)
+            if ($permission->getGrantedBy() === $this) {
+                $permission->setGrantedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Permission>
+     */
+    public function getApprovedPermissions(): Collection
+    {
+        return $this->approvedPermissions;
+    }
+
+    public function addApprovedPermission(Permission $approvedPermission): static
+    {
+        if (!$this->approvedPermissions->contains($approvedPermission)) {
+            $this->approvedPermissions->add($approvedPermission);
+            $approvedPermission->setApprovedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApprovedPermission(Permission $approvedPermission): static
+    {
+        if ($this->approvedPermissions->removeElement($approvedPermission)) {
+            // set the owning side to null (unless already changed)
+            if ($approvedPermission->getApprovedBy() === $this) {
+                $approvedPermission->setApprovedBy(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Application>
+     */
+    public function getApplications(): Collection
+    {
+        return $this->applications;
+    }
+
+    public function getApplicationIds(): array
+    {
+        $ids = [];
+        foreach ($this->applications as $application) {
+            $ids[] = $application->getId();
+        }
+        return $ids;
+    }
+
+    public function addApplication(Application $application): static
+    {
+        if (!$this->applications->contains($application)) {
+            $this->applications->add($application);
+            $application->addAppOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeApplication(Application $application): static
+    {
+        if ($this->applications->removeElement($application)) {
+            $application->removeAppOwner($this);
         }
 
         return $this;

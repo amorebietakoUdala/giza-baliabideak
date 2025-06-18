@@ -2,9 +2,61 @@
 {% block message %}
 	{{ include('common/_messages.html.twig') }}
 {% endblock %}
-
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
+<div 
+    {% if not new %}
+        {{ stimulus_controller('department-permission-form', {
+            'permissionAddUrl': path('permission_add_to_department',{
+                'department': form.vars.value.id,
+            }),
+            'permissionListUrl': path('department_permission_list',{
+                'department': form.vars.value.id,
+            }),
+            'new' : new,
+        })}}
+    {% endif %}
+    >
+    {{ form_start(form) }}
+    <div class="row align-items-center mb-1">
+        <div class="col-lg-2">
+            {{ form_row(form.nameEs, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
+        </div>
+        <div class="col-lg-2">
+            {{ form_row(form.nameEu, { 'attr': 
+                { 'class' : 'form-control form-control-sm' }
+            }) }}
+        </div>
+    </div>
+    {% if not new %}
+        <div class="row">
+            {% set isAdmin = is_granted("ROLE_ADMIN") %}
+            <div class="d-flex flex-row justify-content-start {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }}">
+                <h3>{{ 'header.permissions' | trans }}</h3>&nbsp;
+                {% if not readonly %}
+                    <div class="col-lg-auto d-flex align-items-baseline">
+                        <button id="departmentAddPermissionsButton" type="button" 
+                            class="btn btn-secondary btn-sm" 
+                            data-action="department-permission-form#showAddPermissionForm">
+                            {{ 'btn.addApplication' | trans }}
+                        </button>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="row align-items-start mb-1">
+                <ul class="list-group list-group-horizontal d-flex flex-wrap {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }}" data-department-permission-form-target="permissionList"></ul>
+            </div>            
+        </div>
+    {% endif %}
+    {% if not readonly %}
+        <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
+    {% endif %}
     <a id="modal-cancel-button" href="{{ path('department_index') }}" class="btn btn-secondary">{{ 'btn.cancel' | trans }}</a>
-{{ form_end(form) }}
+    {{ form_end(form) }}
+    {{ include('department/_modal.html.twig', {
+        'modalTitle': 'modal.title.addPermission' | trans,
+        }) 
+    }}
+</div>

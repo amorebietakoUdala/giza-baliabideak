@@ -21,16 +21,6 @@ class WorkerJobType extends AbstractType
                 'label' => 'workerJob.code',
                 'disabled' => $readonly,
             ])
-            // ->add('worker', EntityType::class, [
-            //     'class' => Worker::class,
-            //     'choice_label' => function ($worker) use ($locale) {
-            //         if ('es' === $locale) {
-            //             return $worker->getNameEs();
-            //         } else {
-            //             return $worker->getNameEu();
-            //         }
-            //     },
-            // ])
             ->add('job', EntityType::class, [
                 'label' => 'workerJob.job',
                 'class' => Job::class,

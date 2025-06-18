@@ -6,25 +6,53 @@
 {{ form_start(form) }}
     <div class="row align-items-center mb-1">
         <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-3">
                 {{ form_row(form.name, { 'attr': 
                     { 'class' : 'form-control form-control-sm' }
                 }) }}
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-3">
                 {{ form_row(form.appOwnersEmails, { 'attr': 
                     { 'class' : 'form-control form-control-sm' }
                 }) }}
             </div>
+            <div class="col-lg-3">
+                {{ form_row(form.userCreatorEmail, { 'attr': 
+                    { 'class' : 'form-control form-control-sm' }
+                }) }}
+            </div>
+            <div class="col-lg-3">
+                {{ form_row(form.general) }}
+            </div>
         </div>
+        {% if form.subApplications | length > 0 %}
+            {{ form_label(form.subApplications) }}
+            <div class="row">
+                {% for app in form.subApplications %}
+                    <div class="col-lg-3">
+                    {{ form_widget(app,{'attr': { 'class': 'form-check-input' } }) }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="row">
-            {% for app in form.subApplications %}
-                <div class="col-lg-3">
-                {{ form_widget(app,{'attr': { 'class': 'form-check-input' } }) }}
-                </div>
-            {% endfor %}
+            <div class="col-lg-6">
+                {{ form_row(form.roles, { 'attr': 
+                    { 'class' : 'form-check form-check-sm' }
+                }) }}
+            </div>
+            <div class="col-lg-6">
+                {{ form_row(form.appOwners, { 'attr': 
+                    { 'class' : 'form-check form-check-sm' }
+                }) }}
+            </div>
         </div>
     </div>
     <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
     <a id="modal-cancel-button" href="{{ path('application_index') }}" class="btn btn-secondary">{{ 'btn.cancel' | trans }}</a>
-{{ form_end(form) }}
+    
+    {# Don`t show subapplications when there are not #}
+    <div class="d-none">
+        {{ form_rest(form) }}
+    </div>
+    

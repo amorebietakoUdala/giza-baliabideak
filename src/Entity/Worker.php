@@ -15,11 +15,12 @@ class Worker implements \Stringable
 {
     use TimestampableEntity;
     
-    final public const STATUS_RRHH_NEW = 1;
+    final public const STATUS_USERNAME_PENDING = 1;
     final public const STATUS_REVISION_PENDING = 2;
-    final public const STATUS_IN_PROGRESS = 3;
-    final public const STATUS_REGISTERED = 4;
-    final public const STATUS_DELETED = 5;
+    final public const STATUS_APPROVAL_PENDING = 3;
+    final public const STATUS_IN_PROGRESS = 4;
+    final public const STATUS_REGISTERED = 5;
+    final public const STATUS_DELETED = 6;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -74,9 +75,19 @@ class Worker implements \Stringable
     #[ORM\OneToOne(mappedBy: 'worker', cascade: ['persist', 'remove'])]
     private ?WorkerJob $workerJob = null;
 
+    /**
+     * @var Collection<int, Historic>
+     */
+    #[ORM\OneToMany(mappedBy: 'worker', targetEntity: Historic::class)]
+    private Collection $historics;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $username = null;
+
     public function __construct()
     {
         $this->permissions = new ArrayCollection();
+        $this->historics = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -299,5 +310,80 @@ class Worker implements \Stringable
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Historic>
+     */
+    public function getHistorics(): Collection
+    {
+        return $this->historics;
+    }
+
+    public function addHistoric(Historic $historic): static
+    {
+        if (!$this->historics->contains($historic)) {
+            $this->historics->add($historic);
+            $historic->setWorker($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoric(Historic $historic): static
+    {
+        if ($this->historics->removeElement($historic)) {
+            // set the owning side to null (unless already changed)
+            if ($historic->getWorker() === $this) {
+                $historic->setWorker(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasAllPermissionsApprovedOrDenied(): bool
+    {
+        foreach ($this->getPermissions() as $permission) {
+            if (null === $permission->isApproved()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function hasAllPermissionsGranted(): bool
+    {
+        foreach ($this->getPermissions() as $permission) {
+            if (null === $permission->isGranted()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(?string $username): static
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function hasPendingApprovalPermissionsFrom(User $appOwner): bool
+    {
+        foreach ($this->getPermissions() as $permission) {
+            $application = $permission->getApplication();
+            $applicationOwners = $application->getAppOwners();
+            if ($applicationOwners->contains($appOwner) && null === $permission->isApproved()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }
 
