@@ -18,9 +18,15 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ApplicationController extends BaseController
 {
 
-   public function __construct(private readonly ApplicationRepository $repo, private readonly EntityManagerInterface $em)
-   {
-   }
+    public function __construct(private readonly ApplicationRepository $repo, private readonly EntityManagerInterface $em)
+    {
+    }
+
+    /** Overwrite pageSize to desired Size if not on the request */
+    protected function loadQueryParameters(Request $request) {
+        parent::loadQueryParameters($request);
+        $this->queryParams['pageSize'] = $request->get('pageSize') ?? 25;
+    }
 
      /**
      * Creates or updates an application
@@ -165,5 +171,6 @@ class ApplicationController extends BaseController
       }
       return $application;
   }
+
 
 }

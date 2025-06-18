@@ -18,9 +18,15 @@ use Symfony\Component\Translation\TranslatableMessage;
 class DepartmentController extends BaseController
 {
 
-   public function __construct(private readonly DepartmentRepository $repo, private readonly EntityManagerInterface $em)
-   {
-   }
+    public function __construct(private readonly DepartmentRepository $repo, private readonly EntityManagerInterface $em)
+    {
+    }
+
+    /** Overwrite pageSize to desired Size if not on the request */
+    protected function loadQueryParameters(Request $request) {
+        parent::loadQueryParameters($request);
+        $this->queryParams['pageSize'] = $request->get('pageSize') ?? 25;
+    }
 
      /**
      * Creates or updates an department
