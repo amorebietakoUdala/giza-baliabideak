@@ -13,6 +13,7 @@ use App\Entity\Permission;
 use App\Form\DepartmentPermissionType;
 use App\Form\JobPermissionType;
 use App\Form\PermissionType;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -282,6 +283,16 @@ class PermissionController extends BaseController
             $removeAllowed = true;
         }
         $permissions = $worker->getPermissions();
+        $notGeneral = [];
+        if (!$this->isGranted('ROLE_ADMIN')) {
+            foreach($permissions as $permission) {
+                $application = $permission->getApplication();
+                if (!$application->isGeneral()) {
+                    $notGeneral[] = $permission;
+                }
+            }
+            $permissions = $notGeneral;
+        }
         /** @var User $user */
         $user = $this->getUser();
         return $this->render('permission/_list.html.twig',[
