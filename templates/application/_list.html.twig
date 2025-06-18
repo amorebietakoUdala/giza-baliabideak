@@ -16,6 +16,7 @@
                <th data-sortable="true">{{ 'application.appOwnersEmails' | trans }}</th>
                <th data-sortable="true">{{ 'application.appOwners' | trans }}</th>
                <th data-sortable="true">{{ 'application.userCreatorEmail' | trans }}</th>
+               <th data-sortable="true">{{ 'application.general' | trans }}</th>
                <th data-sortable="true" data-field="options">{{"table.options" | trans }}</th>
          </tr>
       </thead>
@@ -27,6 +28,7 @@
                <td>{{ application.appOwnersEmails }}</td>
                <td>{{ application.appOwners | join(', ') }}</td>
                <td>{{ application.userCreatorEmail | join(', ') }}</td>
+               <td>{{ application.general ? 'label.yes' | trans : 'label.no' | trans }}</td>
                <td>
                   <a href="{{ path('application_show', {'application': application.id}) }}" data-action="entity#edit"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
                   <a href="{{ path('application_edit', {'application': application.id}) }}" data-action="entity#edit" data-allowEdit="true"><i class="fa fa-edit" title='{{ "btn.edit" | trans | capitalize }}'></i></a>&nbsp;
