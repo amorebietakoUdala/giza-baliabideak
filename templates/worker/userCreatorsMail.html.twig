@@ -25,16 +25,16 @@
             '{application}': application,
             '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
             '{job}': app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu,
-         }) }}
-         {{ 'mail.disclaimerUserCreator' | trans({'{application}': application}) }}
-         {{ 'mail.disclaimerUserCreatorDetails' | trans }}
+         }) | raw}}
+         {{ 'mail.disclaimerUserCreator' | trans({'{application}': application}) | raw }}
+         {{ 'mail.disclaimerUserCreatorDetails' | trans | raw }}
       {% else %}
          {{ 'mail.messageToUserCreatorUserRemove' | trans({
             '{application}': application,
             '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
             '{job}': app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu,
-         }) }}
-         {{ 'mail.disclaimerUserCreatorUserRemove' | trans({'{application}': application}) }}
+         }) | raw }}
+         {{ 'mail.disclaimerUserCreatorUserRemove' | trans({'{application}': application}) | raw }}
       {% endif %}
     </body>
 </html> 

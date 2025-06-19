@@ -339,6 +339,7 @@ class WorkerController extends BaseController
         $application = $permission->getApplication();
         if ($application !== null && $application->getAppOwnersEmails() !== null) {
             $owners = explode(',', $application->getAppOwnersEmails());
+            $userCreatorEmail = $application->getUserCreatorEmail();
             $emails = [];
             foreach ($owners as $owner) {
                 $emails[] = $owner;
@@ -353,6 +354,7 @@ class WorkerController extends BaseController
                     'permission' => $permission,
                     'remove' => $remove,
                     'appOwners' => $application->getAppOwners(),
+                    'userCreatorEmail' => $userCreatorEmail,
                 ])
             );
             $this->mailer->send($email);

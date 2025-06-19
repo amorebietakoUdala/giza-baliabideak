@@ -161,22 +161,25 @@ modal.title.addPermission: "Añadir permiso"
 
 mail.approve: "Aprobar"
 mail.deny: "Denegar"
+mail.edit: "Editar"
 
-mail.messageToAppOwnersAdding: '{boss} ha solicitado acceso a {permission} para {worker} en el puesto {job}.'
-mail.disclaimerAdding: "Por favor, apruebe o deniegue utilizando el enlace de abajo. Si tiene algún problema para conceder este acceso, póngase en contacto con {boss}."
-mail.disclaimerAdding2: "Los responsables de la aplicación son: {appOwners}. En caso de no estar disponibles, póngase en contacto con informática para buscar una solución."
+mail.messageToAppOwnersAdding: '{boss} ha solicitado acceso a {permission} para {worker} en el puesto {job}.<br>'
+mail.disclaimerAdding: "Por favor, apruebe o deniegue utilizando el enlace de abajo. Si tiene algún problema para conceder este acceso, póngase en contacto con {boss}.<br>"
+mail.disclaimerAdding2: "Los responsables de la aplicación son: {appOwners}. En caso de no estar disponibles, póngase en contacto con informática para buscar una solución.<br>"
 
-mail.messageToAppOwnersRemoving: '{boss} ha solicitado quitar el permiso {permission} para {worker} en el puesto {job}.'
-mail.disclaimerRemoving: "Por favor, apruebe o deniegue utilizando el enlace de abajo. Si existe algún problema para quitar este acceso, pongáse en contacto con la persona responsable {boss}."
+mail.noUserCreatorEmailDisclaimer: "Por favor, realice la gestiones necesarias para crear el usuario en la aplicación {application}. <br>Una vez creado, enviadle las credenciales de acceso."
+
+mail.messageToAppOwnersRemoving: '{boss} ha solicitado quitar el permiso {permission} para {worker} en el puesto {job}.<br>'
+mail.disclaimerRemoving: "Por favor, apruebe o deniegue utilizando el enlace de abajo. Si existe algún problema para quitar este acceso, pongáse en contacto con la persona responsable {boss}.<br>"
 
 mail.medicalRevision: "Hemos dado de alta a este nuevo trabajador, tenlo en cuenta para reconocimientos médicos."
 mail.medicalRevisionDeletion: "Hemos dado de baja a este trabajador, tenlo en cuenta para reconocimientos médicos."
 
 mail.assignUsername: "Por favor, asigne un nombre de usuario a este trabajador."
 
-mail.messageToUserCreator: 'Se han aprobado los permisos solicitados en la aplicación {application} para {worker} en el puesto {job}.'
-mail.disclaimerUserCreator: "Por favor, realice la gestiones necesarias para el usuario en la aplicación {application}."
-mail.disclaimerUserCreatorDetails: "Una vez creado, enviadle las credenciales de acceso."
+mail.messageToUserCreator: 'Se han aprobado los permisos solicitados en la aplicación {application} para {worker} en el puesto {job}.<br>'
+mail.disclaimerUserCreator: "Por favor, realice la gestiones necesarias para crear el usuario en la aplicación {application}.<br>"
+mail.disclaimerUserCreatorDetails: "Una vez creado, enviadle las credenciales de acceso.<br>"
 
-mail.messageToUserCreatorRemoveUser: 'El trabajador {worker} se ha dado de baja.'
-mail.disclaimerUserCreatorRemoveUser: "Por favor, realice la gestiones necesarias para deshabilitar su usuario en la aplicación {application}."
+mail.messageToUserCreatorRemoveUser: 'El trabajador {worker} se ha dado de baja.<br>'
+mail.disclaimerUserCreatorRemoveUser: "Por favor, realice la gestiones necesarias para deshabilitar su usuario en la aplicación {application}.<br>"
