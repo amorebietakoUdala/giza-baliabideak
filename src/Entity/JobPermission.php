@@ -28,6 +28,9 @@ class JobPermission
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'permissions', cascade: ['persist'])]
     private Collection|array $roles;
 
+    #[ORM\Column(length: 4096, nullable: true)]
+    private ?string $notes = null;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -98,6 +101,18 @@ class JobPermission
         return $this;
     }
 
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): static
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
     public static function copyPermission(JobPermission $permission, Worker $worker) {
         $newPermission = new Permission();
         $newPermission->setWorker($worker);
@@ -106,6 +121,7 @@ class JobPermission
         foreach ($permission->getRoles() as $rol) {
             $newPermission->addRole($rol);
         }
+        $newPermission->setNotes($permission->getNotes());
         return $newPermission;
     }
 
@@ -117,6 +133,7 @@ class JobPermission
         foreach ($permission->getRoles() as $rol) {
             $newPermission->addRole($rol);
         }
+        $newPermission->setNotes($permission->getNotes());
         return $newPermission;
     }
 }

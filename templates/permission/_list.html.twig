@@ -1,8 +1,13 @@
 {% for permission in permissions %}
-<li class="w-25 list-group-item d-flex flex-row justify-content-between">
+<li class="w-25 list-group-item d-flex flex-row justify-content-between" {{ stimulus_controller('popover')}}>
       <span>
             {{ permission.application.name }}  {{ permission.subApplication != null ? '- '~ permission.subApplication.nameEs : '' }} - {{ permission.roles | join('|') }}&nbsp;
-
+            
+            {% if permission.hasNotes %}
+                  <a href="#" type="button" class="popover-dismiss" data-bs-toggle="popover" data-bs-title="{{ 'label.notes' | trans }}" data-bs-content="{{ permission.notes }}">
+                        <span class="fa fa-comment" title="{{ 'label.notes' | trans }}" alt="{{ 'label.notes' | trans }}"></span>
+                  </a>
+            {% endif %}
             {% if permission.approved is defined and permission.approved is not null %} 
                   {% if permission.approved %} 
                         <span class="fa fa-thumbs-up text-success" title="{{ 'label.approved' | trans }}" alt="{{ 'label.approved' | trans }}"></span>

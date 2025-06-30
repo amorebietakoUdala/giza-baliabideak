@@ -8,6 +8,7 @@ use App\Entity\Role;
 use App\Entity\SubApplication;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotNull;
@@ -43,6 +44,11 @@ class DepartmentPermissionType extends AbstractType
             'constraints' => [
                 new NotNull(),
             ]
+        ])        
+        ->add('notes', TextareaType::class, [
+            'label' => 'workerApplication.notes',
+            'required' => false,
+            'disabled' => $readonly,
         ])
         ;
     }

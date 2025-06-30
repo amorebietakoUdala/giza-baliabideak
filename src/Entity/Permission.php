@@ -53,6 +53,9 @@ class Permission
     #[ORM\Column(nullable: true)]
     private ?bool $approved = null;
 
+    #[ORM\Column(length: 4096, nullable: true)]
+    private ?string $notes = null;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -230,5 +233,21 @@ class Permission
         $this->approved = $approved;
 
         return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): static
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
+    public function hasNotes(): bool {
+        return mb_strlen(trim($this->notes)) > 0;
     }
 }

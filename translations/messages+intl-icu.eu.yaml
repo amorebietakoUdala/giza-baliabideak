@@ -77,6 +77,7 @@ subApplication.application: "Aplikazioa"
 workerApplication.application: "Aplikazioa"
 workerApplication.subApplication: "Negoziatua"
 workerApplication.roles: "Rolak"
+workerApplication.notes: "Ohorrak"
 
 department.id: "Id"
 department.nameEs: "Izena"
@@ -107,6 +108,7 @@ label.approved: "Onartua"
 label.denied: "Ukatua"
 label.approve: "Onartu"
 label.deny: "Ukatu"
+label.notes: "Ohorra"
 
 
 table.options: "Aukerak"

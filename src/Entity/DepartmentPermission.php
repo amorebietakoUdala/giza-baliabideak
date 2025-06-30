@@ -31,6 +31,9 @@ class DepartmentPermission
     #[ORM\ManyToMany(targetEntity: Role::class, inversedBy: 'departmentPermissions')]
     private Collection $roles;
 
+    #[ORM\Column(length: 4096, nullable: true)]
+    private ?string $notes = null;
+
     public function __construct()
     {
         $this->roles = new ArrayCollection();
@@ -77,28 +80,6 @@ class DepartmentPermission
         return $this;
     }
 
-    public static function copyPermission(DepartmentPermission $permission, Worker $worker) {
-        $newPermission = new Permission();
-        $newPermission->setWorker($worker);
-        $newPermission->setApplication($permission->getApplication());
-        $newPermission->setSubApplication($permission->getSubApplication());
-        foreach ($permission->getRoles() as $rol) {
-            $newPermission->addRole($rol);
-        }
-        return $newPermission;
-    }
-
-    public static function createJobPermissionFromPermissionAndWorker(Permission $permission, Department $department) {
-        $newPermission = new DepartmentPermission();
-        $newPermission->setDepartment($department);
-        $newPermission->setApplication($permission->getApplication());
-        $newPermission->setSubApplication($permission->getSubApplication());
-        foreach ($permission->getRoles() as $rol) {
-            $newPermission->addRole($rol);
-        }
-        return $newPermission;
-    }
-
     /**
      * @return Collection<int, Role>
      */
@@ -121,5 +102,41 @@ class DepartmentPermission
         $this->roles->removeElement($role);
 
         return $this;
+    }
+
+    public function getNotes(): ?string
+    {
+        return $this->notes;
+    }
+
+    public function setNotes(?string $notes): static
+    {
+        $this->notes = $notes;
+
+        return $this;
+    }
+
+    public static function copyPermission(DepartmentPermission $permission, Worker $worker) {
+        $newPermission = new Permission();
+        $newPermission->setWorker($worker);
+        $newPermission->setApplication($permission->getApplication());
+        $newPermission->setSubApplication($permission->getSubApplication());
+        foreach ($permission->getRoles() as $rol) {
+            $newPermission->addRole($rol);
+        }
+        $newPermission->setNotes($permission->getNotes());
+        return $newPermission;
+    }
+
+    public static function createJobPermissionFromPermissionAndWorker(Permission $permission, Department $department) {
+        $newPermission = new DepartmentPermission();
+        $newPermission->setDepartment($department);
+        $newPermission->setApplication($permission->getApplication());
+        $newPermission->setSubApplication($permission->getSubApplication());
+        foreach ($permission->getRoles() as $rol) {
+            $newPermission->addRole($rol);
+        }
+        $newPermission->setNotes($permission->getNotes());
+        return $newPermission;
     }
 }

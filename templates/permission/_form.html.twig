@@ -26,6 +26,13 @@
             'data-worker-form-target' : 'rolesInput',
             'class' : 'form-select form-select-sm',
          } }) }}
+         {{ form_row(form.notes, { 'attr': {
+            'data-department-permission-form-target' : 'notesInput',
+            'data-job-permission-form-target' : 'notesInput',
+            'data-permission-form-target' : 'notesInput',
+            'data-worker-form-target' : 'notesInput',
+            'rows' : '5',
+         } }) }}
       </div>
       {{ form_widget(form) }}
       <button class="btn btn-primary" type="submit">{{ 'btn.save' | trans }}</button>
