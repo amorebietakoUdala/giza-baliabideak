@@ -1,5 +1,7 @@
 message.confirmationTitle: "Confirme, por favor"
 message.deletionConfirmationText: "¿Está seguro de que desea eliminar el registro?"
+message.permissionApproveAllPendingText: "¿Está seguro de que desea aprobar todos los permisos pendientes?"
+message.permissionDenyAllPendingText: "¿Está seguro de que desea denegar todos los permisos pendientes?"
 message.error: "Error"
 btn.accept: "Aceptar"
 btn.ok: "Aceptar"

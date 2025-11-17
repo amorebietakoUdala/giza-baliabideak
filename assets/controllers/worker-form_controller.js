@@ -9,6 +9,10 @@ export default class extends Controller {
    static targets = ['modal', 'modalTitle', 'modalBody', 'modalSaveButton', 'rolesInput', 'permissionList', 'sendButton'];
    static values = {
        permissionAddUrl: String,
+       permissionApproveAllPendingUrl: String,
+       permissionApproveAllPendingText: String,
+       permissionDenyAllPendingUrl: String,
+       permissionDenyAllPendingText: String,
        permissionListUrl: String,
        status: String,
    };
@@ -52,6 +56,35 @@ export default class extends Controller {
          this.modalBodyTarget.innerHTML = e.responseText;
       }
    }
+
+   approveAllPendingPermissions(e) {
+      e.preventDefault();
+      Swal.fire({
+         template: '#confirm',
+         html: this.permissionApproveAllPendingTextValue,
+      }).then((result) => {
+         console.log(result);
+         if (result.value) {
+            if ( result.isConfirmed ) {
+               document.location.href = this.permissionApproveAllPendingUrlValue;
+            }
+         }
+      });
+   }
+
+   denyAllPendingPermissions(e) {
+      e.preventDefault();
+      Swal.fire({
+         template: '#confirm',
+         html: this.permissionDenyAllPendingTextValue,
+      }).then((result) => {
+         console.log(result);
+            if ( result.isConfirmed ) {
+               document.location.href = this.permissionDenyAllPendingUrlValue;
+            }
+      });
+   }
+
 
    async updatePermissionList() {
       try {

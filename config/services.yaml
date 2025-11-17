@@ -40,6 +40,11 @@ services:
             $contactEmail: '%contactEmail%'
             $departmentDefault: '%departmentDefault%'
             $contactEmailDefault: '%contactEmailDefault%'
+            $sendBCC: '%sendBCC%'
+            $mailerBCC: '%mailerBCC%'
+            $mailerMM: '%mailerMM%'
+            $mailerHHRR: '%mailerMM%'
+            $mailerFrom: '%mailer_from%'
 
 
     # makes classes in src/ available to be used as services

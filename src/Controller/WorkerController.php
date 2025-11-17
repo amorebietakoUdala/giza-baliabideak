@@ -6,18 +6,18 @@ use App\Controller\BaseController;
 use App\Entity\DepartmentPermission;
 use App\Entity\Historic;
 use App\Entity\JobPermission;
-use App\Entity\Permission;
+use App\Entity\User;
 use App\Entity\Worker;
 use App\Form\WorkerType;
 use App\Form\WorkerSearchType;
 use App\Repository\WorkerRepository;
+use App\Service\MailingService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -28,12 +28,14 @@ class WorkerController extends BaseController
 {
 
     public function __construct(
-        private readonly WorkerRepository $repo, 
+        private readonly WorkerRepository $repo,
         private readonly EntityManagerInterface $em, 
-        private readonly MailerInterface $mailer, 
-        private readonly SerializerInterface $serializer)
+        private readonly SerializerInterface $serializer,
+        private readonly MailingService $mailingService,
+        )
     {
     }
+
     #[IsGranted('ROLE_RRHH')]
     #[Route(path: '/worker/new', name: 'worker_new')]
     public function new(Request $request) {
@@ -59,13 +61,17 @@ class WorkerController extends BaseController
                     $this->addFlash('error','worker.alreadyExists');
                     return $this->renderEdit($form, null, true, false, false, $this->isGranted('ROLE_APP_OWNER'));
                 } else {
+                    // Remove all existing permissions, because they will be re-added according to the Department and Job
+                    foreach ( $existingWorker->getPermissions() as $permission ) {
+                        $this->em->remove($permission);
+                    }
                     $existingWorker->fill($worker);
-                    $worker = $existingWorker;
-                    $worker->setStatus(Worker::STATUS_REVISION_PENDING);
-                    $this->addJobPermissionsToWorker($worker);
-                    $this->createHistoric('alta ya existente', $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-                    $this->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
+                    $existingWorker->setStatus(Worker::STATUS_REVISION_PENDING);
+                    $this->addJobPermissionsToWorker($existingWorker);
+                    $this->createHistoric('alta ya existente', $this->serializer->serialize($existingWorker,'json',['groups' => 'historic']), $existingWorker);
                     $this->addFlash('warning','worker.alreadyExistsStatusChanged');
+                    $this->em->persist($existingWorker);
+                    $worker = $existingWorker;
                 }
             } else {
                 if ( $worker->getUsername() === null || $worker->getUsername() === '' ) {
@@ -76,20 +82,19 @@ class WorkerController extends BaseController
                 $this->addJobPermissionsToWorker($worker);
                 $this->createHistoric('alta', $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
                 $this->addFlash('success', 'worker.sent');
+                $this->em->persist($worker);
             }
-            $this->em->persist($worker);
+            //dd($worker);
             $this->em->flush();
             if ( $worker->getStatus() === Worker::STATUS_USERNAME_PENDING ) {
                 $this->createHistoric("pendiente de asignación de nombre de usuario", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-                $emailContent = $this->createUsernamePendingEmailContent($worker);
-                $this->sendMessage('Langile berriari ezarri erabiltzaile izena / Asigne un nombre de usuario al nuevo empleado', [$this->getParameter('mailerBCC')], $emailContent);
+                $this->mailingService->sendUsernamePendingMessageToIT('Langile berriari ezarri erabiltzaile izena / Asigne un nombre de usuario al nuevo empleado', $worker);
             } else {
-                $this->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);                
+                $this->mailingService->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker, true);                
                 $this->createHistoric("enviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
             }
             // Send an email to medical revisions responsible
-            $html = $this->createBossRevisionPendingEmailContent($worker);
-            $this->sendMessage('Langile berria gorde da / Se ha dado de alta un nuevo empleado', [$this->getParameter('mailerMM')], $html);
+            $this->mailingService->sendMessageToMM('Langile berria gorde da / Se ha dado de alta un nuevo empleado', $worker);
             return $this->redirectToRoute('worker_index');
         }
 
@@ -104,7 +109,7 @@ class WorkerController extends BaseController
     public function send(Request $request, Worker $worker) {
         $this->loadQueryParameters($request);
         $this->createHistoric("Reenviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-        $this->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
+        $this->mailingService->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
         $this->addFlash('success', 'worker.resent');
 
         return $this->redirectToRoute('worker_index');
@@ -114,6 +119,12 @@ class WorkerController extends BaseController
     #[Route(path: '/worker/{worker}/validate', name: 'worker_validate')]
     public function validate(Request $request, Worker $worker) {
         $this->loadQueryParameters($request);
+        $oldPermissions = new ArrayCollection();
+        $session = $request->getSession();
+        if ( $request->getMethod() !== 'POST' ) {
+            $oldPermissions = $worker->getPermissions();
+            $session->set('oldPermissions', $oldPermissions);
+        }
         $form = $this->createForm(WorkerType::class, $worker,[
             'locale' => $request->getLocale(),
             'roleBossOnly' => $this->isGranted('ROLE_BOSS') && !$this->isGranted('ROLE_RRHH'),
@@ -124,6 +135,9 @@ class WorkerController extends BaseController
         if ( $form->isSubmitted() && $form->isValid() ) {
             /** @var Worker $worker */
             $worker = $form->getData();
+            //$job = $worker->getWorkerJob()->getJob();
+            $oldPermissions = $session->get('oldPermissions', new ArrayCollection());
+            $newPermissions = $this->determineNewPermissions($worker, $oldPermissions);
             if ( $worker->getStatus() === Worker::STATUS_APPROVAL_PENDING ) {
                 $this->addFlash('error','error.alreadyValidated');
                 return $this->renderEdit($form, $historics, false, false, true);
@@ -137,10 +151,7 @@ class WorkerController extends BaseController
             $worker->setValidatedBy($this->getUser());
             $this->em->persist($worker);
             $this->createHistoric("validado por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-            $permissions = $worker->getPermissions();
-            foreach($permissions as $permission) {
-                $this->sendMessageToAppOwners('Langile berriaren baimena onartu / Aprobar el permiso del nuevo empleado ', $worker, $permission, false);
-            }
+            $this->mailingService->sendMessageToAppOwners('Langile berriaren baimenak onartu / Aprobar los permisos del nuevo empleado ',$this->getUser(), $worker, $newPermissions, false);
             $this->em->flush();
             $this->addFlash('success', 'worker.saved');
             return $this->redirectToRoute('worker_index');
@@ -167,9 +178,10 @@ class WorkerController extends BaseController
             if ($error) {
                 return $this->renderEdit($form, $historics, false, false);
             }
-            if ( $worker->getUsername() !== null && $worker->getUsername() !== '' ) {
+            if ( $worker->getUsername() !== null && $worker->getUsername() !== '' && $worker->getStatus() === Worker::STATUS_USERNAME_PENDING )
+            {
                 $worker->setStatus(Worker::STATUS_REVISION_PENDING);
-                $this->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
+                $this->mailingService->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker, true);
                 $this->createHistoric("enviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
             } else {
                 $this->createHistoric("modificación de datos", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
@@ -190,9 +202,8 @@ class WorkerController extends BaseController
         $this->loadQueryParameters($request);
         $worker->setStatus(Worker::STATUS_DELETED);
         $this->createHistoric('baja', $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-        $html = $this->createBossRevisionPendingEmailContent($worker, false, true);
-        $this->sendMessage('Langile hau ezabatu egin da / El siguiente empleado se ha dado de baja', [$this->getParameter('mailerBCC')], $html);
-        $this->sendMessageToUserCreators('Mesedez, langile honen erabiltzailea ezabatu / Por favor, elimine el usuario del siguiente trabajador', $worker, true);
+        $this->mailingService->sendMessageToIT('Langile hau ezabatu egin da / El siguiente empleado se ha dado de baja', $worker, false, true);
+        $this->mailingService->sendMessageToUserCreators('Mesedez, langile honen erabiltzailea ezabatu / Por favor, elimine el usuario del siguiente trabajador', $worker, null, true);
         $this->em->flush();
         $this->addFlash('success', 'worker.deleted');
 
@@ -250,6 +261,77 @@ class WorkerController extends BaseController
         ]);
     }   
 
+    #[IsGranted('ROLE_APP_OWNER')]
+    #[Route(path: '/worker/{worker}/approve-all-pending', name: 'worker_approve_all_pending')]
+    public function approveAllPending(Worker $worker) {
+        /** @var User $user */
+        $user = $this->getUser();
+        $applications = $user->getApplications();
+        $approvedPermissions = [];
+        foreach ( $applications as $application ) {
+            foreach ( $worker->getPermissions() as $permission ) {
+                if ( $permission->isApproved() === null && $permission->getApplication() === $application ) {
+                    $permission->setApproved(true);
+                    $permission->setApprovedBy($user);
+                    $permission->setApprovedAt(new \DateTimeImmutable());
+                    $this->em->persist($permission);
+                    $this->createHistoric("permiso $permission aprobado", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                    $approvedPermissions[] = $permission;
+                }
+            }
+        }
+        if ($worker->hasAllPermissionsApprovedOrDenied()) {
+            $worker->setStatus(Worker::STATUS_IN_PROGRESS);
+            $this->createHistoric("No hay aprobaciones pendientes. Cambio de estado a 'En proceso alta informática'", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+            $this->em->persist($worker);
+        }
+        $this->em->flush();
+        $this->mailingService->sendMessageToUserCreators('Langilearen baimenak onartu dira / Permisos del empleado aprobados', $worker, $approvedPermissions);
+        return $this->redirectToRoute('worker_edit', ['worker' => $worker->getId()]);
+    }
+
+    #[IsGranted('ROLE_APP_OWNER')]
+    #[Route(path: '/worker/{worker}/deny-all-pending', name: 'worker_deny_all_pending')]
+    public function denyAllPending(Worker $worker) {
+        /** @var User $user */
+        $user = $this->getUser();
+        $applications = $user->getApplications();
+        foreach ( $applications as $application ) {
+            foreach ( $worker->getPermissions() as $permission ) {
+                if ( $permission->isApproved() === null && $permission->getApplication() === $application ) {
+                    $permission->setApproved(false);
+                    $permission->setApprovedBy($user);
+                    $permission->setApprovedAt(new \DateTimeImmutable());
+                    $this->em->persist($permission);
+                    $this->createHistoric("permiso $permission denegado", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                }
+            }
+        }
+        if ($worker->hasAllPermissionsApprovedOrDenied()) {
+            $worker->setStatus(Worker::STATUS_IN_PROGRESS);
+            $this->createHistoric("No hay aprobaciones pendientes. Cambio de estado a 'En proceso alta informática'", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+            $this->em->persist($worker);
+        }
+        $this->em->flush();
+        return $this->redirectToRoute('worker_edit', ['worker' => $worker->getId()]);
+    }
+
+    private function determineNewPermissions(Worker $worker, Collection $oldPermissions): array
+    {
+        $oldPermissionIds = array_map(
+            fn($perm) => $perm->getId(),
+            $oldPermissions->toArray()
+        );
+
+        $newPermissions = [];
+        foreach ($worker->getPermissions() as $permission) {
+            if (!in_array($permission->getId(), $oldPermissionIds, true)) {
+                $newPermissions[] = $permission;
+            }
+        }
+
+        return $newPermissions;
+    }
 
     /** 
      *  This method is used when new Worker is created to assign permissions attached to the Department and the Job if there any.
@@ -321,107 +403,7 @@ class WorkerController extends BaseController
         $this->em->persist($historic);
     }
 
-    private function sendMessageToBoss($subject, Worker $worker) {
-        if ($worker->getWorkerJob()->getJob() !== null) {
-            $bosses = $worker->getWorkerJob()->getJob()->getBosses();
-            $emails = [];
-            foreach ($bosses as $boss) {
-                if ($boss->getEmail()) {
-                    $emails[] = $boss->getEmail();
-                }
-            }
-            $html = $this->createBossRevisionPendingEmailContent($worker, true);
-            $this->sendMessage($subject, $emails, $html);
-        }
-    }
-
-    private function sendMessageToAppOwners($subject, Worker $worker, Permission $permission, bool $remove) {
-        $application = $permission->getApplication();
-        if ($application !== null && $application->getAppOwnersEmails() !== null) {
-            $owners = explode(',', $application->getAppOwnersEmails());
-            $userCreatorEmail = $application->getUserCreatorEmail();
-            $emails = [];
-            foreach ($owners as $owner) {
-                $emails[] = $owner;
-            }
-            $email = (new Email())
-                ->from($this->getParameter('mailer_from'))
-                ->to(...$emails)
-                ->subject($subject)
-                ->html($this->renderView('worker/appOwnersMail.html.twig', [
-                    'user' => $this->getUser(),
-                    'worker' => $worker,
-                    'permission' => $permission,
-                    'remove' => $remove,
-                    'appOwners' => $application->getAppOwners(),
-                    'userCreatorEmail' => $userCreatorEmail,
-                ])
-            );
-            $this->mailer->send($email);
-        }
-    }
-
-    private function sendMessageToUserCreators($subject, Worker $worker, bool $remove = false) {
-        foreach ($worker->getPermissions() as $permission) {
-            $application = $permission->getApplication();
-            if ($application !== null && $application->getUserCreatorEmail() !== null) {
-                $creators = explode(',', $application->getUserCreatorEmail());
-                $emails = [];
-                foreach ($creators as $creator) {
-                    $emails[] = $creator;
-                }
-                $email = (new Email())
-                    ->from($this->getParameter('mailer_from'))
-                    ->to(...$emails)
-                    ->subject($subject)
-                    ->html($this->renderView('worker/userCreatorsMail.html.twig', [
-                        'user' => $this->getUser(),
-                        'worker' => $worker,
-                        'permission' => $permission,
-                        'remove' => $remove,
-                        'application' => $application,
-                    ])
-                );
-                $this->mailer->send($email);
-            }
-        }
-    }    
-
-    private function createUsernamePendingEmailContent(Worker $worker) :string
-    {
-        return $this->renderView('worker/usernamePendingMail.html.twig', [
-            'worker' => $worker,
-        ]);
-    }
-
-    private function createBossRevisionPendingEmailContent(Worker $worker, $validate = false, $deleteOperation = false) :string
-    {
-        return $this->renderView('worker/bossRevisionPendingMail.html.twig', [
-            'worker' => $worker,
-            'validate' => $validate,
-            'deleteOperation' => $deleteOperation
-        ]);
-    }
-
-//    private function sendMessage($subject, array $to, Worker $worker, $validate = false, $deleteOperation = false)
-    private function sendMessage($subject, array $to, string $html)
-    {
-        $email = (new Email())
-            ->from($this->getParameter('mailer_from'))
-            ->to(...$to)
-            ->subject($subject)
-            ->html($html)
-        ;
-        if ( $this->getParameter('sendBCC') ) {
-            $addresses = [$this->getParameter('mailerBCC')];
-            foreach ($addresses as $address) {
-                $email->addBcc($address);
-            }
-        }            
-        $this->mailer->send($email);
-    }
-
-    private function remove_blank_filters($criteria)
+    private function remove_blank_filters(array $criteria)
     {
         $new_criteria = [];
         foreach ($criteria as $key => $value) {

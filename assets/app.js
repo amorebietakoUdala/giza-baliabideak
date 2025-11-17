@@ -12,3 +12,5 @@ import './styles/app.css';
 
 // start the Stimulus application
 import './bootstrap';
+
+global.locale = document.getElementsByTagName("html")[0].getAttribute('lang');

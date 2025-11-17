@@ -13,29 +13,32 @@
       <b>{{ 'worker.surname2' | trans }}:</b> {{ worker.surname2 }}<br>
       <b>{{ 'worker.username' | trans }}:</b> {{ worker.username }}<br>
       <b>{{ 'worker.startDate' | trans }}:</b> {{ worker.startDate | date('Y-m-d') }}<br>
-      {# <b>{{ 'worker.endDate' | trans }}:</b> {{ worker.endDate != null ? worker.endDate | date('Y-m-d') : ''}}<br>
-      <b>{{ 'worker.expedientNumber' | trans }}:</b> {{ worker.expedientNumber }}<br> #}
       <b>{{ 'worker.department' | trans }}:</b> {{ worker.department }}<br>
       <b>{{ 'worker.job' | trans }}:</b> {{ worker.workerJob.job }}<br>
-      {# <b>{{ 'worker.status' | trans }}:</b> {{ ('status.'~worker.status) | trans }}<br> #}
       <br>
 
-      {% if not remove %}
-         {{ 'mail.messageToUserCreator' | trans({
-            '{application}': application,
-            '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
-            '{job}': app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu,
-         }) | raw}}
-         {{ 'mail.disclaimerUserCreator' | trans({'{application}': application}) | raw }}
-         {{ 'mail.disclaimerUserCreatorDetails' | trans | raw }}
-      {% else %}
-         {{ 'mail.messageToUserCreatorUserRemove' | trans({
-            '{application}': application,
-            '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
-            '{job}': app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu,
-         }) | raw }}
-         {{ 'mail.disclaimerUserCreatorUserRemove' | trans({'{application}': application}) | raw }}
-      {% endif %}
+      {% for permission in permissions %}
+         {% if not remove %}
+            {% set message = 'mail.messageToUserCreatorBatch' | trans({
+               '{permission}': permission
+            }) | raw %}
+         {% else %}
+            {% set message = 'mail.messageToUserCreatorRemoveUserBatch' | trans({}) | raw %}
+         {% endif %}
+            <table>
+               <thead>
+                  <tr>
+                     <th>{{ permission.application.name }}</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  <tr>
+                     <td style="text-align: left">{{ message | raw }}</td>
+                  </tr>
+               </tbody>
+            </table>
+            <br>
+      {% endfor %}
     </body>
 </html> 
 {% endapply %}

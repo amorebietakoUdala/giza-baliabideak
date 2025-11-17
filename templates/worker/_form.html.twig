@@ -113,19 +113,34 @@
                     'permissionListUrl': path('permission_list',{
                         'worker': form.vars.value.id is defined ? form.vars.value.id : null,
                     }),
+                    'permissionApproveAllPendingUrl': path('worker_approve_all_pending',{
+                        'worker': form.vars.value.id is defined ? form.vars.value.id : null,
+                    }),
+                    'permissionApproveAllPendingText': 'message.permissionApproveAllPendingText' | trans({},'alerts'),
+                    'permissionDenyAllPendingUrl': path('worker_deny_all_pending',{
+                        'worker': form.vars.value.id is defined ? form.vars.value.id : null,
+                    }),
+                    'permissionDenyAllPendingText': 'message.permissionDenyAllPendingText' | trans({},'alerts'),
                     'new' : new,
                 })}}>
                 {% set isAdmin = is_granted('ROLE_ADMIN') %}
                     <div class="row">
-                        <div class="d-flex flex-row justify-content-start {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }}">
+                        <div class="d-flex align-items-baseline {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }} mb-1">
                             {% if not new %}
-                                <h3>{{ 'header.permissions' | trans }}</h3>&nbsp;
+                                <h3>{{ 'header.permissions' | trans }}</h3>&nbsp;&nbsp;&nbsp;
+                                {% if is_granted("ROLE_APP_OWNER") and not form.vars.value.hasAllPermissionsApprovedOrDenied %}
+                                    <button type="button" class="btn btn-success btn-sm" data-action="worker-form#approveAllPendingPermissions">
+                                        {{ 'btn.approveAllPending' | trans }}
+                                    </button>
+                                   &nbsp;&nbsp;&nbsp;
+                                    <button type="button" class="btn btn-danger btn-sm" data-action="worker-form#denyAllPendingPermissions">
+                                        {{ 'btn.denyAllPending' | trans }}
+                                    </button>&nbsp;&nbsp;&nbsp;
+                                {% endif %}
                                 {% if not readonly and not new %}
                                     <div class="col-lg-2 d-flex align-items-baseline">
                                         {% if is_granted("ROLE_BOSS") %}
-                                            <button type="button" 
-                                                class="btn btn-secondary btn-sm" 
-                                                data-action="worker-form#showAddPermissionForm">
+                                            <button type="button" class="btn btn-secondary btn-sm" data-action="worker-form#showAddPermissionForm">
                                                 {{ 'btn.addApplication' | trans }}
                                             </button>
                                         {% endif %}

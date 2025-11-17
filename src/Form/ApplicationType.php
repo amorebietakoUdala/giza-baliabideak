@@ -32,6 +32,7 @@ class ApplicationType extends AbstractType
             ->add('appOwnersEmails', null, [
                 'label' => 'application.appOwnersEmails',
                 'disabled' => $readonly,
+                'help' => 'application.appOwnersEmails.help',
             ])
             ->add('userCreatorEmail', null, [
                 'label' => 'application.userCreatorEmail',

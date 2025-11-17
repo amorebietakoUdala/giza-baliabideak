@@ -12,17 +12,19 @@
                 }) }}
             </div>
             <div class="col-lg-3">
+                {{ form_row(form.general) }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-auto">
                 {{ form_row(form.appOwnersEmails, { 'attr': 
-                    { 'class' : 'form-control form-control-sm' }
+                    { 'class' : 'form-control form-control-sm'}
                 }) }}
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-auto">
                 {{ form_row(form.userCreatorEmail, { 'attr': 
                     { 'class' : 'form-control form-control-sm' }
                 }) }}
-            </div>
-            <div class="col-lg-3">
-                {{ form_row(form.general) }}
             </div>
         </div>
         {% if form.subApplications | length > 0 %}

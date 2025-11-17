@@ -22,7 +22,7 @@ class WorkerJob
     #[ORM\JoinColumn(nullable: false)]
     private ?Job $job = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $code = null;
 
     public function getId(): ?int
@@ -59,7 +59,7 @@ class WorkerJob
         return $this->code;
     }
 
-    public function setCode(int $code): static
+    public function setCode(?int $code): static
     {
         $this->code = $code;
 

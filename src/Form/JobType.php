@@ -2,10 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\Application;
 use App\Entity\Job;
 use App\Entity\User;
-use App\Repository\ApplicationRepository;
 use App\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -31,7 +29,8 @@ class JobType extends AbstractType
                 'label' => 'job.bosses',
                 'multiple' => true,
                 'disabled' => $readonly,
-                'query_builder' => fn(UserRepository $er) => $er->findBossesQB(),                
+                'query_builder' => fn(UserRepository $er) => $er->findBossesQB(),
+                'required' => true,              
             ])
         ;
     }

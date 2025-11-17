@@ -11,5 +11,10 @@
                 'validate': validate,
             }) }}
         </div>
+        {# {% if not new %}
+            <div class="d-flex justify-content-center mt-2">
+                <a class="btn btn-secondary btn-sm" href="{{ path('worker_index') }}">{{ 'btn.cancel' | trans }}</a>
+            </div>
+        {% endif %} #}
     </main>
 {% endblock body %}

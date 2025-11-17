@@ -6,6 +6,7 @@ use App\Repository\WorkerRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Query\Expr\Func;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
@@ -220,7 +221,7 @@ class Worker implements \Stringable
         return $this;
     }
 
-    public function fill(Worker $worker) {
+    public function fill(Worker $worker): self {
         $this->dni = $worker->getDni();
         $this->name = $worker->getName();
         $this->surname1 = $worker->getSurname1();
@@ -229,18 +230,19 @@ class Worker implements \Stringable
         $this->endDate = $worker->getEndDate();
         $this->expedientNumber = $worker->getExpedientNumber();
         $this->department = $worker->getDepartment();
-        $this->workerJob = new WorkerJob();
+        $this->workerJob = $this->workerJob ?? new WorkerJob();
         $this->workerJob->setWorker($this);
         $this->workerJob->setJob($worker->getWorkerJob()->getJob());
         $this->workerJob->setCode($worker->getWorkerJob()->getCode());
         if ( null !== $this->getPermissions() ) {
             $this->getPermissions()->clear();
         }
-        foreach ($worker->getPermissions() as $permission) {
-            $permissionCopy = Permission::copyPermission($permission);
-            $permissionCopy->setWorker($this);
-            $this->addPermission($permissionCopy);
-        }
+        // foreach ($worker->getPermissions() as $permission) {
+        //     $permissionCopy = Permission::copyPermission($permission);
+        //     $permissionCopy->setWorker($this);
+        //     $this->addPermission($permissionCopy);
+        // }
+        return $this;
     }
 
     public function getValidatedBy(): ?User
@@ -282,6 +284,14 @@ class Worker implements \Stringable
             }
         }
 
+        return $this;
+    }
+
+    public function removeAllPermissions(): self
+    {
+        foreach ($this->getPermissions() as $permission) {
+            $this->removePermission($permission);
+        }
         return $this;
     }
 
@@ -374,7 +384,7 @@ class Worker implements \Stringable
     }
 
     public function hasPendingApprovalPermissionsFrom(User $appOwner): bool
-    {
+    {   
         foreach ($this->getPermissions() as $permission) {
             $application = $permission->getApplication();
             $applicationOwners = $application->getAppOwners();

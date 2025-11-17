@@ -1,5 +1,7 @@
 message.confirmationTitle: "Konfirma ezazu mesedez"
 message.deletionConfirmationText: "Ziur zaude erregistro hau ezabatu nahi duzula?"
+message.permissionApproveAllPendingText: "Ziur zaude onartugabeko baimen guztiak onartu nahi dituzula?"
+message.permissionDenyAllPendingText: "Ziur zaude onartugabeko baimen guztiak ukatu nahi dituzula?"
 message.error: "Akatsa"
 btn.accept: "Bai"
 btn.ok: "Onartu"

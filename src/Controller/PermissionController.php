@@ -13,12 +13,10 @@ use App\Entity\Permission;
 use App\Form\DepartmentPermissionType;
 use App\Form\JobPermissionType;
 use App\Form\PermissionType;
-use Doctrine\Common\Collections\ArrayCollection;
+use App\Service\MailingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -28,7 +26,11 @@ use Symfony\Component\Translation\TranslatableMessage;
 class PermissionController extends BaseController
 {
 
-    public function __construct(private readonly EntityManagerInterface $em, private readonly SerializerInterface $serializer, private readonly MailerInterface $mailer)
+    public function __construct(
+        private readonly EntityManagerInterface $em, 
+        private readonly SerializerInterface $serializer,
+        private readonly MailingService $mailingService, 
+    )
     {
     }
 
@@ -65,6 +67,7 @@ class PermissionController extends BaseController
                 return $this->renderError($form, $template);            
             }
             $this->em->persist($permission);
+            $this->em->flush();
             $this->createHistoric("añadir permiso: $permission", $this->serializer->serialize([$permission, $permission->getWorker()],'json',['groups' => 'historic']), $worker);
             $this->addOrUpdatePermissionToJob($permission);
             /** If status > 2 means it's a change in permissions after IT gives them the proper permissions, so we need to notify app owner 
@@ -75,12 +78,11 @@ class PermissionController extends BaseController
                 $worker->setStatus(Worker::STATUS_APPROVAL_PENDING);
                 $this->em->persist($worker);
                 $this->createHistoric("enviado al responsable $permission para su aprobación", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-                $this->sendMessages('Langile berriaren baimena onartu / Aprobar el permiso del nuevo empleado', $worker, $permission, false);
+                $this->mailingService->sendMessageToAppOwners('Langile berriaren baimena onartu / Aprobar el permiso del nuevo empleado', $this->getUser(), $worker, [$permission], false);
+                $this->em->flush();
             }
-            $this->em->flush();
-            return $this->redirectToRoute('worker_edit', [
-                'worker' => $worker->getId(),
-            ]);
+                $referer = $request->headers->get('referer');
+                return $this->redirect($referer ?? $this->generateUrl('worker_edit',['worker' => $worker->getId(),]));
         }
         return $this->render('permission/' . $template, [
             'readonly' => false,
@@ -188,13 +190,12 @@ class PermissionController extends BaseController
                 $this->em->persist($worker);
                 $application = $permission->getApplication();
                 $this->createHistoric("enviado al responsable de la aplicación $application", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-                $this->sendMessages('Langileari honako baimenak kenduko zaizkio / Se le van a quitar los siguientes permisos al empleado', $worker, $permission, true);
+                $this->mailingService->sendMessageToUserCreators('Langileari honako baimenak kenduko zaizkio / Se le van a quitar los siguientes permisos al empleado', $worker, [$permission], true);
             }
             $this->em->flush();
             if (!$request->isXmlHttpRequest()) {
-                return $this->redirectToRoute('worker_edit',[
-                    'worker' => $permission->getWorker()->getId(),
-                ]);
+                $referer = $request->headers->get('referer');
+                return $this->redirect($referer ?? $this->generateUrl('worker_edit',['worker' => $worker->getId(),]));
             } else {
                 return new Response(null, Response::HTTP_NO_CONTENT);
             }
@@ -330,7 +331,7 @@ class PermissionController extends BaseController
         } else {
             $this->createHistoric("permiso $permission aprobado", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         }
-        $this->sendMessageToUserCreators('Langile berriaren erabiltzailea sortu / Cree el usuario del nuevo trabajador', $worker, $permission);
+        $this->mailingService->sendMessageToUserCreators('Langile berriaren erabiltzailea sortu / Cree el usuario del nuevo trabajador', $worker, [$permission]);
         $this->em->persist($permission);
         $this->em->flush();
         $this->addFlash('success', 'message.permissionApproved');
@@ -369,11 +370,12 @@ class PermissionController extends BaseController
             $this->createHistoric("permiso $permission denegado", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         }
         if ($permission->isGranted()){
-            $this->sendMessageToUserCreators('Mesedez, langile honen erabiltzailea ezabatu / Por favor, elimine el usuario del siguiente trabajador', $worker, $permission, true);
+            $this->mailingService->sendMessageToUserCreators('Mesedez, langile honen erabiltzailea ezabatu / Por favor, elimine el usuario del siguiente trabajador', $worker, [$permission], true);
         }
         $this->em->persist($permission);
         $this->em->flush();
         $this->addFlash('success', 'message.permissionDenied');
+        
         return $this->redirectToRoute('worker_edit', [
             'worker' => $worker->getId(),
         ]);
@@ -472,57 +474,4 @@ class PermissionController extends BaseController
         $historic->fill($this->getUser(),$operation, $details, $worker);
         $this->em->persist($historic);
     }
-
-    private function sendMessages($message, Worker $worker, Permission $permission, $remove = false) {
-        $worker = $permission->getWorker();
-        $this->sendMessageToAppOwners($message, $worker, $permission, $remove);
-    }
-
-    private function sendMessageToAppOwners($subject, Worker $worker, Permission $permission, bool $remove) {
-        $application = $permission->getApplication();
-        if ($application !== null && $application->getAppOwnersEmails() !== null) {
-            $owners = explode(',', $application->getAppOwnersEmails());
-            $emails = [];
-            foreach ($owners as $owner) {
-                $emails[] = $owner;
-            }
-            $email = (new Email())
-                ->from($this->getParameter('mailer_from'))
-                ->to(...$emails)
-                ->subject($subject)
-                ->html($this->renderView('worker/appOwnersMail.html.twig', [
-                    'user' => $this->getUser(),
-                    'worker' => $worker,
-                    'permission' => $permission,
-                    'remove' => $remove,
-                    'appOwners' => $owners,
-                ])
-            );
-            $this->mailer->send($email);
-        }
-    }
-
-    private function sendMessageToUserCreators($subject, Worker $worker, Permission $permission, bool $remove = false) {
-        $application = $permission->getApplication();
-        if ($application !== null && $application->getUserCreatorEmail() !== null) {
-            $creators = explode(',', $application->getUserCreatorEmail());
-            $emails = [];
-            foreach ($creators as $creator) {
-                $emails[] = $creator;
-            }
-            $email = (new Email())
-                ->from($this->getParameter('mailer_from'))
-                ->to(...$emails)
-                ->subject($subject)
-                ->html($this->renderView('worker/userCreatorsMail.html.twig', [
-                    'user' => $this->getUser(),
-                    'worker' => $worker,
-                    'permission' => $permission,
-                    'remove' => $remove,
-                    'application' => $application,
-                ])
-            );
-            $this->mailer->send($email);
-        }
-    }    
 }

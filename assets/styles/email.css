@@ -18,3 +18,10 @@ th, td {
    border: 1px solid black;
    padding: 5px
 }
+.text-green {
+    color: #198754;
+}
+
+.text-red {
+   color: #dc3545;
+}

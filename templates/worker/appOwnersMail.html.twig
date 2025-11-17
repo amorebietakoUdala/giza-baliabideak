@@ -22,35 +22,45 @@
       <b>{{ 'worker.startDate' | trans }}:</b> {{ worker.startDate | date('Y-m-d') }}<br>
       <b>{{ 'worker.endDate' | trans }}:</b> {{ worker.endDate != null ? worker.endDate | date('Y-m-d') : ''}}<br>
       <b>{{ 'worker.department' | trans }}:</b> {{ worker.department }}<br>
-      <b>{{ 'worker.job' | trans }}:</b> {{ worker.workerJob.job }}<br>
+      <b>{{ 'worker.job' | trans }}:</b> {{ app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu }}<br>
+      <b>{{ 'mail.permissionAskedBy' | trans }}:</b> {{ user.username }}<br>
 
-      {{ message | trans({
-         '{boss}': user.username,
-         '{permission}': permission,
-         '{worker}': worker.name ~ ' ' ~ worker.surname1 ~ ' ' ~ worker.surname2,
-         '{job}': app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu,
-         }) | raw
-      }}
-      <br><br>
-      {{ disclaimer | trans({
-         '{boss}': user.username,
-      }) | raw }}
-      {% if not remove %}
-         {{ 'mail.disclaimerAdding2' | trans({ 
-               '{appOwners}' : appOwners | join(',')
-         }) | raw }}
-      {% endif %}
+      {{ disclaimer | trans({'{boss}': user.username,}) | raw }}<br>
 
-      {% if userCreatorEmail is defined and userCreatorEmail is null %}
-         <br>
-         {{ 'mail.noUserCreatorEmailDisclaimer' | trans({
-            '{application}': permission.application
-         }) | raw }}
-      {% endif %}
+      <a class="text-green" href="{{ absolute_url(path('worker_approve_all_pending', { worker: worker.id } )) }}">{{ 'btn.approveAllPending' | trans }}</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a class="text-red" href="{{ absolute_url(path('worker_deny_all_pending', { worker: worker.id } )) }}">{{ 'btn.denyAllPending' | trans }}</a>
       <br><br>
-      <a href="{{ absolute_url(path('permission_approve', { permission: permission.id } )) }}">{{ 'mail.approve' | trans }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="{{ absolute_url(path('permission_deny', { permission: permission.id } )) }}">{{ 'mail.deny' | trans }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
-      <a href="{{ absolute_url(path('worker_edit', { worker: worker.id } )) }}">{{ 'mail.edit' | trans }}</a>&nbsp;&nbsp;&nbsp;&nbsp;
+
+      {% for permission in permissions %}
+         {% if not remove %}
+            <table>
+               <tr><th colspan="2">{{ 'mail.messageToAppOwnersAdding' | trans({'{permission}': permission}) | raw }}</th></tr>
+               <tr>
+                  <td><a href="{{ absolute_url(path('permission_approve', { permission: permission.id } )) }}">{{ 'mail.approve' | trans }}</a></td>
+                  <td><a href="{{ absolute_url(path('permission_deny', { permission: permission.id } )) }}">{{ 'mail.deny' | trans }}</a></td>
+               </tr>
+            </table>
+            <br>
+            {% if userCreatorEmail is defined and userCreatorEmail is null %}
+               <br>
+               {{ 'mail.noUserCreatorEmailDisclaimer' | trans({
+                  '{application}': permission.application
+               }) | raw }}
+            {% endif %}
+            <br>
+         {% else %}
+            {% set disclaimer = 'mail.disclaimerRemoving' %}
+            {{ 'mail.messageToAppOwnersRemoving' | trans({
+               '{boss}': user.username,
+               '{permission}': permission,
+               '{job}': app.request.locale|split('_')[0] == 'es' ? worker.workerJob.job.titleEs : worker.workerJob.job.titleEu,
+            }) }}
+            <br>
+            {{ 'mail.disclaimerRemoving' | trans({
+               '{boss}': user.username,
+            }) }}
+         {% endif %}
+      {% endfor %}
    </body>
 </html> 
 {% endapply %}

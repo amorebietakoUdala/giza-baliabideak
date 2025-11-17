@@ -20,6 +20,7 @@ class WorkerJobType extends AbstractType
             ->add('code', null,[
                 'label' => 'workerJob.code',
                 'disabled' => $readonly,
+                'required' => true,
             ])
             ->add('job', EntityType::class, [
                 'label' => 'workerJob.job',
@@ -32,6 +33,7 @@ class WorkerJobType extends AbstractType
                     }
                 },
                 'disabled' => $readonly,
+                'required' => true,
             ])
         ;
     }

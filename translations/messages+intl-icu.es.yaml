@@ -57,12 +57,13 @@ worker.cannotsetEndDateAndNoEndDate: "No puede seleccionar una fecha de fin de c
 worker.sent: "El trabajador se ha guardado correctamente"
 worker.username: "Nombre de usuario"
 
-workerJob.code: "Código"
+workerJob.code: "Código RPT"
 workerJob.job: "Puesto"
 
 application.id: "Id"
 application.name: "Nombre"
-application.appOwnersEmails: "Emails de los responsables separados por comas"
+application.appOwnersEmails: "Emails alternativos de los responsables de aplicación: (separados por comas)"
+application.appOwnersEmails.help: "A parte de los responsables indicados en la configuración de la aplicación, se enviarán las notificaciones a estos emails."
 application.roles: "Roles"
 application.subApplications: "Negociados"
 application.userCreatorEmail: "Email del creador de usuarios"
@@ -128,6 +129,8 @@ btn.validate: "Ver para validar"
 btn.resend: "Reenviar"
 btn.granted: "Marcar como permiso concedido"
 btn.permissionApprove: "Entrar para aprobar permisos"
+btn.approveAllPending: "Aprobar todos"
+btn.denyAllPending: "Denegar todos"
 
 link.logout: "Salir"
 
@@ -165,8 +168,10 @@ mail.approve: "Aprobar"
 mail.deny: "Denegar"
 mail.edit: "Editar"
 
-mail.messageToAppOwnersAdding: '{boss} ha solicitado acceso a {permission} para {worker} en el puesto {job}.<br>'
-mail.disclaimerAdding: "Por favor, apruebe o deniegue utilizando el enlace de abajo. Si tiene algún problema para conceder este acceso, póngase en contacto con {boss}.<br>"
+#mail.messageToAppOwnersAdding: '{boss} ha solicitado acceso a {permission} para {worker} en el puesto {job}.<br>'
+mail.permissionAskedBy: "Responsable que solicita el permiso"
+mail.messageToAppOwnersAdding: 'Se ha solicitado el permiso {permission}.'
+mail.disclaimerAdding: "Por favor, apruebe o deniegue utilizando los enlaces de abajo. Si tiene algún problema para conceder estos accesos, póngase en contacto con {boss}.<br>"
 mail.disclaimerAdding2: "Los responsables de la aplicación son: {appOwners}. En caso de no estar disponibles, póngase en contacto con informática para buscar una solución.<br>"
 
 mail.noUserCreatorEmailDisclaimer: "Por favor, realice la gestiones necesarias para crear el usuario en la aplicación {application}. <br>Una vez creado, enviadle las credenciales de acceso."
@@ -180,8 +185,14 @@ mail.medicalRevisionDeletion: "Hemos dado de baja a este trabajador, tenlo en cu
 mail.assignUsername: "Por favor, asigne un nombre de usuario a este trabajador."
 
 mail.messageToUserCreator: 'Se han aprobado los permisos solicitados en la aplicación {application} para {worker} en el puesto {job}.<br>'
+mail.messageToUserCreatorBatch: | 
+  Se han aprobado los permisos: {permission}.
+  Por favor, realice la gestiones necesarias para crear el usuario.
+  Una vez creado, enviadle las credenciales de acceso.
 mail.disclaimerUserCreator: "Por favor, realice la gestiones necesarias para crear el usuario en la aplicación {application}.<br>"
 mail.disclaimerUserCreatorDetails: "Una vez creado, enviadle las credenciales de acceso.<br>"
 
-mail.messageToUserCreatorRemoveUser: 'El trabajador {worker} se ha dado de baja.<br>'
-mail.disclaimerUserCreatorRemoveUser: "Por favor, realice la gestiones necesarias para deshabilitar su usuario en la aplicación {application}.<br>"
+mail.messageToUserCreatorRemoveUserBatch: 'El trabajador ya no tiene este permiso.<br>Por favor, realice la gestiones necesarias para deshabilitar su usuario en la aplicación.<br>'
+
+# mail.messageToUserCreatorRemoveUser: 'El trabajador {worker} se ha dado de baja.<br>'
+# mail.disclaimerUserCreatorRemoveUser: "Por favor, realice la gestiones necesarias para deshabilitar su usuario en la aplicación {application}.<br>"

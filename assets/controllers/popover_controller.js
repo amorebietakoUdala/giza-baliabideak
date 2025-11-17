@@ -5,9 +5,11 @@ import { Popover } from 'bootstrap';
 export default class extends Controller {
 
    connect() {
-      const popover = new Popover('.popover-dismiss', {
-         trigger: 'focus'
-       })
+      document.querySelectorAll('.popover-dismiss').forEach(function (popoverElement) {
+         const popover = new Popover(popoverElement, {
+            trigger: 'focus'
+         });
+      });
    }
 }
 
