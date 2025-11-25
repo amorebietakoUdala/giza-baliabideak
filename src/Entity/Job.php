@@ -70,6 +70,10 @@ class Job implements \Stringable
         return $this;
     }
 
+    public function getTitleBilingual(): ?string
+    {
+        return $this->titleEs.' / '.$this->titleEu;
+    }
 
     public function __toString(): string
     {
