@@ -53,7 +53,7 @@ class PermissionController extends BaseController
             /** @var Permission $permission */
             $permission = $form->getData();
             $permission->setWorker($worker);
-            if ( !$worker->checkIfUserIsAllowedBoss($this->getUser()) ) {
+            if ( !$worker->checkIfUserIsAllowedBoss($this->getUser()) && !$this->isGranted("ROLE_ADMIN") ) {
                 $this->addFlash('error',new TranslatableMessage('error.notAllowedBoss', 
                     ['{bosses}' => implode(',',$worker->getWorkerJob()->getJob()->getBosses()->toArray())], 'messages'));
                 return $this->renderError($form, $template);
