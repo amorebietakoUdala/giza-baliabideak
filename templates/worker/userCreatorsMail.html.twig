@@ -15,6 +15,7 @@
       <b>{{ 'worker.startDate' | trans }}:</b> {{ worker.startDate | date('Y-m-d') }}<br>
       <b>{{ 'worker.department' | trans }}:</b> {{ worker.department }}<br>
       <b>{{ 'worker.job' | trans }}:</b> {{ worker.workerJob.job }}<br>
+      <a href="{{ absolute_url( path('worker_show', {'worker': worker.id}) ) }}">{{ 'btn.show' | trans }}</a>
       <br>
 
       {% for permission in permissions %}

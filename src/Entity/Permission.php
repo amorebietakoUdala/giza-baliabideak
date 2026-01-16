@@ -168,11 +168,22 @@ class Permission
         foreach ($this->getRoles() as $role) {
             $roles[] = $role->getNameEs();
         }
-        return sprintf(
-            '%s (%s)',
-            $this->getApplication()->getName(),
-            implode(', ', $roles)
-        );
+        $application = $this->getApplication();
+        $subApplication = $this->getSubApplication();
+        if ( null !== $subApplication ) {
+            return sprintf(
+                '%s - %s (%s)',
+                $application->getName(),
+                $subApplication->getNameEs(),
+                implode(', ', $roles)
+            );
+        } else {
+            return sprintf(
+                '%s (%s)',
+                $application->getName(),
+                implode(', ', $roles)
+            );
+        }
     }
 
     public function getGrantedAt(): ?\DateTimeImmutable
