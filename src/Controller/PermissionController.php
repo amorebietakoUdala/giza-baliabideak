@@ -77,7 +77,10 @@ class PermissionController extends BaseController
             if ( $status > Worker::STATUS_REVISION_PENDING) {
                 $worker->setStatus(Worker::STATUS_APPROVAL_PENDING);
                 $this->em->persist($worker);
-                $this->createHistoric("enviado al responsable $permission para su aprobación", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                $application = $permission->getApplication();
+                $appOwners = $application->getAppOwners();
+                $appOwnersString = implode(', ',$appOwners->toArray());
+                $this->createHistoric("enviado al responsable $permission para su aprobación ($appOwnersString)", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
                 $this->mailingService->sendMessageToAppOwners('Langile berriaren baimena onartu / Aprobar el permiso del nuevo empleado', $this->getUser(), $worker, [$permission], false);
                 $this->em->flush();
             }
@@ -189,7 +192,10 @@ class PermissionController extends BaseController
                 $worker->setStatus(Worker::STATUS_IN_PROGRESS);
                 $this->em->persist($worker);
                 $application = $permission->getApplication();
-                $this->createHistoric("enviado al responsable de la aplicación $application", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                $application = $permission->getApplication();
+                $appOwners = $application->getAppOwners();
+                $appOwnersString = implode(', ',$appOwners->toArray());
+                $this->createHistoric("enviado al responsable de la aplicación $application ($appOwnersString)", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
                 $this->mailingService->sendMessageToUserCreators('Langileari honako baimenak kenduko zaizkio / Se le van a quitar los siguientes permisos al empleado', $worker, [$permission], true);
             }
             $this->em->flush();
