@@ -7,6 +7,7 @@ use App\Entity\Application;
 use App\Form\ApplicationType;
 use App\Repository\ApplicationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -77,7 +78,7 @@ class ApplicationController extends BaseController
        * The application can't be changed
        */
       #[Route(path: '/application/{application}', name: 'application_show', methods: ['GET'])]
-      public function show(Request $request, Application $application): Response
+      public function show(Request $request, #[MapEntity(id: 'application')] Application $application): Response
       {
          $form = $this->createForm(ApplicationType::class, $application, [
                'readonly' => true,
@@ -96,7 +97,7 @@ class ApplicationController extends BaseController
        * Renders the application form specified by id to edit it's fields
        */
       #[Route(path: '/application/{application}/edit', name: 'application_edit', methods: ['GET', 'POST'])]
-      public function edit(Request $request, Application $application, EntityManagerInterface $entityManager): Response
+      public function edit(Request $request, #[MapEntity(id: 'application')]  Application $application, EntityManagerInterface $entityManager): Response
       {
          $form = $this->createForm(ApplicationType::class, $application, [
             'readonly' => false,
@@ -121,7 +122,7 @@ class ApplicationController extends BaseController
 
 
     #[Route(path: '/application/{application}/delete', name: 'application_delete', methods: ['DELETE'])]
-    public function delete(Request $request, Application $application): Response
+    public function delete(Request $request, #[MapEntity(id: 'application')] Application $application): Response
     {
         $permissions = $application->getPermissions();
         if ( count($permissions) > 0 ) {

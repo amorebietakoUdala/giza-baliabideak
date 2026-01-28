@@ -7,6 +7,7 @@ use App\Entity\SubApplication;
 use App\Form\SubApplicationType;
 use App\Repository\SubApplicationRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,12 +47,12 @@ class SubApplicationController extends BaseController
                 $template = $this->getAjax() || $request->isXmlHttpRequest() ? '_form.html.twig' : 'edit.html.twig';
                 return $this->render('sub-application/' . $template, [
                     'form' => $form,
-                ], new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));        
+                ], new Response(null, Response::HTTP_UNPROCESSABLE_ENTITY));        
             }
             $this->em->persist($subApplication);
             $this->em->flush();
             if ($this->getAjax() || $request->isXmlHttpRequest()) {
-               return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
+               return new Response(null, Response::HTTP_NO_CONTENT);
             }
             return $this->redirectToRoute('department_index');
         }
@@ -66,7 +67,7 @@ class SubApplicationController extends BaseController
        * The SubApplication can't be changed
        */
       #[Route(path: '/sub-application/{subApplication}', name: 'subApplication_show', methods: ['GET'])]
-      public function show(Request $request, SubApplication $subApplication): Response
+      public function show(Request $request, #[MapEntity(id: 'subApplication')] SubApplication $subApplication): Response
       {
          $form = $this->createForm(SubApplicationType::class, $subApplication, [
                'readonly' => true,
@@ -85,7 +86,7 @@ class SubApplicationController extends BaseController
        * Renders the SubApplication form specified by id to edit it's fields
        */
       #[Route(path: '/sub-application/{subApplication}/edit', name: 'subApplication_edit', methods: ['GET', 'POST'])]
-      public function edit(Request $request, SubApplication $subApplication): Response
+      public function edit(Request $request, #[MapEntity(id: 'subApplication')] SubApplication $subApplication): Response
       {
          $form = $this->createForm(SubApplicationType::class, $subApplication, [
             'readonly' => false,
@@ -110,12 +111,12 @@ class SubApplicationController extends BaseController
 
 
     #[Route(path: '/sub-application/{subApplication}/delete', name: 'subApplication_delete', methods: ['DELETE'])]
-    public function delete(Request $request, SubApplication $subApplication): Response
+    public function delete(Request $request, #[MapEntity(id: 'subApplication')] SubApplication $subApplication): Response
     {
         $permissions = $subApplication->getPermissions();
         if ( count($permissions) > 0 ) {
             $this->addFlash('error', new TranslatableMessage('error.subAplicationHasPermissions'));
-            return $this->render('common/_error.html.twig',[], new Response('', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY));
+            return $this->render('common/_error.html.twig',[], new Response('', Response::HTTP_UNPROCESSABLE_ENTITY));
         }
         if ($this->isCsrfTokenValid('delete'.$subApplication->getId(), $request->get('_token'))) {
             $this->em->remove($subApplication);
@@ -123,10 +124,10 @@ class SubApplicationController extends BaseController
             if (!$request->isXmlHttpRequest()) {
                 return $this->redirectToRoute('department_index');
             } else {
-                return new Response(null, \Symfony\Component\HttpFoundation\Response::HTTP_NO_CONTENT);
+                return new Response(null, Response::HTTP_NO_CONTENT);
             }
         } else {
-            return new Response('messages.invalidCsrfToken', \Symfony\Component\HttpFoundation\Response::HTTP_UNPROCESSABLE_ENTITY);
+            return new Response('messages.invalidCsrfToken', Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }   
 

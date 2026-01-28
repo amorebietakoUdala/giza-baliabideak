@@ -15,6 +15,7 @@ use App\Service\MailingService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -106,7 +107,7 @@ class WorkerController extends BaseController
      */
     #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/worker/{worker}/send', name: 'worker_send', methods: ['GET'])]
-    public function send(Request $request, Worker $worker) {
+    public function send(Request $request, #[MapEntity(id: 'worker')] Worker $worker) {
         $this->loadQueryParameters($request);
         $this->createHistoric("Reenviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         $this->mailingService->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
@@ -117,7 +118,7 @@ class WorkerController extends BaseController
 
     #[IsGranted('ROLE_BOSS')]
     #[Route(path: '/worker/{worker}/validate', name: 'worker_validate')]
-    public function validate(Request $request, Worker $worker) {
+    public function validate(Request $request, #[MapEntity(id: 'worker')] Worker $worker) {
         $this->loadQueryParameters($request);
         $oldPermissions = new ArrayCollection();
         $session = $request->getSession();
@@ -162,7 +163,7 @@ class WorkerController extends BaseController
 
     #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/worker/{worker}/edit', name: 'worker_edit')]
-    public function edit(Request $request, Worker $worker) {
+    public function edit(Request $request, #[MapEntity(id: 'worker')] Worker $worker) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(WorkerType::class, $worker, [
             'locale' => $request->getLocale(),
@@ -197,7 +198,7 @@ class WorkerController extends BaseController
 
     #[IsGranted('ROLE_RRHH')]
     #[Route(path: '/worker/{worker}/delete', name: 'worker_delete', methods: ['GET'])]
-    public function delete(Request $request, Worker $worker)
+    public function delete(Request $request, #[MapEntity(id: 'worker')] Worker $worker)
     {
         $this->loadQueryParameters($request);
         $worker->setStatus(Worker::STATUS_DELETED);
@@ -212,7 +213,7 @@ class WorkerController extends BaseController
 
     #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/worker/{worker}', name: 'worker_show')]
-    public function show(Request $request, Worker $worker) {
+    public function show(Request $request, #[MapEntity(id: 'worker')] Worker $worker) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(WorkerType::class, $worker,[
             'readonly' => true,
@@ -250,7 +251,7 @@ class WorkerController extends BaseController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route('/worker/{worker}/historic', name: 'worker_historic_list',methods: ['GET'])]
-    public function list(Worker $worker): Response
+    public function list(#[MapEntity(id: 'worker')] Worker $worker): Response
     {
         $historics = $worker->getHistorics();
         if (count($historics) === 0) {
@@ -263,7 +264,7 @@ class WorkerController extends BaseController
 
     #[IsGranted('ROLE_APP_OWNER')]
     #[Route(path: '/worker/{worker}/approve-all-pending', name: 'worker_approve_all_pending')]
-    public function approveAllPending(Worker $worker) {
+    public function approveAllPending(#[MapEntity(id: 'worker')] Worker $worker) {
         /** @var User $user */
         $user = $this->getUser();
         $applications = $user->getApplications();
@@ -292,7 +293,7 @@ class WorkerController extends BaseController
 
     #[IsGranted('ROLE_APP_OWNER')]
     #[Route(path: '/worker/{worker}/deny-all-pending', name: 'worker_deny_all_pending')]
-    public function denyAllPending(Worker $worker) {
+    public function denyAllPending(#[MapEntity(id: 'worker')] Worker $worker) {
         /** @var User $user */
         $user = $this->getUser();
         $applications = $user->getApplications();

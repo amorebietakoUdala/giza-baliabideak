@@ -8,6 +8,7 @@ use App\Entity\Job;
 use App\Entity\WorkerJob;
 use App\Form\JobType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -53,7 +54,7 @@ class JobController extends BaseController
     }
 
     #[Route(path: '/job/{job}/edit', name: 'job_edit')]
-    public function edit(Request $request, Job $job) {
+    public function edit(Request $request, #[MapEntity(id: 'job')] Job $job) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(JobType::class, $job);
 
@@ -74,7 +75,7 @@ class JobController extends BaseController
     }
 
     #[Route(path: '/job/{job}', name: 'job_show')]
-    public function show(Request $request, Job $job) {
+    public function show(Request $request, #[MapEntity(id: 'job')] Job $job) {
         $this->loadQueryParameters($request);
         $form = $this->createForm(JobType::class, $job,[
             'readonly' => true,
@@ -88,7 +89,7 @@ class JobController extends BaseController
     }
 
     #[Route(path: '/job/{job}/delete', name: 'job_delete', methods: ['GET'])]
-    public function delete(Request $request, Job $job)
+    public function delete(Request $request, #[MapEntity(id: 'job')] Job $job)
     {
         $workers = $job->getWorkerJob()->toArray();
         if ( count($workers) > 0 ) {

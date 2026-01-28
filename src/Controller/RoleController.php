@@ -7,6 +7,7 @@ use App\Entity\Role;
 use App\Form\RoleType;
 use App\Repository\RoleRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -67,7 +68,7 @@ class RoleController extends BaseController
        * The Role can't be changed
        */
       #[Route(path: '/role/{role}', name: 'role_show', methods: ['GET'])]
-      public function show(Request $request, Role $role): Response
+      public function show(Request $request, #[MapEntity(id: 'role')] Role $role): Response
       {
          $form = $this->createForm(RoleType::class, $role, [
                'readonly' => true,
@@ -86,7 +87,7 @@ class RoleController extends BaseController
        * Renders the Role form specified by id to edit it's fields
        */
       #[Route(path: '/role/{role}/edit', name: 'role_edit', methods: ['GET', 'POST'])]
-      public function edit(Request $request, Role $role): Response
+      public function edit(Request $request, #[MapEntity(id: 'role')]  Role $role): Response
       {
          $form = $this->createForm(RoleType::class, $role, [
             'readonly' => false,
@@ -111,7 +112,7 @@ class RoleController extends BaseController
 
 
     #[Route(path: '/role/{role}/delete', name: 'role_delete', methods: ['DELETE'])]
-    public function delete(Request $request, Role $role): Response
+    public function delete(Request $request, #[MapEntity(id: 'role')]  Role $role): Response
     {
         $workers = $role->getApplications();
         if ( count($workers) > 0 ) {

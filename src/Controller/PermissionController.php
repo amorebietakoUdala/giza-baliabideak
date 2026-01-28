@@ -15,6 +15,7 @@ use App\Form\JobPermissionType;
 use App\Form\PermissionType;
 use App\Service\MailingService;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -36,7 +37,7 @@ class PermissionController extends BaseController
 
     #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/permission/add-to/worker/{worker}', name: 'permission_add_to_worker')]
-    public function addPermisionToWorker(Request $request, ?Worker $worker): Response
+    public function addPermisionToWorker(Request $request, #[MapEntity(id: 'worker')] ?Worker $worker): Response
     {
         $workerApplication = new Permission();
         $form = $this->createForm(PermissionType::class, $workerApplication, [
@@ -96,7 +97,7 @@ class PermissionController extends BaseController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/permission/add-to/department/{department}', name: 'permission_add_to_department')]
-    public function addPermisionToDepartment(Request $request, Department $department): Response
+    public function addPermisionToDepartment(Request $request, #[MapEntity(id: 'department')] Department $department): Response
     {
         $departmentPermission = new DepartmentPermission();
         $form = $this->createForm(DepartmentPermissionType::class, $departmentPermission, [
@@ -138,7 +139,7 @@ class PermissionController extends BaseController
 
     #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/permission/add-to/job/{job}', name: 'permission_add_to_job')]
-    public function addPermisionToJob(Request $request, Job $job): Response
+    public function addPermisionToJob(Request $request, #[MapEntity(id: 'job')] Job $job): Response
     {
         $form = $this->createForm(JobPermissionType::class, new JobPermission(), [
             'action' => $this->generateUrl('permission_add_to_job', [
@@ -179,7 +180,7 @@ class PermissionController extends BaseController
 
     #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/permission/{permission}/delete', name: 'permission_delete')]
-    public function deletePermisionToWorker(Request $request, Permission $permission): Response
+    public function deletePermisionToWorker(Request $request, #[MapEntity(id: 'permission')] Permission $permission): Response
     {
         $worker = $permission->getWorker();
         if ($this->isCsrfTokenValid('delete'.$permission->getId(), $request->get('_token'))) {
@@ -212,7 +213,7 @@ class PermissionController extends BaseController
 
     #[IsGranted('ROLE_ADMIN')]
     #[Route(path: '/department-permission/{departmentPermission}/delete', name: 'department_permission_delete')]
-    public function deleteDepartmentPermision(Request $request, DepartmentPermission $departmentPermission): Response
+    public function deleteDepartmentPermision(Request $request, #[MapEntity(id: 'departmentPermission')] DepartmentPermission $departmentPermission): Response
     {
         $departmentId = $departmentPermission->getDepartment()->getId();
         if ($this->isCsrfTokenValid('delete'.$departmentPermission->getId(), $request->get('_token'))) {
@@ -232,7 +233,7 @@ class PermissionController extends BaseController
 
     #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/job-permission/{jobPermission}/delete', name: 'job_permission_delete')]
-    public function deleteJobPermision(Request $request, JobPermission $jobPermission): Response
+    public function deleteJobPermision(Request $request, #[MapEntity(id: 'jobPermission')] JobPermission $jobPermission): Response
     {
         $jobId = $jobPermission->getJob()->getId();
         if ($this->isCsrfTokenValid('delete'.$jobPermission->getId(), $request->get('_token'))) {
@@ -252,7 +253,7 @@ class PermissionController extends BaseController
 
     #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/permission/{permission}/granted', name: 'permission_granted', methods: ['GET'])]
-    public function markAsGranted(Request $request, Permission $permission): Response
+    public function markAsGranted(Request $request, #[MapEntity(id: 'permission')] Permission $permission): Response
     {
         if (!$this->isCsrfTokenValid('granted'.$permission->getId(), $request->get('_token'))) {
             $this->addFlash('error', 'messages.invalidCsrfToken');
@@ -283,7 +284,7 @@ class PermissionController extends BaseController
 
     #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
     #[Route(path: '/permission/list/worker/{worker}', name: 'permission_list')]
-    public function list(Request $request, Worker $worker) {
+    public function list(Request $request, #[MapEntity(id: 'worker')] Worker $worker) {
         $removeAllowed = false;
         $referer = $request->headers->get('referer');
         if (strpos($referer,'/edit') || strpos($referer,'/validate')) {
@@ -318,7 +319,7 @@ class PermissionController extends BaseController
      */
     #[IsGranted('ROLE_APP_OWNER')]
     #[Route(path: '/permission/{permission}/approve', name: 'permission_approve')]
-    public function approve(Request $request, Permission $permission) {
+    public function approve(Request $request, #[MapEntity(id: 'permission')] Permission $permission) {
         $worker = $permission->getWorker();
         if ($permission->isApproved()) {
             $this->addFlash('success', 'message.allreadyApproved');
@@ -355,7 +356,7 @@ class PermissionController extends BaseController
      */
     #[IsGranted('ROLE_APP_OWNER')]
     #[Route(path: '/permission/{permission}/deny', name: 'permission_deny')]
-    public function deny(Request $request, Permission $permission) {
+    public function deny(Request $request, #[MapEntity(id: 'permission')] Permission $permission) {
         $worker = $permission->getWorker();
         if (!$permission->isApproved() && $permission->isApproved() !== null) {
             $this->addFlash('success', 'message.allreadyDenied');

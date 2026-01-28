@@ -7,6 +7,7 @@ use App\Entity\Department;
 use App\Form\DepartmentType;
 use App\Repository\DepartmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -68,7 +69,7 @@ class DepartmentController extends BaseController
        * The Department can't be changed
        */
       #[Route(path: '/department/{department}', name: 'department_show', methods: ['GET'])]
-      public function show(Request $request, Department $department): Response
+      public function show(Request $request, #[MapEntity(id: 'department')] Department $department): Response
       {
          $form = $this->createForm(DepartmentType::class, $department, [
                'readonly' => true,
@@ -87,7 +88,7 @@ class DepartmentController extends BaseController
        * Renders the Department form specified by id to edit it's fields
        */
       #[Route(path: '/department/{department}/edit', name: 'department_edit', methods: ['GET', 'POST'])]
-      public function edit(Request $request, Department $department): Response
+      public function edit(Request $request, #[MapEntity(id: 'department')] Department $department): Response
       {
          $form = $this->createForm(DepartmentType::class, $department, [
             'readonly' => false,
@@ -113,7 +114,7 @@ class DepartmentController extends BaseController
 
 
     #[Route(path: '/department/{department}/delete', name: 'department_delete', methods: ['GET'])]
-    public function delete(Request $request, Department $department): Response
+    public function delete(Request $request, #[MapEntity(id: 'department')] Department $department): Response
     {
         $workers = $department->getWorkers();
         if ( count($workers) > 0 ) {
@@ -133,7 +134,7 @@ class DepartmentController extends BaseController
     }
 
     #[Route(path: '/department/{department}/permissions', name: 'department_permission_list')]
-    public function permissions(Request $request, Department $department): Response
+    public function permissions(Request $request, #[MapEntity(id: 'department')] Department $department): Response
     {
         $this->loadQueryParameters($request);
         $permissions = $department->getPermissions();
