@@ -81,7 +81,7 @@ class PermissionController extends BaseController
                 $application = $permission->getApplication();
                 $appOwners = $application->getAppOwners();
                 $appOwnersString = implode(', ',$appOwners->toArray());
-                $this->createHistoric("enviado al responsable $permission para su aprobación ($appOwnersString)", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                $this->createHistoric("enviado al responsable $permission para su aprobación ($appOwnersString) para crear el usuario", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
                 $this->mailingService->sendMessageToAppOwners('Langile berriaren baimena onartu / Aprobar el permiso del nuevo empleado', $this->getUser(), $worker, [$permission], false);
                 $this->em->flush();
             }
@@ -196,7 +196,7 @@ class PermissionController extends BaseController
                 $application = $permission->getApplication();
                 $appOwners = $application->getAppOwners();
                 $appOwnersString = implode(', ',$appOwners->toArray());
-                $this->createHistoric("enviado al responsable de la aplicación $application ($appOwnersString)", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                $this->createHistoric("enviado al responsable de la aplicación $application ($appOwnersString) para eliminar el usuario", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
                 $this->mailingService->sendMessageToUserCreators('Langileari honako baimenak kenduko zaizkio / Se le van a quitar los siguientes permisos al empleado', $worker, [$permission], true);
             }
             $this->em->flush();
@@ -339,6 +339,7 @@ class PermissionController extends BaseController
             $this->createHistoric("permiso $permission aprobado", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         }
         $this->mailingService->sendMessageToUserCreators('Langile berriaren erabiltzailea sortu / Cree el usuario del nuevo trabajador', $worker, [$permission]);
+        $this->createHistoric("Enviado mensaje a los creadores de usuarios de la aplicación", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         $this->em->persist($permission);
         $this->em->flush();
         $this->addFlash('success', 'message.permissionApproved');
@@ -378,6 +379,7 @@ class PermissionController extends BaseController
         }
         if ($permission->isGranted()){
             $this->mailingService->sendMessageToUserCreators('Mesedez, langile honen erabiltzailea ezabatu / Por favor, elimine el usuario del siguiente trabajador', $worker, [$permission], true);
+            $this->createHistoric("Enviado mensaje a los creadores de usuarios de la aplicación para eliminar el usuario de la aplicación", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         }
         $this->em->persist($permission);
         $this->em->flush();

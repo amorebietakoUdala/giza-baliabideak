@@ -75,6 +75,10 @@ a {
     font-weight: bold;
 }
 
+.h500 {
+    height: 500px;
+}
+
 @media (max-width: 767px) {
 	.logo {
 		height: 50px;

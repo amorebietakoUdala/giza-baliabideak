@@ -90,6 +90,7 @@ class WorkerController extends BaseController
             if ( $worker->getStatus() === Worker::STATUS_USERNAME_PENDING ) {
                 $this->createHistoric("pendiente de asignación de nombre de usuario", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
                 $this->mailingService->sendUsernamePendingMessageToIT('Langile berriari ezarri erabiltzaile izena / Asigne un nombre de usuario al nuevo empleado', $worker);
+                $this->createHistoric("enviado mensaje a IT para asignación de nombre de usuario", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
             } else {
                 $this->mailingService->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker, true);                
                 $this->createHistoric("enviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
@@ -153,6 +154,7 @@ class WorkerController extends BaseController
             $this->em->persist($worker);
             $this->createHistoric("validado por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
             $this->mailingService->sendMessageToAppOwners('Langile berriaren baimenak onartu / Aprobar los permisos del nuevo empleado ',$this->getUser(), $worker, $newPermissions, false);
+            $this->createHistoric("Enviados mensajes a los responsable de aplicaiones seleccionadas.", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
             $this->em->flush();
             $this->addFlash('success', 'worker.saved');
             return $this->redirectToRoute('worker_index');
@@ -204,7 +206,9 @@ class WorkerController extends BaseController
         $worker->setStatus(Worker::STATUS_DELETED);
         $this->createHistoric('baja', $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         $this->mailingService->sendMessageToIT('Langile hau ezabatu egin da / El siguiente empleado se ha dado de baja', $worker, false, true);
+        $this->createHistoric("Enviado mensaje a IT para eliminar el usuario.", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         $this->mailingService->sendMessageToUserCreators('Mesedez, langile honen erabiltzailea ezabatu / Por favor, elimine el usuario del siguiente trabajador', $worker, null, true);
+        $this->createHistoric("Enviados mensajes a los creadores de usuarios para eliminar el usuario de esas aplicaciones", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         $this->em->flush();
         $this->addFlash('success', 'worker.deleted');
 
@@ -288,6 +292,7 @@ class WorkerController extends BaseController
         }
         $this->em->flush();
         $this->mailingService->sendMessageToUserCreators('Langilearen baimenak onartu dira / Permisos del empleado aprobados', $worker, $approvedPermissions);
+        $this->createHistoric("Enviados mensajes a los creadores de usuarios para crear el usuario de esas aplicaciones", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         return $this->redirectToRoute('worker_edit', ['worker' => $worker->getId()]);
     }
 

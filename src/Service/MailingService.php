@@ -101,7 +101,7 @@ class MailingService
     {
         if ($worker->getWorkerJob()->getJob() !== null) {
             $bosses = $worker->getWorkerJob()->getJob()->getBosses();
-            $emails = [];
+            $emails = $this->mailerBCC ? explode(',', $this->mailerBCC) : [];
             foreach ($bosses as $boss) {
                 if ($boss->getEmail()) {
                     $emails[] = $boss->getEmail();
