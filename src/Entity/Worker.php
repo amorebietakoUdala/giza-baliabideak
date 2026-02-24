@@ -395,5 +395,31 @@ class Worker implements \Stringable
         return false;
     }
 
+    /**
+     * @return Permission[]
+     */
+    public function getApprovalPendingPermissions(): array {
+        $approvaPendingPermissions = [];
+        foreach ($this->getPermissions() as $permission) {
+            if (!$permission->isApproved() === null ) {
+                $approvaPendingPermissions[] = $permission;
+            }
+        }
+        return $approvaPendingPermissions;
+    }
+    
+    /**
+     * @return Permission[]
+     */
+    public function getUngrantedPermissions(): array {
+        $ungrantedPermissions = [];
+        foreach ($this->getPermissions() as $permission) {
+            if (!$permission->isGranted() === null ) {
+                $ungrantedPermissions[] = $permission;
+            }
+        }
+        return $ungrantedPermissions;
+    }
+
 }
 

@@ -69,10 +69,10 @@ class WorkerController extends BaseController
                     $existingWorker->fill($worker);
                     $existingWorker->setStatus(Worker::STATUS_REVISION_PENDING);
                     $this->addJobPermissionsToWorker($existingWorker);
-                    $this->createHistoric('alta ya existente', $this->serializer->serialize($existingWorker,'json',['groups' => 'historic']), $existingWorker);
                     $this->addFlash('warning','worker.alreadyExistsStatusChanged');
                     $this->em->persist($existingWorker);
                     $worker = $existingWorker;
+                    $this->createHistoric('alta ya existente', $this->serializer->serialize($existingWorker,'json',['groups' => 'historic']), $existingWorker);
                 }
             } else {
                 if ( $worker->getUsername() === null || $worker->getUsername() === '' ) {
@@ -81,9 +81,9 @@ class WorkerController extends BaseController
                     $worker->setStatus(Worker::STATUS_REVISION_PENDING);
                 }
                 $this->addJobPermissionsToWorker($worker);
-                $this->createHistoric('alta', $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
                 $this->addFlash('success', 'worker.sent');
                 $this->em->persist($worker);
+                $this->createHistoric('alta', $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
             }
             //dd($worker);
             $this->em->flush();
@@ -91,9 +91,11 @@ class WorkerController extends BaseController
                 $this->createHistoric("pendiente de asignación de nombre de usuario", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
                 $this->mailingService->sendUsernamePendingMessageToIT('Langile berriari ezarri erabiltzaile izena / Asigne un nombre de usuario al nuevo empleado', $worker);
                 $this->createHistoric("enviado mensaje a IT para asignación de nombre de usuario", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                $this->em->flush();
             } else {
                 $this->mailingService->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker, true);                
                 $this->createHistoric("enviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                $this->em->flush();
             }
             // Send an email to medical revisions responsible
             $this->mailingService->sendMessageToMM('Langile berria gorde da / Se ha dado de alta un nuevo empleado', $worker);
@@ -110,9 +112,45 @@ class WorkerController extends BaseController
     #[Route(path: '/worker/{worker}/send', name: 'worker_send', methods: ['GET'])]
     public function send(Request $request, #[MapEntity(id: 'worker')] Worker $worker) {
         $this->loadQueryParameters($request);
-        $this->createHistoric("Reenviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         $this->mailingService->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
+        $this->createHistoric("Reenviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        $this->em->flush();
         $this->addFlash('success', 'worker.resent');
+        return $this->redirectToRoute('worker_index');
+    }
+
+    /**
+     * Sends message to appOwners to aprove access to the apps
+     */
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route(path: '/worker/{worker}/send-to-appowners', name: 'worker_send_to_app_owners', methods: ['GET'])]
+    public function sendToAppOwners(Request $request, #[MapEntity(id: 'worker')] Worker $worker) {
+        $this->loadQueryParameters($request);
+        $permissions = $worker->getApprovalPendingPermissions();
+        if ( count($permissions) === 0 ) {
+            $this->addFlash('error','error.allreadyApprovedAllPermissions');
+            return $this->redirectToRoute('worker_index');
+        }
+        $this->mailingService->sendMessageToAppOwners('Langile berriaren baimenak onartu / Aprobar los permisos del nuevo empleado ',$this->getUser(), $worker, $permissions, false);
+        $this->createHistoric("Reenviado para a los responsables de las aplicaciones", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        $this->em->flush();
+        $this->addFlash('success', 'worker.resentAppOwners');
+        return $this->redirectToRoute('worker_index');
+    }
+
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route(path: '/worker/{worker}/send-to-user-creators', name: 'worker_send_to_user-creators', methods: ['GET'])]
+    public function sendToUserCreators(Request $request, #[MapEntity(id: 'worker')] Worker $worker) {
+        $this->loadQueryParameters($request);
+        $permissions = $worker->getUngrantedPermissions();
+        if ( count($permissions) === 0 ) {
+            $this->addFlash('error','error.allreadyGrantedAllPermissions');
+            return $this->redirectToRoute('worker_index');
+        }
+        $this->mailingService->sendMessageToUserCreators('Langilearen baimenak onartu dira / Permisos del empleado aprobados', $worker, $permissions);
+        $this->createHistoric("Reenviado para a los creadores de usuarios", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        $this->em->flush();
+        $this->addFlash('success', 'worker.resentUserCreators');
         return $this->redirectToRoute('worker_index');
     }
 
@@ -292,6 +330,7 @@ class WorkerController extends BaseController
         $this->em->flush();
         $this->mailingService->sendMessageToUserCreators('Langilearen baimenak onartu dira / Permisos del empleado aprobados', $worker, $approvedPermissions);
         $this->createHistoric("Enviados mensajes a los creadores de usuarios para crear el usuario de esas aplicaciones", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+        $this->em->flush();
         return $this->redirectToRoute('worker_edit', ['worker' => $worker->getId()]);
     }
 
@@ -406,7 +445,6 @@ class WorkerController extends BaseController
         $historic = new Historic();
         $historic->fill($this->getUser(),$operation, $details, $worker);
         $this->em->persist($historic);
-        $this->em->flush();
     }
 
     private function remove_blank_filters(array $criteria)

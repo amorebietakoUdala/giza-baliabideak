@@ -68,8 +68,8 @@ class PermissionController extends BaseController
                 return $this->renderError($form, $template);            
             }
             $this->em->persist($permission);
-            $this->em->flush();
             $this->createHistoric("añadir permiso: $permission", $this->serializer->serialize([$permission, $permission->getWorker()],'json',['groups' => 'historic']), $worker);
+            $this->em->flush();
             $this->addOrUpdatePermissionToJob($permission);
             /** If status > 2 means it's a change in permissions after IT gives them the proper permissions, so we need to notify app owner 
              *  if status is < 2 no need to notify it will be sent after validation.

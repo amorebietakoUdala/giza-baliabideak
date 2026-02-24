@@ -57,7 +57,15 @@
                      data-return="false">
                      <i class="fa fa-trash" title='{{ "btn.delete" | trans | capitalize }}'></i>
                   </a>&nbsp;
-                  <a href="{{ path('worker_send', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-paper-plane" title='{{ "btn.resend" | trans | capitalize }}'></i></a>&nbsp;
+                  {% if worker.status == constant('App\\Entity\\Worker::STATUS_REVISION_PENDING') %}
+                     <a href="{{ path('worker_send', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-paper-plane" title='{{ "btn.resend" | trans | capitalize }}'></i></a>&nbsp;
+                  {% endif %}
+                  {% if not worker.hasAllPermissionsApprovedOrDenied %}
+                     <a href="{{ path('worker_send_to_app_owners', { worker: worker.id })}}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-envelope" title='{{ "btn.resendToAppOwners" | trans | capitalize }}'></i></a>&nbsp;
+                  {% endif %}
+                  {% if not worker.hasAllPermissionsGranted %}
+                     <a href="{{ path('worker_send_to_user-creators', { worker: worker.id })}}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-envelope text-success" title='{{ "btn.resendToUserCreators" | trans | capitalize }}'></i></a>&nbsp;
+                  {% endif %}
                {% elseif is_granted('ROLE_BOSS') %}
                   {% if worker.status != constant('App\\Entity\\Worker::STATUS_REVISION_PENDING') %}
                      <a href="{{ path('worker_show', { worker: worker.id }) }}" data-action="click->table#onClick" data-pagination="false"><i class="fa fa-eye" title='{{ "btn.show" | trans | capitalize }}'></i></a>&nbsp;
