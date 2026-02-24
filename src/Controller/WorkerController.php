@@ -113,7 +113,6 @@ class WorkerController extends BaseController
         $this->createHistoric("Reenviado para validar por el responsable", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         $this->mailingService->sendMessageToBoss('Langile berriaren baimenak hautatu / Seleccione los permisos del nuevo empleado', $worker);
         $this->addFlash('success', 'worker.resent');
-
         return $this->redirectToRoute('worker_index');
     }
 
@@ -407,6 +406,7 @@ class WorkerController extends BaseController
         $historic = new Historic();
         $historic->fill($this->getUser(),$operation, $details, $worker);
         $this->em->persist($historic);
+        $this->em->flush();
     }
 
     private function remove_blank_filters(array $criteria)
