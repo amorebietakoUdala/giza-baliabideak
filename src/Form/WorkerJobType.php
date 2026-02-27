@@ -25,6 +25,7 @@ class WorkerJobType extends AbstractType
             ->add('job', EntityType::class, [
                 'label' => 'workerJob.job',
                 'class' => Job::class,
+                'placeholder' => 'placeholder.choose.job',
                 'choice_label' => function ($job) use ($locale) {
                     if ('es' === $locale) {
                         return $job->getTitleEs();

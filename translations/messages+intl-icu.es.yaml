@@ -151,6 +151,7 @@ message.departmentSaved: "El departamento se ha guardado correctamente"
 message.departmentDeleted: "El departamento se ha eliminado correctamente"
 
 placeholder.choose: "Seleccione una opción"
+placeholder.choose.job: "Seleccione un puesto" 
 
 error.departmentHasWorkers: "El departamento tiene trabajadores. No se puede borrar."
 error.applicationHasPermissions: "La aplicación no se puede borrar porque tiene permisos asociados."

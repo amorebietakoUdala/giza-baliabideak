@@ -150,6 +150,7 @@ message.departmentSaved: "Saila behar bezala gorde da"
 message.departmentDeleted: "Saila behar bezala ezabatu da"
 
 placeholder.choose: "Hautatu aukera bat"
+placeholder.choose.job: "Hautatu postu bat" 
 
 error.departmentHasWorkers: "Sailak langileak ditu. Ezin da ezabatu."
 error.applicationHasPermissions: "Aplikazioa ezin da ezabatu langile batzuek baimenak dituztelako."
