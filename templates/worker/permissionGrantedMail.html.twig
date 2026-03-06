@@ -1,0 +1,21 @@
+{% apply inline_css(source('@styles/email.css')) %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale|split('_')[0] }}">
+    <head>
+      <meta charset="utf-8">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+    <body>
+      {% for permission in permissions %}
+         <table>
+            <tr><th>{{ permission }}</th></tr>
+            <tr>
+               <td>{{ 'mail.messageToWorkerAddingPermission' | trans({'name': worker.fullname, 'application': permission.application}) }}</td>
+            </tr>
+         </table>
+      {% endfor %}
+   </body>
+</html> 
+{% endapply %}
+

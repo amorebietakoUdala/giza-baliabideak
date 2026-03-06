@@ -421,5 +421,12 @@ class Worker implements \Stringable
         return $ungrantedPermissions;
     }
 
+    public function getFullName(): string {
+        $name = $this->name ?? '';
+        $surname1 = $this->surname1 ?? '';
+        $surname2 = $this->surname2 ?? '';
+        return "$name $surname1 $surname2"; 
+    }
+
 }
 

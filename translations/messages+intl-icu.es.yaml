@@ -203,3 +203,5 @@ mail.messageToUserCreatorRemoveUserBatch: 'El trabajador ya no tiene este permis
 
 # mail.messageToUserCreatorRemoveUser: 'El trabajador {worker} se ha dado de baja.<br>'
 # mail.disclaimerUserCreatorRemoveUser: "Por favor, realice la gestiones necesarias para deshabilitar su usuario en la aplicación {application}.<br>"
+
+mail.messageToWorkerAddingPermission: "Se han concedido los permisos al usuario {name} en la aplicación {application}"

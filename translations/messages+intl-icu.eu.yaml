@@ -198,3 +198,5 @@ mail.messageToUserCreatorRemoveUserBatch: 'Langileak jadanik ez du baimen hau.<b
 
 # mail.messageToUserCreatorRemoveUser: '{worker} langilea bajan eman da.<br>'
 # mail.disclaimerUserCreatorRemoveUser: "Mesedez, egitzazu behar diren kudeaketak {application}-an erabiltzailea desgaitzeko.<br>"
+
+mail.messageToWorkerAddingPermission: "{name} erabiltzaileari {application} zerbitzua erabiltzeko baimena eman zaio."
