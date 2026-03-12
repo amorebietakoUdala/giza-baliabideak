@@ -7,7 +7,7 @@ __metadata:
 
 "@amorebietakoudala/stimulus-controller-bundle@file:vendor/amorebietakoudala/stimulus-controller-bundle/assets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.1.0
-  resolution: "@amorebietakoudala/stimulus-controller-bundle@file:vendor/amorebietakoudala/stimulus-controller-bundle/assets#vendor/amorebietakoudala/stimulus-controller-bundle/assets::hash=090c54&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@amorebietakoudala/stimulus-controller-bundle@file:vendor/amorebietakoudala/stimulus-controller-bundle/assets#vendor/amorebietakoudala/stimulus-controller-bundle/assets::hash=704255&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@eonasdan/tempus-dominus": ^6.2.10
     "@hotwired/stimulus": ^3.0.0
@@ -19,7 +19,18 @@ __metadata:
     select2-bootstrap-5-theme: ^1.3.0
     sweetalert2: 11.4.8
     tableexport.jquery.plugin: ^1.26.0
-  checksum: 12d9471dcd2fc1136424f7a9c0f3a797dd6b7dd690444e7a855a8911897939886dc78b790ddd7e269e48bc2e24cef3d901335ce336e42e45f4a851ad5b6f6b10
+  peerDependencies:
+    "@eonasdan/tempus-dominus": ^6.2.10
+    "@hotwired/stimulus": ^3.0.0
+    "@popperjs/core": ^2.11.8
+    bootstrap: ^5.2.3
+    bootstrap-table: 1.21.1
+    jquery: 3.6.1
+    select2: ^4.1.0-rc.0
+    select2-bootstrap-5-theme: ^1.3.0
+    sweetalert2: 11.4.8
+    tableexport.jquery.plugin: ^1.26.0
+  checksum: b2c9f71a5253e10eba7ef1b85f7456d0f4a47433d853faa62020a55fec85d5a2b2ad404d73178fc750cc4c513a27c0e2e8dbc040b6a78b15950137bf1da6860c
   languageName: node
   linkType: hard
 
@@ -3683,7 +3694,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pdfkit@npm:^0.17.1":
+"pdfkit@npm:^0.17.2":
   version: 0.17.2
   resolution: "pdfkit@npm:0.17.2"
   dependencies:
@@ -3697,13 +3708,13 @@ __metadata:
   linkType: hard
 
 "pdfmake@npm:^0.3.0-beta.17":
-  version: 0.3.0-beta.18
-  resolution: "pdfmake@npm:0.3.0-beta.18"
+  version: 0.3.6
+  resolution: "pdfmake@npm:0.3.6"
   dependencies:
     linebreak: ^1.1.0
-    pdfkit: ^0.17.1
-    xmldoc: ^2.0.1
-  checksum: 316dc5b19fbc39d6cc637d267362958aa313fcb84446e290177071d72c9fd6a145e9ebdba361adea0df163eac1ae44cb0ce285764a3dd30ebcf1104860bdef69
+    pdfkit: ^0.17.2
+    xmldoc: ^2.0.3
+  checksum: a70c38923eb317d135e128aa7c1c623f843ccf658c28c08adbbeb3f7880cf1e4c5b60d86b6473e3a9805397357c832cb9bc0a199f3be3c60300870a8cf3d4cd3
   languageName: node
   linkType: hard
 
@@ -4367,14 +4378,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"sax@npm:^1.2.4":
-  version: 1.3.0
-  resolution: "sax@npm:1.3.0"
-  checksum: 238ab3a9ba8c8f8aaf1c5ea9120386391f6ee0af52f1a6a40bbb6df78241dd05d782f2359d614ac6aae08c4c4125208b456548a6cf68625aa4fe178486e63ecd
-  languageName: node
-  linkType: hard
-
-"sax@npm:^1.5.0":
+"sax@npm:^1.4.3, sax@npm:^1.5.0":
   version: 1.5.0
   resolution: "sax@npm:1.5.0"
   checksum: e143cbeb6ca59345db142d97d1bbb620553beb8b166eda36ffeaba4b01af47dcf0423cd8781d0805b75feea69462cf80d0db7bf0a7e6dd87b711fda51b9153df
@@ -5081,12 +5085,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xmldoc@npm:^2.0.1":
-  version: 2.0.2
-  resolution: "xmldoc@npm:2.0.2"
+"xmldoc@npm:^2.0.3":
+  version: 2.0.3
+  resolution: "xmldoc@npm:2.0.3"
   dependencies:
-    sax: ^1.2.4
-  checksum: 583b956e15d8e681f99cd8aa09bfce3071f5f75b75c4f65e981796c09bbe24897f2613d32ba94b98b9128a710cf1e7fedf678aca861347a6f16611fb7c96be4a
+    sax: ^1.4.3
+  checksum: ec18790717b6eeba3dc5f16f20d09d264292bdca3a9b58b656d2800c8a1c8f59971f7a5919dc7008a05f8c0471eed8de1b87ccde144265dfd7ec77c01c3815ed
   languageName: node
   linkType: hard
 
