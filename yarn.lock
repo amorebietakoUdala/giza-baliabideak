@@ -7,7 +7,7 @@ __metadata:
 
 "@amorebietakoudala/stimulus-controller-bundle@file:vendor/amorebietakoudala/stimulus-controller-bundle/assets::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.1.0
-  resolution: "@amorebietakoudala/stimulus-controller-bundle@file:vendor/amorebietakoudala/stimulus-controller-bundle/assets#vendor/amorebietakoudala/stimulus-controller-bundle/assets::hash=704255&locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "@amorebietakoudala/stimulus-controller-bundle@file:vendor/amorebietakoudala/stimulus-controller-bundle/assets#vendor/amorebietakoudala/stimulus-controller-bundle/assets::hash=090c54&locator=root-workspace-0b6124%40workspace%3A."
   dependencies:
     "@eonasdan/tempus-dominus": ^6.2.10
     "@hotwired/stimulus": ^3.0.0
@@ -19,18 +19,7 @@ __metadata:
     select2-bootstrap-5-theme: ^1.3.0
     sweetalert2: 11.4.8
     tableexport.jquery.plugin: ^1.26.0
-  peerDependencies:
-    "@eonasdan/tempus-dominus": ^6.2.10
-    "@hotwired/stimulus": ^3.0.0
-    "@popperjs/core": ^2.11.8
-    bootstrap: ^5.2.3
-    bootstrap-table: 1.21.1
-    jquery: 3.6.1
-    select2: ^4.1.0-rc.0
-    select2-bootstrap-5-theme: ^1.3.0
-    sweetalert2: 11.4.8
-    tableexport.jquery.plugin: ^1.26.0
-  checksum: b2c9f71a5253e10eba7ef1b85f7456d0f4a47433d853faa62020a55fec85d5a2b2ad404d73178fc750cc4c513a27c0e2e8dbc040b6a78b15950137bf1da6860c
+  checksum: 12d9471dcd2fc1136424f7a9c0f3a797dd6b7dd690444e7a855a8911897939886dc78b790ddd7e269e48bc2e24cef3d901335ce336e42e45f4a851ad5b6f6b10
   languageName: node
   linkType: hard
 
@@ -3363,8 +3352,8 @@ __metadata:
   linkType: hard
 
 "jspdf@npm:>=2.0.0":
-  version: 4.2.0
-  resolution: "jspdf@npm:4.2.0"
+  version: 4.2.1
+  resolution: "jspdf@npm:4.2.1"
   dependencies:
     "@babel/runtime": ^7.28.6
     canvg: ^3.0.11
@@ -3382,7 +3371,7 @@ __metadata:
       optional: true
     html2canvas:
       optional: true
-  checksum: 5c34ab24e0d83db3dd6dfa231d038beee73e1119ed3fdd2ef2aba3dd0578dde60a650eca531a2c48472fbe708ca5eb80dc1d3facd77f288541a2f6756d7eab77
+  checksum: 43bee0cdeca23ee256ba4aeef6c96b16558ee280e6b6763f769c9c325688ed76b5306510285a6209138f3ccee2a4ca55c4ff64ec979c04b02043c12a2633efe6
   languageName: node
   linkType: hard
 
