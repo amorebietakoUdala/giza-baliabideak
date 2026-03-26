@@ -72,10 +72,12 @@ class MailingService
     public function sendMessageToWorker(string $subject, Worker $worker, ?array $grantedPermissions): void
     {
         $permissions = $grantedPermissions ?? $worker->getPermissions()->toArray();
-        $this->sendTemplatedEmail($subject, [$worker->getUsername().'@'.$this->domain], 'worker/permissionGrantedMail.html.twig', [
-            'worker' => $worker,
-            'permissions' => $permissions,
-        ]);
+        if ( null !== $worker->getUsername() ) {
+            $this->sendTemplatedEmail($subject, [$worker->getUsername().'@'.$this->domain], 'worker/permissionGrantedMail.html.twig', [
+                'worker' => $worker,
+                'permissions' => $permissions,
+            ]);
+        }
     }
 
     public function sendMessageToUserCreators(string $subject, Worker $worker, ?array $approvedPermissions, bool $remove = false): void
