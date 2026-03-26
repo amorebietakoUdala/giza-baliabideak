@@ -268,13 +268,13 @@ class PermissionController extends BaseController
         $worker = $permission->getWorker();
         $this->createHistoric("$permission concedido", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
         $this->addFlash('success', 'message.permissionGranted');
-        $this->mailingService->sendMessageToWorker('Aplikazioan baimena eman zaizu / Se le ha concedido permiso en la aplicación', $worker, [$permission]);
         if ( $worker->hasAllPermissionsGranted()) {
             $this->em->persist($worker);
             $worker->setStatus(Worker::STATUS_REGISTERED);
             $this->createHistoric("Todos los permisos concedidos. Paso a estado alta.", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-        }
-        $this->em->flush();
+            }
+            $this->em->flush();
+            $this->mailingService->sendMessageToWorker('Aplikazioan baimena eman zaizu / Se le ha concedido permiso en la aplicación', $worker, [$permission]);
         if ($request->isXmlHttpRequest()) {
             return new Response(null, Response::HTTP_NO_CONTENT);
         }
