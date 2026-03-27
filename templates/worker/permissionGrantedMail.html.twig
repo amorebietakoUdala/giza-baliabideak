@@ -11,7 +11,14 @@
          <table>
             <tr><th>{{ permission }}</th></tr>
             <tr>
-               <td>{{ 'mail.messageToWorkerAddingPermission' | trans({'name': worker.fullname, 'application': permission.application}) }}</td>
+               <td>
+                  {{ 'mail.messageToWorkerAddingPermission' | trans({'name': worker.fullname, 'application': permission.application}) }}<br>
+                  {% if not permission.notes is empty %}
+                     <pre>
+                        {{ permission.notes }}
+                     </pre>
+                  {% endif %}
+               </td>
             </tr>
          </table>
       {% endfor %}

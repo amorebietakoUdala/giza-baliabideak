@@ -122,7 +122,7 @@
                     }),
                     'permissionDenyAllPendingText': 'message.permissionDenyAllPendingText' | trans({},'alerts'),
                     'new' : new,
-                })}}>
+                })}} data-action="permission-list:permission-granted->worker-form#updatePermissionList">
                 {% set isAdmin = is_granted('ROLE_ADMIN') %}
                     <div class="row">
                         <div class="d-flex align-items-baseline {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }} mb-1">
@@ -155,8 +155,12 @@
                     </div>
                 {% endif %}
 
-                <div class="row align-items-start mb-1">
+                <div class="row align-items-start mb-1" {{ stimulus_controller('permission-list') }}>
                     <ul class="list-group list-group-horizontal d-flex flex-wrap {{ isAdmin ? 'col-lg-6' : 'col-lg-12' }}" data-worker-form-target="permissionList"></ul>
+                    {{ include('permission/_modal.html.twig', {
+                        'modalTitle': 'modal.title.grantPermission' | trans,
+                        }) 
+                    }}
                     {% if isAdmin %}
                         <div class="d-flex flex-wrap col-lg-6">
                             <ul class="list-group overflow-auto h500" data-historic-preload-target="historicList"></ul>

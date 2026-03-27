@@ -13,20 +13,22 @@ export default class extends Controller {
    }
 
    onApplicationChange(e) {
-      if (this.applicationInputTarget.value != 1) {
-         if (this.hasSubApplicationInputTarget) {
-            this.subApplicationInputTarget.parentElement.classList.add('visually-hidden');
-            this.subApplicationInputTarget.classList.add('visually-hidden');
-            this.subApplicationInputTarget.disabled = true;
+      if (this.hasApplicationInputTarget) {
+         if (this.applicationInputTarget.value != 1) {
+            if (this.hasSubApplicationInputTarget) {
+               this.subApplicationInputTarget.parentElement.classList.add('visually-hidden');
+               this.subApplicationInputTarget.classList.add('visually-hidden');
+               this.subApplicationInputTarget.disabled = true;
+            }
+         } else {
+            if (this.hasSubApplicationInputTarget) {
+               this.subApplicationInputTarget.parentElement.classList.remove('visually-hidden');
+               this.subApplicationInputTarget.classList.remove('visually-hidden');
+               this.subApplicationInputTarget.disabled = false;
+            }
          }
-      } else {
-         if (this.hasSubApplicationInputTarget) {
-            this.subApplicationInputTarget.parentElement.classList.remove('visually-hidden');
-            this.subApplicationInputTarget.classList.remove('visually-hidden');
-            this.subApplicationInputTarget.disabled = false;
-         }
+         this.getApplicationRoles(this.applicationInputTarget.value);
       }
-      this.getApplicationRoles(this.applicationInputTarget.value);
    }
 
    async getApplicationRoles(id) {

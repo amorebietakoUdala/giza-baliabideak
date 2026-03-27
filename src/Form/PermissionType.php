@@ -8,6 +8,7 @@ use App\Entity\SubApplication;
 use App\Entity\Permission;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,12 +21,18 @@ class PermissionType extends AbstractType
         $readonly = $options['readonly'];
         $locale = $options['locale'];
         $isAdmin = $options['isAdmin'];
+        $grantOnly = $options['grantOnly'];
         $builder
-        ->add('application',EntityType::class, [
+        ->add('notes', TextareaType::class, [
+            'label' => 'workerApplication.notes',
+            'required' => false,
+            'disabled' => $readonly,
+        ])
+        ->add('application', EntityType::class, [
             'label' => 'workerApplication.application',
             'class' => Application::class,
             'required' => true,
-            'disabled' => $readonly,
+            'disabled' => $readonly || $grantOnly,
             'query_builder' => function ($er) use ($isAdmin) {
                 if ($isAdmin) {
                     return $er->createQueryBuilder('a')
@@ -37,31 +44,26 @@ class PermissionType extends AbstractType
                 }
             },
         ])
-        ->add('subApplication',EntityType::class, [
+        ->add('subApplication', EntityType::class, [
             'placeholder' => 'placeholder.choose',
             'label' => 'workerApplication.subApplication',
             'class' => SubApplication::class,
             'required' => false,
-            'disabled' => $readonly,
+            'disabled' => $readonly || $grantOnly,
             'data' => null,
         ])
-        ->add('roles',EntityType::class, [
+        ->add('roles', EntityType::class, [
             'label' => 'workerApplication.roles',
             'class' => Role::class,
             'multiple' => true,
             'expanded' => false,
             'required' => true,
-            'disabled' => $readonly,
+            'disabled' => $readonly || $grantOnly,
             'constraints' => [
                 new NotNull(),
             ]
-        ])
-        ->add('notes', TextareaType::class, [
-            'label' => 'workerApplication.notes',
-            'required' => false,
-            'disabled' => $readonly,
-        ])
-        ;
+        ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -71,6 +73,7 @@ class PermissionType extends AbstractType
             'readonly' => false,
             'locale' => 'es',
             'isAdmin' => false,
+            'grantOnly' => false, 
         ]);
     }
 }
