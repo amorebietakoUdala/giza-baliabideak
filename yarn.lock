@@ -18,7 +18,7 @@ __metadata:
     select2: ^4.1.0-rc.0
     select2-bootstrap-5-theme: ^1.3.0
     sweetalert2: 11.4.8
-    tableexport.jquery.plugin: ^1.26.0
+    tableexport.jquery.plugin: ^1.27.0
   peerDependencies:
     "@eonasdan/tempus-dominus": ^6.2.10
     "@hotwired/stimulus": ^3.0.0
@@ -29,7 +29,7 @@ __metadata:
     select2: ^4.1.0-rc.0
     select2-bootstrap-5-theme: ^1.3.0
     sweetalert2: 11.4.8
-    tableexport.jquery.plugin: ^1.26.0
+    tableexport.jquery.plugin: ^1.27.0
   checksum: b2c9f71a5253e10eba7ef1b85f7456d0f4a47433d853faa62020a55fec85d5a2b2ad404d73178fc750cc4c513a27c0e2e8dbc040b6a78b15950137bf1da6860c
   languageName: node
   linkType: hard
