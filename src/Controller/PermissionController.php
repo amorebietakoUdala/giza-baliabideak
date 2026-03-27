@@ -252,34 +252,55 @@ class PermissionController extends BaseController
     }
 
     #[IsGranted('ROLE_GIZA_BALIABIDEAK')]
-    #[Route(path: '/permission/{permission}/granted', name: 'permission_granted', methods: ['GET'])]
+    #[Route(path: '/permission/{permission}/grant', name: 'permission_grant', methods: ['GET', 'POST'])]
     public function markAsGranted(Request $request, #[MapEntity(id: 'permission')] Permission $permission): Response
     {
-        if (!$this->isCsrfTokenValid('granted'.$permission->getId(), $request->get('_token'))) {
-            $this->addFlash('error', 'messages.invalidCsrfToken');
+        // if (!$this->isCsrfTokenValid('granted'.$permission->getId(), $request->get('_token'))) {
+        //     $this->addFlash('error', 'messages.invalidCsrfToken');
+        //     return $this->redirectToRoute('worker_edit',[
+        //         'worker' => $permission->getWorker()->getId(),
+        //     ]);
+        // }
+        $form = $this->createForm(PermissionType::class, $permission, [
+            'readonly' => false,
+            'locale' => $request->getLocale(),
+            'isAdmin' => $this->isGranted('ROLE_ADMIN'),
+            'grantOnly' => true,
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $send = $request->get('send','false');
+            dump($send);
+            $data = $form->getData();
+            $data->setGranted(true);
+            $data->setGrantedAt(new \DateTimeImmutable());
+            $data->setGrantedBy($this->getUser());
+            $this->em->persist($data);
+            $worker = $data->getWorker();
+            $this->createHistoric("$data concedido", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+            $this->addFlash('success', 'message.permissionGranted');
+                if ( $worker->hasAllPermissionsGranted()) {
+                    $this->em->persist($worker);
+                    $worker->setStatus(Worker::STATUS_REGISTERED);
+                    $this->createHistoric("Todos los permisos concedidos. Paso a estado alta.", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
+                }
+                $this->em->flush();
+                if ( $send === "true" ) {
+                    $this->mailingService->sendMessageToWorker('Aplikazioan baimena eman zaizu / Se le ha concedido permiso en la aplicación', $worker, [$data]);
+                }
+            if ($request->isXmlHttpRequest()) {
+                return new Response(null, Response::HTTP_NO_CONTENT);
+            }
             return $this->redirectToRoute('worker_edit',[
-                'worker' => $permission->getWorker()->getId(),
+                'worker' => $data->getWorker()->getId(),
             ]);
         }
-        $permission->setGranted(true);
-        $permission->setGrantedAt(new \DateTimeImmutable());
-        $permission->setGrantedBy($this->getUser());
-        $this->em->persist($permission);
-        $worker = $permission->getWorker();
-        $this->createHistoric("$permission concedido", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-        $this->addFlash('success', 'message.permissionGranted');
-        if ( $worker->hasAllPermissionsGranted()) {
-            $this->em->persist($worker);
-            $worker->setStatus(Worker::STATUS_REGISTERED);
-            $this->createHistoric("Todos los permisos concedidos. Paso a estado alta.", $this->serializer->serialize($worker,'json',['groups' => 'historic']), $worker);
-            }
-            $this->em->flush();
-            $this->mailingService->sendMessageToWorker('Aplikazioan baimena eman zaizu / Se le ha concedido permiso en la aplicación', $worker, [$permission]);
-        if ($request->isXmlHttpRequest()) {
-            return new Response(null, Response::HTTP_NO_CONTENT);
-        }
-        return $this->redirectToRoute('worker_edit',[
-            'worker' => $permission->getWorker()->getId(),
+        return $this->render('permission/_form.html.twig',[
+            'form' => $form,
+            'grantOnly' => true,
+            // 'worker' => $permission->getWorker()->getId(),
+            // 'readonly' => false,
+            // 'new' => false,
         ]);
     }
 
